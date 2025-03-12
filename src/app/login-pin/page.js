@@ -19,8 +19,7 @@ export default function PINLoginPage() {
   const handleLogin = () => {
     if (pin.length === PIN_LENGTH) {
       console.log("PIN entered:", pin);
-      // Qui potresti chiamare un'API per verificare il PIN
-      router.push("/dashboard"); // Reindirizza alla dashboard dopo il login
+      router.push("/dashboard"); 
     }
   };
 
@@ -28,7 +27,6 @@ export default function PINLoginPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#001c38] text-white">
       <h2 className="text-2xl font-semibold mb-6">Inserisci PIN</h2>
 
-      {/* Indicatori PIN */}
       <div className="flex gap-3 mb-12 mt-6">
         {Array.from({ length: PIN_LENGTH }).map((_, index) => (
           <div
@@ -40,7 +38,6 @@ export default function PINLoginPage() {
         ))}
       </div>
 
-      {/* Tastierino numerico */}
       <div className="grid grid-cols-3 gap-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "delete"].map((value, index) => (
           <button
@@ -55,7 +52,6 @@ export default function PINLoginPage() {
         ))}
       </div>
 
-      {/* Login Tradizionale */}
       <button
         className="mt-6 text-sm text-white hover:underline"
         onClick={() => router.push("/login")}
@@ -63,7 +59,6 @@ export default function PINLoginPage() {
         Vai al login tradizionale
       </button>
 
-      {/* Controlla se il PIN è completo e avvia il login */}
       {pin.length === PIN_LENGTH && handleLogin()}
     </div>
   );

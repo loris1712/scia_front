@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function PINLoginPage() {
   const [pin, setPin] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [error, setError] = useState(null);
   const router = useRouter();
   const PIN_LENGTH = 4;
 
@@ -16,10 +18,37 @@ export default function PINLoginPage() {
     }
   };
 
-  const handleLogin = () => {
-    if (pin.length === PIN_LENGTH) {
-      console.log("PIN entered:", pin);
-      router.push("/dashboard"); 
+  useEffect(() => {
+    if (pin.length === PIN_LENGTH && !isLoggingIn) {
+      handleLogin();
+    }
+  }, [pin]);
+
+  const handleLogin = async () => {
+    setIsLoggingIn(true);
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:4000/api/auth/login-pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Errore di login");
+      }
+
+      console.log("Login riuscito, token:", data.token);
+      router.push("/dashboard"); // Redirect alla dashboard
+    } catch (err) {
+      console.error("Errore login PIN:", err);
+      setError(err.message);
+      setPin(""); // Resetta il PIN se c'è un errore
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -42,10 +71,9 @@ export default function PINLoginPage() {
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "delete"].map((value, index) => (
           <button
             key={index}
-            className={`w-24 h-14 flex items-center justify-center text-lg font-semibold rounded-lg 
-                        ${value === "delete" ? "bg-[#022a52]" : "bg-[#022a52]"} 
-                        hover:bg-blue-500 transition`}
+            className="w-24 h-14 flex items-center justify-center text-lg font-semibold rounded-lg bg-[#022a52] hover:bg-blue-500 transition"
             onClick={() => handleButtonClick(value)}
+            disabled={isLoggingIn}
           >
             {value === "delete" ? "⌫" : value}
           </button>
@@ -53,13 +81,14 @@ export default function PINLoginPage() {
       </div>
 
       <button
-        className="mt-6 text-sm text-white hover:underline"
+        className="mt-4 text-sm text-white hover:underline"
         onClick={() => router.push("/login")}
+        disabled={isLoggingIn}
       >
         Vai al login tradizionale
       </button>
 
-      {pin.length === PIN_LENGTH && handleLogin()}
+      {error && <p className="text-red-500 mt-4">{error}</p>}
     </div>
   );
 }

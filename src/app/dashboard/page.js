@@ -28,9 +28,8 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error || "Errore di autenticazione");
 
       setSuccess("Login effettuato!");
-      localStorage.setItem("token", data.token); // ✅ Salva il token
+      localStorage.setItem("token", data.token);
 
-      // 👉 Reindirizza alla dashboard
       window.location.href = "/dashboard";
     } catch (err) {
       setError(err.message);

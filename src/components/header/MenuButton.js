@@ -10,7 +10,7 @@ export default function MenuButton() {
   return (
     <div className="relative">
       <button
-        className="p-3 bg-[#022a52] rounded-lg cursor-pointer"
+        className="p-3 rounded-lg cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <MenuBtn className="text-xl" />

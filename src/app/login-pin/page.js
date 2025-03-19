@@ -19,6 +19,10 @@ export default function PINLoginPage() {
   };
 
   useEffect(() => {
+    setError(null); // Resetta errori al caricamento
+  }, []);
+
+  useEffect(() => {
     if (pin.length === PIN_LENGTH && !isLoggingIn) {
       handleLogin();
     }
@@ -27,22 +31,21 @@ export default function PINLoginPage() {
   const handleLogin = async () => {
     setIsLoggingIn(true);
     setError(null);
-
+  
     try {
       const response = await fetch("http://localhost:4000/api/auth/login-pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // ✅ Mantiene il token nei cookie
         body: JSON.stringify({ pin }),
       });
-
-      const data = await response.json();
-
+  
       if (!response.ok) {
+        const data = await response.json();
         throw new Error(data.error || "Errore di login");
       }
-
-      console.log("Login riuscito, token:", data.token);
-      router.push("/dashboard"); // Redirect alla dashboard
+  
+      router.push("/dashboard"); // ✅ Reindirizza dopo il login
     } catch (err) {
       console.error("Errore login PIN:", err);
       setError(err.message);
@@ -51,6 +54,7 @@ export default function PINLoginPage() {
       setIsLoggingIn(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#001c38] text-white">

@@ -31,7 +31,7 @@ export default function DashboardGrid() {
         console.error("Errore nel recupero dei task:", error);
       }
     }
-    fetchTasks();
+    //fetchTasks();
   }, []);
 
   return (

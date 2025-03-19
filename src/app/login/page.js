@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    setError(""); // Resetta eventuali errori all'inizio
+    setSuccess("");
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,21 +25,19 @@ export default function LoginPage() {
     setSuccess("");
 
     try {
-      const res = await fetch("http://localhost:4000/api/auth/login", {
+      const response = await fetch("http://localhost:4000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // ✅ Importante per inviare i cookie!
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Errore di login");
+      }
 
-      if (!res.ok) throw new Error(data.error || "Errore di autenticazione");
-
-      setSuccess("Login effettuato!");
-      localStorage.setItem("token", data.token); // ✅ Salva il token
-
-      // 👉 Reindirizza alla dashboard
-      window.location.href = "/dashboard";
+      router.push("/dashboard"); // 🔄 Usa useRouter invece di window.location.href
     } catch (err) {
       setError(err.message);
     } finally {

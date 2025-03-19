@@ -2,9 +2,11 @@
 
 import { useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function DropdownMenu({ isOpen, onClose }) {
   const menuRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -31,10 +33,10 @@ export default function DropdownMenu({ isOpen, onClose }) {
           </Link>
         </li>
         <li>
-          <Link href="/facilities" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+          <div onClick={() => router.push(`/dashboard/impianti`)} className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
               {/*<BuildingStorefrontIcon className="h-5 w-5 mr-2" />*/}
               Impianti
-          </Link>
+          </div>
         </li>
         <li>
           <Link href="/cart" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">

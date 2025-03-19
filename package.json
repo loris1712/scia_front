@@ -12,7 +12,8 @@
     "@tanstack/react-query": "^5.67.3",
     "next": "15.2.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "wavesurfer.js": "^7.9.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.13",

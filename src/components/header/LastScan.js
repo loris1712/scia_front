@@ -12,7 +12,7 @@ export default function LastScan() {
           onClick={() => setIsOpen(true)}> 
         <div>
           <p className="text-sm text-gray-400">Ultima scansione</p>
-          <p className="font-semibold">Motore centrale</p>
+          <p className="text-xl font-semibold">Motore centrale</p>
           <p className="text-xs text-gray-400">
             2.1.4 Propulsione Diesel - S/N 19028393028A - Ore moto: 1200h
           </p>

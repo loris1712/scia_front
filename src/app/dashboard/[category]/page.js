@@ -1,13 +1,16 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardHeader from "@/components/header/DashboardHeader";
 import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
+import ImpiantiList from "@/components/facilities/FacilitiesList";
+import MaintenanceTable from "@/components/maintenance/MaintenanceTable";
 
-export default function CategoryPage({ params }) {
-  const router = useRouter();
-  const { category } = params;
+export default function CategoryPage() {
+  const params = useParams();
+  const category = params?.category;
+
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -20,7 +23,7 @@ export default function CategoryPage({ params }) {
         console.error("Errore nel recupero dei task:", error);
       }
     }
-    fetchTasks();
+    /*fetchTasks();*/
   }, [category]);
 
   return (
@@ -31,18 +34,9 @@ export default function CategoryPage({ params }) {
         <Breadcrumbs />
       </div>
 
-      <div className="flex-1 bg-[#022a52] p-4 rounded-lg">
-        {tasks.length > 0 ? (
-          <ul className="space-y-2">
-            {tasks.map((task) => (
-              <li key={task.id} className="p-2 bg-[#033366] rounded-md">
-                {task.title}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Nessun task disponibile</p>
-        )}
+      <div className="flex-1 rounded-lg">
+        {category === "impianti" ? <ImpiantiList /> : ""}
+        {category === "manutenzioni" ? <MaintenanceTable /> : ""}
       </div>
     </div>
   );

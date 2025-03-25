@@ -15,7 +15,7 @@ export default function ProfileCard() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen bg-[#001c38] text-white">
+    <div className="flex flex-col text-white">
       <div className="flex gap-4">
         <div className="w-full space-y-4 bg-[#022A52] p-4 rounded-md">
           {data ? <InfoCard data={data} /> : <InfoCard data={data} />}

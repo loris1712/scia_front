@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const impiantiData = [
+export const impiantiData = [
   {
     id: "100",
     name: "Scafo",
@@ -65,9 +65,8 @@ const impiantiData = [
   },
 ];
 
-export default function ImpiantiTree() {
+export default function ImpiantiList({ search, modal }) {
   const [openNodes, setOpenNodes] = useState({});
-  const [search, setSearch] = useState("");
   const router = useRouter();
 
   const toggleNode = (id) => {
@@ -93,50 +92,47 @@ export default function ImpiantiTree() {
           className="flex items-center justify-between px-2 py-4 cursor-pointer border-b border-[#ffffff20]"
           onClick={() => toggleNode(node.id)}
         >
-          {/* Nodo con icona e chevron */}
           <div className="flex items-center space-x-4">
-          {node.children && (
-                <svg className="transition-transform"
+            {node.children && (
+              <svg
+                className="transition-transform"
                 style={{ transform: openNodes[node.id] ? "rotate(90deg)" : "rotate(0deg)" }}
                 width="16"
                 height="16"
                 fill="white"
-                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+              >
+                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+              </svg>
             )}
-
             {node.icon && <span>{node.icon}</span>}
-            
             <span>{node.id} - {node.name}</span>
           </div>
 
-          {/* Icone a destra */}
           <div className="flex items-center space-x-4">
-            {/* Campanella */}
-            <svg width="24" height="24" viewBox="0 0 16 16" fill="#ffffff20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 1.5C5.52 1.5 3.5 3.52 3.5 6V9.5L2 11V12H14V11L12.5 9.5V6C12.5 3.52 10.48 1.5 8 1.5ZM8 14C7.17 14 6.5 13.33 6.5 12.5H9.5C9.5 13.33 8.83 14 8 14Z" />
-            </svg>
-
-            {/* Checkbox */}
-            <input
-  type="checkbox"
-  className="cursor-pointer w-[16px] h-[16px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 
-             checked:bg-[#789fd6] checked:border-[#789fd6] hover:opacity-80 focus:outline-none"
-/>
-
-            <svg onClick={(e) => {
+            <input type="checkbox"
+            
+            className="mr-2 cursor-pointer w-[20px] h-[20px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 
+                checked:bg-[#789fd6] checked:border-[#789fd6] hover:opacity-80 focus:outline-none ml-auto"
+                 />
+            <svg
+              onClick={(e) => {
                 e.stopPropagation();
                 router.push(`/dashboard/impianti/${node.code}`);
               }}
               className="cursor-pointer"
-                width="16"
-                height="16"
-                fill="white"
-                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-            
+              width="16"
+              height="16"
+              fill="white"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+            >
+              <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+            </svg>
           </div>
         </div>
 
-        {/* Sottolivelli */}
         {node.children && openNodes[node.id] && (
           <div className="ml-4">{renderTree(node.children, level + 1)}</div>
         )}
@@ -145,32 +141,9 @@ export default function ImpiantiTree() {
   };
 
   return (
-    <div>
-     <h2 className="text-3xl text-white mb-4">Impianti</h2>
-     <div className="p-4 bg-[#022a52] rounded-lg">
-     <div className="relative w-full mb-4">
-        <input
-        type="text"
-        placeholder="Cerca per nome impianto…"
-        className="w-full px-4 py-2 pr-10 bg-[#ffffff10] text-white rounded-md 
-                    focus:outline-none focus:ring-0 focus:border-transparent"
-                    value={search}
-            onChange={(e) => setSearch(e.target.value)}
-        />
-  <svg
-    className="absolute right-3 top-1/2 transform -translate-y-1/2"
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="white"
-  >
-    <path d="M10 2C14.42 2 18 5.58 18 10C18 11.95 17.32 13.72 16.22 15.06L22 20.84L20.84 22L15.06 16.22C13.72 17.32 11.95 18 10 18C5.58 18 2 14.42 2 10C2 5.58 5.58 2 10 2ZM10 4C6.69 4 4 6.69 4 10C4 13.31 6.69 16 10 16C13.31 16 16 13.31 16 10C16 6.69 13.31 4 10 4Z" />
-  </svg>
-</div>
-
+    <div style={modal === "yes" ? { overflowY: "scroll", height: "30vh" } : {}}>
       {renderTree(filterNodes(impiantiData))}
     </div>
-    </div>
-    
   );
 }
+

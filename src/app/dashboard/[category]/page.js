@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardHeader from "@/components/header/DashboardHeader";
 import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
-import ImpiantiList from "@/components/facilities/FacilitiesList";
+import FacilitiesTree from "@/components/facilities/FacilitiesTree";
 import MaintenanceTable from "@/components/maintenance/MaintenanceTable";
 
 export default function CategoryPage() {
@@ -35,7 +35,7 @@ export default function CategoryPage() {
       </div>
 
       <div className="flex-1 rounded-lg">
-        {category === "impianti" ? <ImpiantiList /> : ""}
+        {category === "impianti" ? <FacilitiesTree /> : ""}
         {category === "manutenzioni" ? <MaintenanceTable /> : ""}
       </div>
     </div>

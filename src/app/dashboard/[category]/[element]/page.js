@@ -16,7 +16,7 @@ export default async function ElementPage({ params }) {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#001c38] text-white p-4">
+    <div className="flex flex-col bg-[#001c38] text-white p-4">
 
       <DashboardHeader />
       

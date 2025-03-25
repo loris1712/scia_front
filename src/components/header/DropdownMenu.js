@@ -51,13 +51,13 @@ export default function DropdownMenu({ isOpen, onClose }) {
           </Link>
         </li>
         <li>
-          <Link href="/remote_assistance" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+          <Link href="/dashboard/remoteAssistance" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
               {/*<DevicePhoneIcon className="h-5 w-5 mr-2" />*/}
               Assistenza remota
           </Link>
         </li>
         <li>
-          <Link href="/settings" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+          <Link href="/dashboard/settings" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
               {/*<CogIcon className="h-5 w-5 mr-2" />*/}
               Impostazioni
           </Link>

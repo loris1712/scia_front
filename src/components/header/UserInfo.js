@@ -11,7 +11,6 @@ export default function UserInfo() {
   useEffect(() => {
       async function loadData() {
         const result = await getProfileData();
-        console.log(result)
         setUser(result);
       }
       loadData();

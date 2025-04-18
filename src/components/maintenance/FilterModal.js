@@ -60,19 +60,23 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !event.target.closest('.facilities-modal') 
+      ) {
         onClose();
       }
     };
-
+  
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
+  
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose]);  
 
     return isOpen ? (
       <div className="fixed inset-0 flex justify-end bg-black/50 z-10">
@@ -143,7 +147,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
                 <Image src="/icons/Shape-12.png" alt="Fornitore Esterno" width={18} height={18} />
               )}
 
-              {key.replace(/([A-Z])/g, " $1")}
+              {key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
 
               <input
                 type="checkbox"
@@ -177,7 +181,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Squadra */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Squadra di assegnazione</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">Impianti</h3>
           
           <div className="flex items-center cursor-pointer" onClick={() => setFacilitiesOpen(true)}>
             <p>Selezione impianti</p>
@@ -224,9 +228,8 @@ export default function FilterSidebar({ isOpen, onClose }) {
         </button>
       </div>
 
-      <FacilitiesModal isOpen={facilitiesOpen} onClose={() => setFacilitiesOpen(false)} />
+      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
 
       </div>
     ) : null;
   }
-

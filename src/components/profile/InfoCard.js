@@ -3,84 +3,98 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import PasswordModal from "./PasswordModal";
-import { updateProfileData } from "@/api/profile";
+import ImageProfileUpload from "./ImageProfileUpload";
+import { updateProfileData, getRanks } from "@/api/profile";
 
 export default function InfoCard({ data }) {
-
   const [isOpen, setIsOpen] = useState(false);
   const [firstName, setFirstName] = useState(data?.firstName || "");
   const [lastName, setLastName] = useState(data?.lastName || "");
   const [email, setEmail] = useState(data?.email || "");
   const [phone, setPhone] = useState(data?.phoneNumber || "");
   const [rank, setRank] = useState(data?.rank || "");
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false); 
+  const [militaryRanks, setMilitaryRanks] = useState("false"); 
+  const [selectedRank, setSelectedRank] = useState(null);
 
-  const militaryRanks = [
-    { name: "Seleziona un grado", icon: "/icons/default-rank.svg" },
-    { name: "Soldato", icon: "/icons/soldato.svg" },
-    { name: "Colonnello t.ST", icon: "/icons/soldato.svg" },
-    { name: "Caporale", icon: "/icons/caporale.svg" },
-    { name: "Sergente", icon: "/icons/sergente.svg" },
-    { name: "Maresciallo", icon: "/icons/maresciallo.svg" },
-    { name: "Tenente", icon: "/icons/tenente.svg" },
-    { name: "Capitano", icon: "/icons/capitano.svg" },
-    { name: "Maggiore", icon: "/icons/maggiore.svg" },
-    { name: "Colonnello", icon: "/icons/colonnello.svg" },
-    { name: "Generale", icon: "/icons/generale.svg" },
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getRanks();
+      setMilitaryRanks(data);
+
+      const defaultRank = data.find((r) => r.grado === data?.rank) || data[0];
+      setSelectedRank(defaultRank);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (data) {
       setFirstName(data.firstName || "");
       setLastName(data.lastName || "");
       setEmail(data.email || "");
-
-      const foundRank = militaryRanks.find((r) => r.name === data.rank);
+  
+      const rankId = Number(data.rank);
+      const foundRank = militaryRanks.find((r) => r.id === rankId);
+  
       if (foundRank) setRank(foundRank);
-
+  
       setPhone(data.phoneNumber || "");
-
-      setSelectedRank(militaryRanks.find((r) => r.name === data.rank) || militaryRanks[0]
-    );
-
+      setSelectedRank(foundRank || militaryRanks[0]);
     }
   }, [data]);
-
-  const [selectedRank, setSelectedRank] = useState(
-    militaryRanks.find((r) => r.name === data?.rank) || militaryRanks[0]
-  );
+  
 
   const [isOpen2, setIsOpen2] = useState(false);
 
   async function handleSave() {
+
     const updatedData = {
       userId: data?.id,
       firstName,
       lastName,
       email,
       phoneNumber: phone,
-      rank: selectedRank?.name || rank,
+      rank: selectedRank?.id || rank,
     };
 
     const response = await updateProfileData(updatedData);
     if (response) {
-      console.log("Profilo aggiornato con successo", response);
+      alert("Profilo aggiornato con successo");
     } else {
       console.error("Errore nell'aggiornamento del profilo");
     }
   }
 
+  const [profileImage, setProfileImage] = useState("/icons/profile-default.svg");
+
+  useEffect(() => {
+    if (data?.profileImage) {
+      setProfileImage(data.profileImage);
+    }
+  }, [data]);
+
+  const onImageUploadSuccess = (newImageUrl) => {
+    setProfileImage(newImageUrl);
+  };
+
   return (
     <div className="bg-[#022a52] p-2 rounded-lg shadow-md text-white w-full">
       <div className="flex items-center mb-4">
-      <Image
-        src={data?.profileImage || "/icons/profile-default.svg"}
-        alt="Profile Picture"
-        width={80}
-        height={80}
-        className="rounded-full object-cover w-[80px] h-[80px]"
-      />
+        <Image
+          src={profileImage || "/icons/profile-default.svg"}
+          alt="Profile Picture"
+          width={80}
+          height={80}
+          className="rounded-full object-cover w-[80px] h-[80px] cursor-pointer"
+          onClick={() => setIsImagePopupOpen(true)}
+        />
 
       </div>
+
+      {isImagePopupOpen && (
+        <ImageProfileUpload onClose={() => setIsImagePopupOpen(false)} onImageUploadSuccess={onImageUploadSuccess} />
+      )}
 
       <div className="grid grid-cols-4 gap-4 mb-4">
         <div className="rounded-md text-left">
@@ -150,43 +164,55 @@ export default function InfoCard({ data }) {
           </div>
 
           <div className="flex flex-col relative">
-            <label className="text-[#789FD6] text-sm mb-2">Grado</label>
-            
-            <button
-              onClick={() => setIsOpen2(!isOpen2)}
-              className="flex items-center w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
-            >
-              <img src={selectedRank.icon} alt={selectedRank.name} className="w-6 h-6 mr-2" />
-              {selectedRank.name}
-              <span className="ml-auto">▼</span>
-            </button>
+      <label className="text-[#789FD6] text-sm mb-2">Grado</label>
 
-            {/* Dropdown visibile solo se isOpen è true */}
-            {isOpen2 && (
-              <ul 
-                style={{overflowY: 'scroll'}}
-                className="absolute w-[50%] top-[100%] bg-[#022a52] text-white mt-1 rounded-md shadow-md">
-                {militaryRanks.map((rank, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center px-4 py-2 hover:bg-[#789FD6] cursor-pointer"
-                    onClick={() => {
-                      setSelectedRank(rank);
-                      setIsOpen(false);
-                    }}
-                  >
-                    <img src={rank.icon} alt={rank.name} className="w-6 h-6 mr-2" />
-                    {rank.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+      <button
+        onClick={() => setIsOpen2(!isOpen2)}
+        className="flex items-center w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
+      >
+        {selectedRank && (
+          <>
+            <img
+              src={selectedRank.distintivo_controspallina}
+              alt={selectedRank.grado}
+              className="w-4 h-8 mr-2"
+            />
+            {selectedRank.grado}
+          </>
+        )}
+        <span className="ml-auto">▼</span>
+      </button>
+
+      {isOpen2 && (
+        <ul
+          style={{ overflowY: "scroll", height: '25vh', width: '30vw' }}
+          className="absolute w-[50%] top-[100%] bg-[#022a52] text-white mt-1 rounded-md shadow-md"
+        >
+          {militaryRanks.map((rank, index) => (
+            <li
+              key={index}
+              className="flex items-center px-4 py-2 hover:bg-[#789FD6] cursor-pointer"
+              onClick={() => {
+                setSelectedRank(rank);
+                setIsOpen2(false);
+              }}
+            >
+              <img
+                src={rank.distintivo_controspallina}
+                alt={rank.grado}
+                className="w-6 h-12 mr-2"
+              />
+              {rank.grado}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
 
 
         <div className="flex flex-col">
             <label className="text-[#789FD6] text-sm mb-4">Sicurezza</label>
-            <button className="items-center flex cursor-pointer"onClick={() => setIsOpen(true)}>
+            <button className="items-center flex cursor-pointer" onClick={() => setIsOpen(true)}>
               <p>Imposta password e pin di accesso</p>
 
               <svg 

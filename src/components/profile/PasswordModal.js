@@ -23,7 +23,6 @@ export default function PasswordModal({ userId, onClose }) {
         setUseBiometric(settings.biometric_enabled || false);
       }
 
-      console.log(settings)
     }
     fetchSecuritySettings();
   }, []);
@@ -59,7 +58,6 @@ export default function PasswordModal({ userId, onClose }) {
 
     const response = await updateUserSecuritySettings(updatedData);
     if (response) {
-      console.log("Impostazioni aggiornate con successo", response);
       onClose();
     } else {
       console.error("Errore nell'aggiornamento delle impostazioni");
@@ -86,7 +84,6 @@ export default function PasswordModal({ userId, onClose }) {
           </button>
         </div>
 
-        {/* Vecchia e nuova password */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label className="text-[#789FD6] text-sm">Vecchia Password</label>
@@ -103,7 +100,6 @@ export default function PasswordModal({ userId, onClose }) {
           <input type="password" placeholder="Conferma Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none mt-2" />
         </div>
 
-        {/* Checkbox */}
         <div className="flex items-center space-x-4 mb-4 mt-4 w-full">
           <label className="flex items-center w-1/2">
             <input type="checkbox" checked={useQuickPin} onChange={() => setUseQuickPin(!useQuickPin)} className="mr-2 cursor-pointer w-[16px] h-[16px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 
@@ -117,7 +113,6 @@ export default function PasswordModal({ userId, onClose }) {
           </label>
         </div>
 
-        {/* Inserisci PIN e Conferma PIN */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label className="text-[#789FD6] text-sm">Inserisci PIN</label>
@@ -129,13 +124,11 @@ export default function PasswordModal({ userId, onClose }) {
           </div>
         </div>
 
-        {/* Bottone Salva */}
         <button className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer" onClick={handleSave}>
           Salva
         </button>
       </div>
 
-      {/* Popup Conferma PIN */}
       {showConfirmPinPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-10">
           <div className="bg-[#022a52] p-5 rounded-md shadow-lg text-white w-[40%]">

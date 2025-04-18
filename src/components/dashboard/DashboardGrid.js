@@ -1,21 +1,14 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import DashboardCard from "@/components/dashboard/DashboardCard";
-import ToolsIcon from "@/components/icons/ToolsIcon";
-import ChecklistIcon from "@/components/icons/ChecklistIcon";
-import TachometerIcon from "@/components/icons/TachometerIcon";
-import PlugIcon from "@/components/icons/PlugIcon";
-import BookIcon from "@/components/icons/BookIcon";
-import WarningIcon from "@/components/icons/WarningIcon";
+import Image from "next/image";
 
 const categories = [
-  { id: "manutenzioni", title: "Manutenzioni", Icon: ToolsIcon },
-  { id: "checklist", title: "Checklist", Icon: ChecklistIcon },
-  { id: "letture", title: "Letture", Icon: TachometerIcon },
-  { id: "catalogo", title: "Catalogo ricambi", Icon: PlugIcon },
-  { id: "manuale", title: "Manuale integrato", Icon: BookIcon },
-  { id: "avarie", title: "Avarie", Icon: WarningIcon },
+  { id: "Maintenance", title: "Manutenzioni", imageSrc: "/icons/ico_dashboard_maintenance.png" },
+  { id: "Checklist", title: "Checklist", imageSrc: "/icons/dash_checklist.png" },
+  { id: "Letture", title: "Letture", imageSrc: "/icons/time.png" },
+  { id: "Spare", title: "Catalogo ricambi", imageSrc: "/icons/dash_corr.png" },
+  { id: "manual", title: "Manuale integrato", imageSrc: "/icons/ico_dashboard_manual.png" },
+  { id: "avarie", title: "Avarie", imageSrc: "/icons/dash_warning.png" },
 ];
 
 export default function DashboardGrid() {
@@ -39,11 +32,14 @@ export default function DashboardGrid() {
       {categories.map((category) => (
         <DashboardCard
           key={category.id}
+          id={category.id}
           title={category.title}
-          Icon={category.Icon}
+          imageSrc={category.imageSrc} 
           tasks={tasks[category.id] || []}
-        />
+        >
+        </DashboardCard>
       ))}
     </div>
   );
 }
+

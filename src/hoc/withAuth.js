@@ -9,12 +9,15 @@ export default function withAuth(Component) {
     const [user, setUser] = useState(null);
     const router = useRouter();
 
+    const BASE_URL = "http://localhost:4000/api/maintenance";
+    //const BASE_URL = "http://52.59.162.108:4000/api/maintenance";
+
     useEffect(() => {
       const checkAuth = async () => {
         try {
-          const response = await fetch("http://localhost:4000/api/auth/profile", {
+          const response = await fetch(`${BASE_URL}/api/auth/profile`, {
             method: "GET",
-            credentials: "include", // ✅ Importante per inviare il cookie
+            credentials: "include",
           });
 
           if (!response.ok) {
@@ -25,7 +28,7 @@ export default function withAuth(Component) {
           setUser(data.user);
         } catch (error) {
           console.error("Errore autenticazione:", error);
-          router.push("/login"); // 🔄 Reindirizza al login se non è autenticato
+          router.push("/login");
         } finally {
           setIsLoading(false);
         }

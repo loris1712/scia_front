@@ -1,11 +1,12 @@
-const BASE_URL = "http://localhost:4000/api/maintenance";
+const BASE_URL = "http://localhost:4000";
+//const BASE_URL = "http://52.59.162.108:4000";
 
 /**
  * Recupera i tipi di manutenzione disponibili per una nave e un utente.
  */
 export async function fetchMaintenanceTypes(shipId, userId) {
   try {
-    const res = await fetch(`${BASE_URL}/type?ship_id=${shipId}&user_id=${userId}`);
+    const res = await fetch(`${BASE_URL}/api/maintenance/type?ship_id=${shipId}&user_id=${userId}`);
 
     if (!res.ok) {
       throw new Error(`Errore HTTP ${res.status}: Impossibile recuperare i tipi di manutenzione`);
@@ -24,7 +25,7 @@ export async function fetchMaintenanceTypes(shipId, userId) {
  */
 export async function fetchMaintenanceJobs(typeId, shipId, userId) {
   try {
-    const res = await fetch(`${BASE_URL}/jobs?type_id=${typeId}&ship_id=${shipId}&user_id=${userId}`);
+    const res = await fetch(`${BASE_URL}/api/maintenance/jobs?type_id=${typeId}&ship_id=${shipId}&user_id=${userId}`);
 
     if (!res.ok) {
       throw new Error(`Errore HTTP ${res.status}: Impossibile recuperare i job di manutenzione`);

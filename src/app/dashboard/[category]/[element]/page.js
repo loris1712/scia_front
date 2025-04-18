@@ -20,7 +20,7 @@ export default async function ElementPage({ params }) {
 
       <DashboardHeader />
       
-            <div className="flex w-full h-[50px] items-center mt-4">
+            <div className="flex w-full items-center mt-4">
               <Breadcrumbs />
             </div>
 

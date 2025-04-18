@@ -13,6 +13,9 @@ const InfoCard = ({ data }) => {
     setIsOpen(true);
   };
 
+  const BASE_URL = "http://localhost:4000/api/maintenance";
+  //const BASE_URL = "http://52.59.162.108:4000/api/maintenance";
+
   const handleSave = async (newUsage) => {
 
     const newElement = {
@@ -26,7 +29,7 @@ const InfoCard = ({ data }) => {
     };
 
     try {
-      const res = await fetch("http://localhost:4000/api/element/addTimeWork", {
+      const res = await fetch(`${BASE_URL}/api/element/addTimeWork`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newElement }),

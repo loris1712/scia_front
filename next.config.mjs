@@ -4,6 +4,14 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "scia-project-questit.s3.eu-central-1.amazonaws.com", // S3 bucket
+      },
+      {
+        protocol: "https",
+        hostname: "scia-project-questit.s3.amazonaws.com", // S3 bucket
+      },
+      {
+        protocol: "https",
         hostname: "t4.ftcdn.net", // Adobe Stock CDN
       },
       {
@@ -32,6 +40,14 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: false,
+  compiler: {
+    styledComponents: true
+  },
+  eslint: {
+    ignoreDuringBuilds: true
+  }
 };
+
 
 export default nextConfig;

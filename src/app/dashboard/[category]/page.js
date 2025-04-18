@@ -30,13 +30,12 @@ export default function CategoryPage() {
     <div className="flex flex-col h-screen bg-[#001c38] text-white p-4">
       <DashboardHeader />
 
-      <div className="flex w-full h-[50px] items-center">
+      <div className="flex w-full mt-4 mb-4 items-center">
         <Breadcrumbs />
       </div>
 
       <div className="flex-1 rounded-lg">
         {category === "impianti" ? <FacilitiesTree /> : ""}
-        {category === "manutenzioni" ? <MaintenanceTable /> : ""}
       </div>
     </div>
   );

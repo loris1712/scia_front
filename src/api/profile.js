@@ -1,6 +1,9 @@
+const BASE_URL = "http://localhost:4000";
+//const BASE_URL = "http://52.59.162.108:4000";
+
 export async function getProfileData() {
   try {
-    const response = await fetch("http://localhost:4000/api/profile/getProfile", {
+    const response = await fetch(`${BASE_URL}/api/profile/getProfile`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -21,7 +24,7 @@ export async function getProfileData() {
 
 export async function updateProfileData(updatedData) {
   try {
-    const response = await fetch("http://localhost:4000/api/profile/updateProfile", {
+    const response = await fetch(`${BASE_URL}/api/profile/updateProfile`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -40,3 +43,42 @@ export async function updateProfileData(updatedData) {
     return null;
   }
 }
+
+export async function uploadProfileImage(formData) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/profile/uploadProfileImage`, {
+      method: "POST",
+      credentials: "include",
+      body: formData, 
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore nel caricamento dell'immagine del profilo");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Errore API uploadProfileImage:", error);
+    return null;
+  }
+};
+
+export const getRanks = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/profile/getRanks`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Errore nel recupero dei dati');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};

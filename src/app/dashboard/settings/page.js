@@ -9,7 +9,7 @@ export default function SettingsPage() {
     <div className="flex flex-col h-screen bg-[#001c38] text-white p-4">
       <DashboardHeader />
 
-      <div className="flex w-full h-[50px] items-center my-2">
+      <div className="flex w-full items-center my-4">
         <Breadcrumbs />
       </div>
 

@@ -19,5 +19,5 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/login", "/login-pin", "/dashboard/profile"],
+  matcher: ["/dashboard/:path*", "/login", "/login-pin"],
 };

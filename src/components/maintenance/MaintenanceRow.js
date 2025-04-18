@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import StatusBadge from "./StatusBadge";
 import Icons from "./Icons";
 import NotesModal from "./NotesModal";
+import { useRouter } from "next/navigation";
 
 const areaIcons = {
   "A bordo": "/icons/shape.png",
@@ -54,20 +55,49 @@ const MaintenanceRow = ({ data }) => {
   const micStatus = data.audio ? data.audio_status || "good" : "default";
   const docStatus = data.note ? data.note_status || "good" : "default";
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleOptionClick = (option) => {
+    setIsDropdownOpen(false); 
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const router = useRouter();
+
+  const handleRowClick = () => {
+    router.push(`/dashboard/maintenance/${data.job_id}`);
+  };
+
   return (
     <div>
 
     <div
-      className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center border-b border-[#001c38] bg-[#022a52]"
+      className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center border-b border-[#001c38] bg-[#022a52] cursor-pointer"
       style={{ borderLeft: `8px solid ${getStatusColor(dueDays)}` }}
     >
-      <div className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}>
+      <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}>
         <p className="text-white text-[18px] font-semibold truncate">{data.job_id}</p>
         <p className="text-white/60 text-[16px] text-sm truncate">
           Elemento ID: {data.element_eswbs_instance_id}
         </p>
       </div>
-      <div className="border border-[#001c38] p-3 text-center text-white flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
+      <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
         <p className="text-[18px] text-white">{data.execution}</p>
         <div className="flex items-center gap-2">
           {areaIcons[data.area] && <img src={areaIcons[data.area]} alt={data.area} className="w-4 h-4" />}
@@ -103,10 +133,33 @@ const MaintenanceRow = ({ data }) => {
       <div className="border border-[#001c38]" style={{ height: "-webkit-fill-available" }}>
         <StatusBadge dueDate={data.data_recovery_expiration} dueDays={dueDays} />
       </div>
-      <div className="p-3 flex items-center justify-center w-8">
-        <svg fill="white" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
+      <div className="p-3 flex items-center justify-center w-8 relative" ref={dropdownRef}>
+        <svg onClick={toggleDropdown} className="cursor-pointer" fill="white" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
           <path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z" />
         </svg>
+
+        {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg z-20">
+              <button
+                className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
+                onClick={() => handleOptionClick("Pausa")}
+              >
+                Pausa
+              </button>
+              <button
+                className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
+                onClick={() => handleOptionClick("Riprendi")}
+              >
+                Riprendi
+              </button>
+              <button
+                className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
+                onClick={handleRowClick}
+              >
+                Dettagli
+              </button>
+            </div>
+          )}
       </div>
     </div>
 

@@ -1,6 +1,9 @@
+const BASE_URL = "http://localhost:4000";
+//const BASE_URL = "http://52.59.162.108:4000";
+  
   export async function getUserSecuritySettings(userId) {
     try {
-      const response = await fetch("http://localhost:4000/api/auth/getSecuritySettings", {
+      const response = await fetch(`${BASE_URL}/api/auth/getSecuritySettings`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -22,7 +25,7 @@
 
 export async function updateUserSecuritySettings(updatedData) {
     try {
-      const response = await fetch("http://localhost:4000/api/auth/updateSecuritySettings", {
+      const response = await fetch(`${BASE_URL}/api/auth/updateSecuritySettings`, {
         method: "POST",
         credentials: "include",
         headers: {

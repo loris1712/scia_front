@@ -18,6 +18,9 @@ export default function LoginPage() {
     setSuccess("");
   }, []);
 
+  const BASE_URL = "http://localhost:4000";
+  //const BASE_URL = "http://52.59.162.108:4000";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -25,10 +28,10 @@ export default function LoginPage() {
     setSuccess("");
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/login", {
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // ✅ Importante per inviare i cookie!
+        credentials: "include", 
         body: JSON.stringify({ email, password }),
       });
 
@@ -37,7 +40,7 @@ export default function LoginPage() {
         throw new Error(data.error || "Errore di login");
       }
 
-      router.push("/dashboard"); // 🔄 Usa useRouter invece di window.location.href
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {

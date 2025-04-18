@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:4000"; 
+//const API_URL = "http://52.59.162.108:4000";
 
 export async function getSettings(userId) {
   try {

@@ -9,14 +9,17 @@ import { useRouter } from "next/navigation";
 export default function DashboardPage() {
   const router = useRouter();
 
+  const BASE_URL = "http://localhost:4000";
+  //const BASE_URL = "http://52.59.162.108:4000";
+
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:4000/api/auth/logout", {
+      await fetch(`${BASE_URL}/api/auth/logout`, {
         method: "POST",
-        credentials: "include", // ✅ Invia i cookie per il logout
+        credentials: "include",
       });
 
-      router.push("/login"); // 🔄 Dopo il logout, vai alla pagina di login
+      router.push("/login");
     } catch (error) {
       console.error("Errore durante il logout:", error);
     }
@@ -26,7 +29,7 @@ export default function DashboardPage() {
     <div className="flex flex-col h-screen bg-[#001c38] text-white p-4">
       <DashboardHeader />
 
-      <div className="flex w-full h-[50px] items-center pt-4">
+      <div className="flex w-full items-center mt-4">
         <Breadcrumbs />
       </div>
 

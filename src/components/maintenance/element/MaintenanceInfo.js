@@ -1,0 +1,158 @@
+"use client";
+
+import { useState } from "react";
+import Image from 'next/image';
+import SpareModal from "./SpareModal";
+import FacilitiesModal from "@/components/maintenance/FacilitiesModal";
+
+const MaintenanceInfo = ({ details }) => {
+  const [showFull, setShowFull] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [facilitiesOpen, setFacilitiesOpen] = useState(false);
+
+  const handleProductSelect = (imageSrc) => {
+    setSelectedProduct(imageSrc);
+  };
+
+  return (
+    <div className="p-2">
+      <h2 className="text-lg text-[#789fd6] mb-2">Descrizione</h2>
+
+      <p
+        className={`text-white ${
+          showFull
+            ? ""
+            : "line-clamp-2 overflow-hidden text-ellipsis whitespace-normal"
+        }`}
+        style={{
+          display: "-webkit-box",
+          WebkitBoxOrient: "vertical",
+          WebkitLineClamp: showFull ? "unset" : 2,
+          overflow: "hidden",
+        }}
+      >
+        {details.job_id}
+      </p>
+
+      {!showFull && (
+        <button
+          className="mt-2 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
+          onClick={() => setShowFull(true)}
+        >
+          Vedi istruzioni
+        </button>
+      )}
+
+      <div className="mb-6">
+      
+        <h2 className="text-lg text-[#789fd6] mb-2 mt-4">Ricambi</h2>
+
+        <div className="flex flex-col gap-4">
+
+        <div className="flex overflow-x-auto gap-4 py-2 custom-carousel" style={{display: 'flex !important', flexFlow: 'nowrap !important'}}>
+          <div className="overflow-x-scroll flex space-x-4" style={{overflowX: 'scroll'}}>
+            {['/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg'].map((src, index) => (
+              <div
+                key={index}
+                className={`w-20 h-20 relative cursor-pointer rounded-lg overflow-hidden ${selectedProduct === src ? 'border-4 border-[#789fd6]' : ''}`}
+                onClick={() => handleProductSelect(src)}
+                style={{flex: 'none'}}
+              >
+                <Image src={src} alt={`Motor ${index + 1}`} layout="fill" objectFit="cover" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        </div>
+
+        <div className="flex gap-4">
+        <button
+            type="submit"
+            onClick={() => setIsOpen(true)}
+            className="rounded-md flex items-center bg-[#ffffff10] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer"
+          >
+            <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
+            &nbsp;&nbsp; Aggiungi
+          </button>
+
+          <button
+            type="submit"
+            className="rounded-md text-center flex items-center bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-1 px-4 transition duration-200 cursor-pointer"
+          >
+            <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
+            &nbsp;&nbsp; Push&Buy
+          </button>
+        </div>
+      </div>
+
+      {isOpen && (
+        <SpareModal onClose={() => setIsOpen(false)}/>
+      )}
+
+      <div className="mb-6">
+
+        <div className="flex items-center mb-2 mt-4">
+          <h2 className="text-lg text-[#789fd6]">Impianto/Componente</h2>
+        </div>
+      
+
+        <div className="flex items-center gap-4 cursor-pointer" onClick={() => setFacilitiesOpen(true)}>
+          <Image 
+                    src="/motor.jpg"
+                    alt="Motore"
+                    width={25} 
+                    height={25} 
+                    className=""
+                  />
+
+          <div>
+            <h2 className="text-md text-[#fff]">2.1.4 Motore centrale</h2>
+
+          </div>
+        
+          <div className="ml-auto mr-8">
+                <svg fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+              </div>
+        </div>
+
+      </div>
+
+      <div className="mb-6">
+
+        <div className="flex items-center mb-2 mt-4">
+          <h2 className="text-lg text-[#789fd6]">Ricorrenza</h2>
+        </div>
+      
+
+        <div className="flex items-center gap-4 cursor-pointer">
+
+        <p>1 settimana</p>
+  
+        </div>
+
+      </div>
+
+      <div className="mb-6">
+
+        <div className="flex items-center mb-2 mt-4">
+          <h2 className="text-lg text-[#789fd6]">Esecuzione</h2>
+        </div>
+      
+
+        <div className="flex items-center gap-4 cursor-pointer">
+
+        <p>1 settimana</p>
+  
+        </div>
+
+      </div>
+
+      <FacilitiesModal isOpen={facilitiesOpen} onClose={() => setFacilitiesOpen(false)} />
+      
+    </div>
+  );
+};
+
+export default MaintenanceInfo;

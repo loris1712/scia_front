@@ -33,7 +33,7 @@ export default function LastScanPopup({ onClose }) {
           {scans.length > 0 ? (
             scans.map((scan, index) => <ScanItem key={index} scan={scan} />)
           ) : (
-            <p className="text-gray-400">Nessuna scansione disponibile.</p>
+            <p className="text-[#ffffff60">Nessuna scansione disponibile.</p>
           )}
         </div>
 

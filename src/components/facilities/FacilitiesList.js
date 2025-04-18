@@ -7,13 +7,7 @@ export const impiantiData = [
   {
     id: "100",
     name: "Scafo",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" opacity="0.6">
-        <path d="M2 16L12 21L22 16V14L12 19L2 14V16Z" />
-        <path d="M2 12L12 17L22 12V10L12 15L2 10V12Z" />
-        <path d="M12 3L2 8L12 13L22 8L12 3Z" />
-      </svg>
-    ),
+    icon: "/icons/facilities/ico1.svg",
     children: [
       {
         id: "1.1",
@@ -29,39 +23,42 @@ export const impiantiData = [
   {
     id: "200",
     name: "Propulsioni/Motori",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" opacity="0.6">
-        <path d="M12 2L3 7V17L12 22L21 17V7L12 2ZM5 8.3L12 4L19 8.3V15.7L12 20L5 15.7V8.3Z" />
-      </svg>
-    ),
+    icon: "/icons/facilities/ico2.svg",
   },
   {
     id: "300",
     name: "Impianto elettrico",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" opacity="0.6">
-        <path d="M12 2L6 13H10L8 22L18 9H12L14 2H12Z" />
-      </svg>
-    ),
+    icon: "/icons/facilities/ico3.svg",
   },
   {
     id: "400",
     name: "Comando, controllo e sorveglianza",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" opacity="0.6">
-        <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2" fill="none" />
-        <circle cx="12" cy="12" r="4" fill="white" />
-      </svg>
-    ),
+    icon: "/icons/facilities/ico4.svg",
   },
   {
     id: "500",
     name: "Impianti ausiliari",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" opacity="0.6">
-        <path d="M3 3V21H21V3H3ZM5 5H19V19H5V5Z" />
-      </svg>
-    ),
+    icon: "/icons/facilities/ico5.svg",
+  },
+  {
+    id: "600",
+    name: "Allestimento e Arredamento",
+    icon: "/icons/facilities/ico6.svg",
+  },
+  {
+    id: "700",
+    name: "Armamenti",
+    icon: "/icons/facilities/ico7.svg",
+  },
+  {
+    id: "800",
+    name: "Integration / Engineering",
+    icon: "/icons/facilities/ico8.svg",
+  },
+  {
+    id: "900",
+    name: "Ship Assembly / Support Services",
+    icon: "/icons/facilities/ico9.svg",
   },
 ];
 
@@ -106,16 +103,12 @@ export default function ImpiantiList({ search, modal }) {
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             )}
-            {node.icon && <span>{node.icon}</span>}
+            {node.icon && <img src={node.icon} alt={node.name} className="w-6 h-6 opacity-60" />}
             <span>{node.id} - {node.name}</span>
           </div>
 
           <div className="flex items-center space-x-4">
-            <input type="checkbox"
-            
-            className="mr-2 cursor-pointer w-[20px] h-[20px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 
-                checked:bg-[#789fd6] checked:border-[#789fd6] hover:opacity-80 focus:outline-none ml-auto"
-                 />
+            <input type="checkbox" className="mr-2 cursor-pointer w-[20px] h-[20px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 checked:bg-[#789fd6] checked:border-[#789fd6] hover:opacity-80 focus:outline-none ml-auto" />
             <svg
               onClick={(e) => {
                 e.stopPropagation();
@@ -146,4 +139,3 @@ export default function ImpiantiList({ search, modal }) {
     </div>
   );
 }
-

@@ -13,7 +13,6 @@ export function UserProvider({ children }) {
         async function loadData() {
             try {
                 const result = await getProfileData();
-                console.log('User data:', result);
                 setUser(result);
             } catch (error) {
                 console.error("Errore nel caricamento dei dati utente:", error);

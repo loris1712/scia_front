@@ -50,7 +50,6 @@ export default function SettingsContainer() {
       license,
     };
   
-    console.log("Payload inviato:", payload); // Debug per verificare il payload
   
     const success = await updateSettings(payload);
   

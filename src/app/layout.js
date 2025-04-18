@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const barlow = Barlow({ subsets: ["latin"], weight: "500" }); // 500 = Medium
+const barlow = Barlow({ subsets: ["latin"], weight: "500" });
 
 export const metadata = {
   title: "Scia",
@@ -23,6 +23,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
+        style={{ background: '#001c38' }}
         className={barlow.className}
       >
         <Providers>

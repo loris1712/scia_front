@@ -39,7 +39,7 @@ export default function SettingsContainer() {
       return;
     }
   
-    const userId = user.id; // Ora siamo sicuri che user esista
+    const userId = user.id;
   
     const payload = {
       user_id: userId,
@@ -66,8 +66,6 @@ export default function SettingsContainer() {
         <div className="w-full space-y-4 bg-[#022A52] py-4 px-6 rounded-md">
           <div className="mb-8">
             <h4 className="text-[#ffffffa6] mb-4">NOTIFICHE</h4>
-
-            {/* Switch per le manutenzioni */}
             <div className="flex items-center mb-4">
               <div>
                 <p className="text-[18px] text-[#fff]">Rendiconto manutenzioni</p>

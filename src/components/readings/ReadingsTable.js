@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import CheckListRow from "./CheckListRow";
+import ReadingsRow from "./ReadingsRow";
 import SelectModal from "./SelectModal";
 import LegendModal from "./LegendModal";
 import FilterModal from "./FilterModal";
-import { fetchTasks } from "@/api/checklist";
+import { getReadings } from "@/api/readings";
 import { useUser } from "@/context/UserContext";
- 
-const ChecklistTable = () => {
+
+const ReadingsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [legendOpen, setLegendOpen] = useState(false);
@@ -21,9 +21,9 @@ const ChecklistTable = () => {
   const loadTasks = async () => {
     try {
       setLoading(true);
-      const fetchedTasks = await fetchTasks(shipId, user?.id);
-      
-      setTasksData(fetchedTasks);
+      const fetchReadings = await getReadings(shipId, user?.id);
+      console.log(fetchReadings)
+      setTasksData(fetchReadings);
     } catch (err) {
       setError("Errore nel recupero dei task");
       console.error(err);
@@ -48,7 +48,9 @@ const ChecklistTable = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  const tasksToShow = selectedType ? selectedType.tasks : tasksData.flatMap(t => t.tasks);
+  const tasksToShow = selectedType
+  ? tasksData.filter((task) => task.type.id === selectedType.id)
+  : tasksData;
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
@@ -57,7 +59,7 @@ const ChecklistTable = () => {
           className="text-white text-2xl font-semibold flex items-center gap-2 py-2 cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
-          {selectedType ? `${selectedType.title} (${selectedType.tasks.length})` : "Visualizza tutti"}
+          {selectedType ? `${selectedType.name} (${selectedType.taskCount})` : "Visualizza tutti"}
           <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
           </svg>
@@ -73,21 +75,18 @@ const ChecklistTable = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
         <p className="border border-[#022a52] p-3">Task / ESWBS</p>
         <p className="border border-[#022a52] p-3 text-center">Ricorrenza</p>
         <p className="border border-[#022a52] p-3 text-center">Note</p>
-        <p className="border border-[#022a52] p-3 text-center flex items-center" style={{justifyContent: "center"}}>
-          Anomalia
-        </p>
-        <p className="border border-[#022a52] p-3 text-center">Esito ok</p>
+        <p className="border border-[#022a52] p-3 text-center">Valore</p>
       </div>
 
-      {tasksToShow.map((task) => (
-        <CheckListRow key={task.id} data={task} />
-      ))}
+      {tasksToShow.map((task) => {
+        return <ReadingsRow key={task.id} data={task} />;
+      })}
 
-      <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} types={tasksData} />
+      <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} datas={tasksData} />
 
       <LegendModal isOpen={legendOpen} onClose={() => setLegendOpen(false)} />
 
@@ -97,4 +96,4 @@ const ChecklistTable = () => {
   );
 };
 
-export default ChecklistTable;
+export default ReadingsTable;

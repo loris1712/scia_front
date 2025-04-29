@@ -13,7 +13,7 @@ export default function MenuButton() {
         className="p-3 rounded-lg cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <MenuBtn className="text-xl" />
+        <MenuBtn className="text-xl w-10 h-auto" />
       </button>
 
       <DropdownMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />

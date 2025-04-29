@@ -5,8 +5,10 @@ export default function BackIcon(props) {
       <Image 
                                       src="/icons/back.svg"
                                       alt="back"
-                                      width={40} 
-                                      height={40}
+                                      width="0"
+            height="0"
+            sizes="100vw"
+            style={{ width: '3rem', height: 'auto' }}
                                     />
     );
   }

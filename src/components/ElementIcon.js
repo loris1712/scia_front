@@ -20,7 +20,10 @@ const getElementIcon = (elementId) => {
 const ElementIcon = ({ elementId }) => {
   const iconSrc = getElementIcon(elementId);
   return (
-    <Image src={iconSrc} alt="Element Icon" width={20} height={20} className="inline-block mr-2 opacity-60" />
+    <Image src={iconSrc} alt="Element Icon" width="0"
+    height="0"
+    sizes="100vw"
+    style={{ width: '1.5rem', height: 'auto' }} className="inline-block mr-2 opacity-60" />
   );
 };
 

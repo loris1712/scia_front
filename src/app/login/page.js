@@ -13,13 +13,17 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
-    setError(""); // Resetta eventuali errori all'inizio
+    
+    setIsClient(true);
+    setError(""); 
     setSuccess("");
   }, []);
 
   const BASE_URL = "http://localhost:4000";
-  //const BASE_URL = "http://52.59.162.108:4000";
+  // const BASE_URL = "http://52.59.162.108:4000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +35,7 @@ export default function LoginPage() {
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", 
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
@@ -47,6 +51,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#001c38]">

@@ -10,6 +10,8 @@ const SpareDetails = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
 
+  console.log(details)
+
   return (
 
     <div className="grid grid-cols-2 gap-4 px-2">
@@ -80,29 +82,18 @@ const SpareDetails = ({ details }) => {
           <h2 className="text-lg text-[#789fd6]">Magazzino (ubicazioni)</h2>
         </div>
 
-        <div className="flex items-center gap-2 w-full">
-        {details && details.length > 0 &&
-          <PositionIcon locationBasin={details[0].location_basin} />
-        }
-          <p><span className="text-white/60">({details && details.length > 0 ? details[0].location_basin : "Non disponibile"})</span></p>
-          <p className="ml-auto">x {details && details.length > 0 ? details[0].quantity_basin : "Non disponibile"}</p>
-        </div>
-
-        <div className="flex items-center gap-2 w-full">
-        {details && details.length > 0 &&
-          <PositionIcon locationBasin={details[0].location_dock} />
-        }
-          <p><span className="text-white/60">({details && details.length > 0 ? details[0].location_dock : "Non disponibile"})</span></p>
-          <p className="ml-auto">x {details && details.length > 0 ? details[0].quantity_dock : "Non disponibile"}</p>
-        </div>
-
-        <div className="flex items-center gap-2 w-full">
-        {details && details.length > 0 &&
-          <PositionIcon locationBasin={details[0].location_onboard} />
-        }
-          <p><span className="text-white/60">({details && details.length > 0 ? details[0].location_onboard : "Non disponibile"})</span></p>
-          <p className="ml-auto">x {details && details.length > 0 ? details[0].quantity_onboard : "Non disponibile"}</p>
-        </div>
+        {details && details[0].location.length > 0 && 
+                    <div className="flex items-center">
+                      <Image
+                              src={details[0].warehouseData.icon_url}
+                              alt="Position Icon"
+                              width={20}
+                              height={20}
+                              className="inline-block mr-2 opacity-60"
+                            /> {details[0].warehouseData.name}
+                             <span className="text-white/60 text-[12px]"> &nbsp;({details[0].locationData.location})</span>
+                    </div>
+                  }
 
       </div>
 

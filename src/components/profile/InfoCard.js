@@ -129,7 +129,7 @@ export default function InfoCard({ data }) {
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none "
+              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
             />
           </div>
 
@@ -139,7 +139,7 @@ export default function InfoCard({ data }) {
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none "
+              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
             />
           </div>
 
@@ -149,7 +149,7 @@ export default function InfoCard({ data }) {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none "
+              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
             />
           </div>
 
@@ -159,7 +159,7 @@ export default function InfoCard({ data }) {
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none "
+              className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
             />
           </div>
 

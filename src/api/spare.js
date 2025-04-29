@@ -40,14 +40,39 @@ export async function fetchSpares(ship_id) {
     }
   }
 
-export async function updateSpare(id, updateData) {
+export async function fetchSpareById(ean13, partNumber, eswbsSearch) {
+    try {
+      const params = new URLSearchParams();
+      if (ean13) params.append("ean13", ean13);
+      if (partNumber) params.append("partNumber", partNumber);
+      if (eswbsSearch) params.append("eswbsSearch", eswbsSearch);
+  
+      const res = await fetch(`${BASE_URL}/api/spare/fetchSpareById?${params.toString()}`);
+  
+      if (!res.ok) {
+        throw new Error(`Errore HTTP ${res.status}: Impossibile recuperare i ricambi`);
+      }
+  
+      const data = await res.json();
+      return data.spares || [];
+    } catch (error) {
+      console.error("Errore nel recupero dei ricambi:", error.message);
+      return [];
+    }
+}
+
+export async function updateSpare(id, updateData, shipId, userId) {
   try {
-    const res = await fetch(`${BASE_URL}/api/spare/updateSpare/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/spare/moveSpare/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(updateData)
+      body: JSON.stringify(
+        {updateData, 
+          ship_id: shipId,
+          user_id: userId
+        })
     });
 
     if (!res.ok) {

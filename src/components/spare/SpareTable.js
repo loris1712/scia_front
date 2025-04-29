@@ -3,7 +3,7 @@ import SpareRow from "./SpareRow";
 import FilterModal from "./FilterModal";
 import { fetchSpares } from "@/api/spare";
 import { useUser } from "@/context/UserContext";
-import Image from "next/image";
+import MoveProduct from "./MoveProduct";
 import FacilitiesModal from "./FacilitiesModal";
 import { useRouter } from "next/navigation";
 
@@ -16,6 +16,7 @@ const SpareTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
   const router = useRouter();
+  const [isOpen2, setIsOpen2] = useState(false);
 
   const shipId = 1;
   const { user } = useUser();
@@ -66,6 +67,17 @@ const SpareTable = () => {
         </h2>
 
         <div className="flex items-center ml-auto gap-4">
+
+        <button
+            type="submit"
+            onClick={() => setIsOpen2(true)}
+            className={'rounded-md flex items-center ml-auto bg-[#022a52] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer'}
+          >
+
+            <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+              &nbsp; Sposta/Aggiungi
+          </button>
+
           <button
             type="submit"
             onClick={() => router.push(`/dashboard/locations`)}
@@ -129,6 +141,8 @@ const SpareTable = () => {
       <FilterModal isOpen={filterOpen} onClose={() => setFilterOpen(false)} />
         
       <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
+
+      <MoveProduct isOpen={isOpen2} onClose={() => setIsOpen2(false)} />
 
     </div>
   );

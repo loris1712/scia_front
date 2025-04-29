@@ -134,7 +134,7 @@ export default function ImpiantiList({ search, modal }) {
   };
 
   return (
-    <div style={modal === "yes" ? { overflowY: "scroll", height: "30vh" } : {}}>
+    <div style={modal === "yes" ? { overflowY: "scroll", height: "45vh" } : {}}>
       {renderTree(filterNodes(impiantiData))}
     </div>
   );

@@ -8,7 +8,7 @@ export default function NotesModal({ isOpen, onClose2, data }) {
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[50%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] w-[70%] p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">Filtro impianti</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose2}>

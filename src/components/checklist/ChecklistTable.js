@@ -22,6 +22,8 @@ const ChecklistTable = () => {
     try {
       setLoading(true);
       const fetchedTasks = await fetchTasks(shipId, user?.id);
+
+      console.log(fetchedTasks)
       
       setTasksData(fetchedTasks);
     } catch (err) {

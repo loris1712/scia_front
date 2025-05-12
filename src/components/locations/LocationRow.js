@@ -73,10 +73,17 @@ const LocationRow = ({ data }) => {
         className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center border-b border-[#001c38] bg-[#022a52]"
       >
         <div className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
-          <p className="text-white text-[18px] font-semibold truncate flex items-center">            
-            <Image src={data.warehouseInfo.icon_url} alt="Element Icon" width={20} height={20} className="inline-block mr-2 opacity-60" />
-             {data.warehouseInfo.name}
+        {data.warehouseInfo ? ( 
+          <p className="text-white text-[18px] font-semibold truncate flex items-center"> 
+                <Image src={data.warehouseInfo.icon_url} alt="Element Icon" width={20} height={20} className="inline-block mr-2 opacity-60" />
+                {data.warehouseInfo.name}        
           </p>
+        ) : (
+          <p className="text-white text-[18px] font-semibold truncate flex items-center"> 
+            Nessun magazzino
+          </p>
+        )
+        }
         </div>
         <div className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
           <p className="text-[18px] text-white">{data.location}</p>

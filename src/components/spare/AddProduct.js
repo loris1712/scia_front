@@ -5,6 +5,8 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import { saveScan } from "@/api/scan";
 import Image from "next/image";
 import FacilitiesModal from "./FacilitiesModal";
+import { submitProduct, uploadProductImage } from "@/api/spare";
+import { useUser } from "@/context/UserContext";
 
 export default function AddProduct({ onClose }) {
   const [scanning, setScanning] = useState(false);
@@ -21,10 +23,13 @@ export default function AddProduct({ onClose }) {
   const [description, setDescription] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [location, setLocation] = useState('');
-  const [stock, setStock] = useState('');
+  const [stock, setStock] = useState('1');
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
+
+  const shipId = 1;
+  const { user } = useUser();
 
   useEffect(() => {
     if (scanning) {
@@ -60,32 +65,57 @@ export default function AddProduct({ onClose }) {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setImage(file);
+
+    if (file) {
+      setImage(file); 
+    }
+
+    console.log(file)
+
     setImagePreview(URL.createObjectURL(file));
   };
 
   const handleConfirm = async () => {
-    const formData = new FormData();
-    formData.append("ean13", ean13);
-    formData.append("partNumber", partNumber);
-    formData.append("originalName", originalName);
-    formData.append("plantComponent", plantComponent);
-    formData.append("supplier", supplier);
-    formData.append("supplierNcage", supplierNcage);
-    formData.append("manufacturerNcage", manufacturerNcage);
-    formData.append("manufacturerPartNumber", manufacturerPartNumber);
-    formData.append("price", price);
-    formData.append("leadTime", leadTime);
-    formData.append("description", description);
-    formData.append("warehouse", warehouse);
-    formData.append("location", location);
-    formData.append("stock", stock);
-    if (image) {
-      formData.append("image", image);
-    }
-    // await submitProduct(formData);
-  };
+    let imageUrl = null;
 
+    if (image) {
+      console.log(image)
+      const formData = new FormData();
+      formData.append("file", image); // passa direttamente l'immagine
+      formData.append("userId", user.id);
+      formData.append("partNumber", partNumber);
+      formData.append("originalName", originalName);
+
+      // Carica l'immagine
+      const uploadRes = await uploadProductImage(formData, user.id);
+      imageUrl = uploadRes.url; // Ottieni l'URL dell'immagine
+    }
+
+    console.log(imageUrl)
+    
+    const payload = {
+      ean13,
+      partNumber,
+      originalName,
+      plantComponent,
+      supplier,
+      supplierNcage,
+      manufacturerNcage,
+      manufacturerPartNumber,
+      price,
+      ship_id: shipId,
+      user_id: user.id,
+      leadTime,
+      description,
+      warehouse,
+      location,
+      stock,
+      image: imageUrl,
+    };
+  
+    await submitProduct(payload);
+  };
+  
   return (
     <div>
       <div className="flex justify-between items-center mb-4">

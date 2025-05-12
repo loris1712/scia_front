@@ -3,12 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProfileData, getRanks } from "@/api/profile";
+import { useTranslation } from "@/app/i18n";
 
 export default function UserInfo() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [militaryRanks, setMilitaryRanks] = useState([]);
   const [userRank, setUserRank] = useState(null);
+
+  const { t, i18n } = useTranslation("header");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+      setMounted(true);
+    }, []);
 
   useEffect(() => {
       async function loadData() {
@@ -41,9 +49,11 @@ export default function UserInfo() {
       }
     }, [user, militaryRanks]);
 
+  if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div
-      className="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition"
+      className="flex items-center gap-4 p-3 rounded-lg cursor-pointer transition"
       onClick={() => router.push("/dashboard/profile")}
     >
       <img src={profileImage} alt="User Avatar" className="w-14 h-14 rounded-full object-cover" />
@@ -52,7 +62,7 @@ export default function UserInfo() {
         {user ? (
           <>
            <p className="text-sm text-[#789fd6]">
-            {userRank ? (userRank.grado.length > 25 ? userRank.grado.substring(0, 25) + '...' : userRank.grado) : "Rank not found"}
+            {userRank ? (userRank.grado.length > 25 ? userRank.grado.substring(0, 25) + '...' : userRank.grado) : t("rankNotFound")}
           </p>
             <p className="text-lg font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[150px] sm:max-w-[200px]">
               {user.firstName} {user.lastName}
@@ -60,7 +70,7 @@ export default function UserInfo() {
             <p className="text-sm text-[#ffffffa6]">{user.type}</p>
           </>
         ) : (
-          <p className="text-white text-sm">Caricamento...</p>
+          <p className="text-white text-sm">{t("loading")}</p>
         )}
       </div>
     </div>

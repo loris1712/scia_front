@@ -41,6 +41,8 @@ const CheckListRow = ({ data }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const [tags, setTags] = useState([]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -60,15 +62,52 @@ const CheckListRow = ({ data }) => {
     router.push(`/dashboard/readings/${data.id}`);
   };
 
+  useEffect(() => {
+    if (data?.tags) {
+      setTags(data.tags.split(',').map(tag => tag.trim()));
+    }
+    console.log(data?.tags)
+  }, [data]);
+
+  const tagColors = [
+    '#f78da7',
+    '#a78bfa', 
+    '#60a5fa', 
+    '#34d399', 
+    '#fbbf24', 
+    '#f87171', 
+    '#38bdf8', 
+    '#c084fc', 
+  ];
+
   return (
     <div>
       <div
         className="grid grid-cols-[2fr_1fr_1fr_1fr] items-center border-b border-[#001c38] bg-[#022a52] cursor-pointer"
       >
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
-          <p className="text-white text-[18px] font-semibold truncate">{data.task_name}</p>
+          <div className="flex items-center">
+            <p className="text-white text-[18px] font-semibold truncate">{data.task_name}</p>
+            <div className="flex items-center gap-2 cursor-pointer flex-wrap ml-4">
+            {tags.map((tag, index) => (
+                <span
+                  key={index}
+                  style={{ backgroundColor: tagColors[index % tagColors.length] }}
+                  className="text-white px-3 py-1 rounded-full text-xs flex items-center"
+                >
+                  {tag.trim()}
+                  <span
+                    onClick={() => handleRemoveTag(index)}
+                    className="ml-2 cursor-pointer text-white font-bold"
+                  >
+                    <svg fill="#fff" width="12px" height="12px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>
+                  </span>
+                </span>
+              ))}
+          </div>
+          </div>
           <p className="text-white/60 text-[16px] text-sm truncate">
-            <ElementIcon elementId={data.element.element_model_id} /> {data.element.name}
+            <ElementIcon elementId={data.element.progressive_code} /> {data.element.name}
           </p>
         </div>
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>

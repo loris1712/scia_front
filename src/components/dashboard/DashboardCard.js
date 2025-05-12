@@ -19,9 +19,12 @@ export default function DashboardCard({ id, title, imageSrc, tasks }) {
             height="0"
             sizes="100vw"
             style={{ width: '4rem', height: 'auto' }}/>
-        <div style={{height: 'fit-content'}} className="ml-auto bg-[#ff0000] rounded-full px-2 py-1 text-white text-[12px]">
+        
+        {tasks.length > 0 && (
+          <div style={{height: 'fit-content'}} className="ml-auto bg-[#ff0000] rounded-full px-2 py-1 text-white text-[12px]">
           {tasks.length}
         </div>
+        )}
       </div>
 
       <div className="mt-auto">

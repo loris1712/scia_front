@@ -1,0 +1,20 @@
+{
+  "notifications": "Notifications",
+  "maintenance_title": "Maintenance Report",
+  "maintenance_desc": "Enable notifications for upcoming maintenance tasks",
+  "maintenance_frequency_label": "Maintenance notification frequency",
+  "checklist_title": "Checklist Report",
+  "checklist_desc": "Enable notifications for pending checklists",
+  "checklist_frequency_label": "Checklist notification frequency",
+  "support": "SUPPORT",
+  "support_title": "Customer Support",
+  "support_desc": "You will be redirected to the website for general support requests",
+  "licenses": "LICENSES",
+  "license_label": "Device license",
+  "language": "LANGUAGE",
+  "language_label": "Select Language",
+  "save_button": "Save",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "annual": "Annual"
+}

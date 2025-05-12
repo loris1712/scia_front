@@ -12,7 +12,7 @@ const categories = [
   { id: "Readings", title: "Letture", imageSrc: "/icons/time.png" },
   { id: "Spare", title: "Catalogo ricambi", imageSrc: "/icons/dash_corr.png" },
   { id: "manual", title: "Manuale integrato", imageSrc: "/icons/ico_dashboard_manual.png" },
-  { id: "avarie", title: "Avarie", imageSrc: "/icons/dash_warning.png" },
+  { id: "failures", title: "Avarie", imageSrc: "/icons/dash_warning.png" },
 ];
 
 const fetchByCategory = {

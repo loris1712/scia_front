@@ -15,6 +15,7 @@ export default function Breadcrumbs({ title, position }) {
     spare: "Ricambi",
     locations: "Ubicazioni",
     readings: "Letture",
+    failures: "Avarie",
   };
 
   const capitalizeFirstLetter = (string) => {

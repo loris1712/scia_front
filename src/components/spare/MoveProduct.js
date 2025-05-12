@@ -111,6 +111,8 @@ export default function MoveProduct({ isOpen, onClose, data }) {
     }
   };
 
+  const [activeField, setActiveField] = useState(null);
+
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
       <div className="bg-[#022a52] w-[50%] p-6 rounded-md shadow-lg text-white overflow-y-auto max-h-[95vh]">
@@ -245,12 +247,18 @@ export default function MoveProduct({ isOpen, onClose, data }) {
                       </div>
                     </div>
 
-                    <div className="px-4 py-4 rounded-lg flex items-center justify-between bg-[#e2d52d] gap-4 cursor-pointer mb-8" onClick={() => setScanning(true)}>
+                    <div className="px-4 py-4 rounded-lg flex items-center justify-between bg-[#e2d52d] gap-4 cursor-pointer mb-8">
                       <div className="flex items-center gap-2">
                         <svg fill="#022a52" width="18px" height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                           <path d="M32 32C14.3 32 0 46.3 0 64v96c0 17.7 14.3 32 32 32s32-14.3 32-32V96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zm32 320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H64v-64zm288-320c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32h-96zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64h-64c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32v-96z"/>
                         </svg>
-                        <h2 className="text-[#022a52] font-semibold">Scansiona ubicazione attuale</h2>
+                        <h2 className="text-[#022a52] font-semibold">
+                          {activeField === "stock"
+                            ? "Imposta quantità da spostare o da caricare"
+                            : activeField === "newLocation"
+                            ? "Scansiona Nuova ubicazione"
+                            : "Scansiona ubicazione attuale"}
+                        </h2>
                       </div>
                     </div>
 
@@ -259,7 +267,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
                     )}
 
                     {results &&
-                      <MoveProductTable data={results} scanning={scanning} setScanning={setScanning} onDataChange={setResults} />
+                      <MoveProductTable data={results} scanning={scanning} setScanning={setScanning} onDataChange={setResults} setActiveField={setActiveField}/>
                     }
 
                     <button

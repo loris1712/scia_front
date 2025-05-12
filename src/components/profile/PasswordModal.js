@@ -124,7 +124,7 @@ export default function PasswordModal({ userId, onClose }) {
           </div>
         </div>
 
-        <button className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer" onClick={handleSave}>
+        <button className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer rounded-md" onClick={handleSave}>
           Salva
         </button>
       </div>

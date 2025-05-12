@@ -86,3 +86,44 @@ export async function updateSpare(id, updateData, shipId, userId) {
     return null;
   }
 }
+
+export async function submitProduct(data) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/spare/submitProduct`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Errore HTTP ${res.status}`);
+    }
+
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Errore invio:", error.message);
+    throw error;
+  }
+}
+
+export async function uploadProductImage(formData) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/spare/uploadProductImage`, {
+      method: "POST",
+      credentials: "include",
+      body: formData, 
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore nel caricamento dell'immagine del prodotto");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Errore API uploadProductImage:", error);
+    return null;
+  }
+};

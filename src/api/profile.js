@@ -22,6 +22,27 @@ export async function getProfileData() {
   }
 }
 
+export async function getProfileById(id) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/profile/getProfileById/${id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore nel recupero del profilo");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Errore API getProfileById(${id}):`, error);
+    return null;
+  }
+}
+
 export async function updateProfileData(updatedData) {
   try {
     const response = await fetch(`${BASE_URL}/api/profile/updateProfile`, {

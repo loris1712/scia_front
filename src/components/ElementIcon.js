@@ -19,6 +19,8 @@ const getElementIcon = (elementId) => {
 
 const ElementIcon = ({ elementId }) => {
   const iconSrc = getElementIcon(elementId);
+  if (!iconSrc) return null;
+  
   return (
     <Image src={iconSrc} alt="Element Icon" width="0"
     height="0"

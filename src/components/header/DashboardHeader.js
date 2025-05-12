@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import UserInfo from "@/components/header/UserInfo";
 import QRCode from "@/components/icons/Qrcode";
 import LastScan from "@/components/header/LastScan";
 import MenuButton from "@/components/header/MenuButton";
 import BackIcon from "@/components/icons/BackIcon";
+import { useTranslation } from "@/app/i18n";
 
 export default function DashboardHeader() {
   const pathname = usePathname();

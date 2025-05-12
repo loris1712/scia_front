@@ -1,0 +1,20 @@
+{
+  "notifications": "Notifiche",
+  "maintenance_title": "Rendiconto manutenzioni",
+  "maintenance_desc": "Attiva notifiche per le manutenzioni da eseguire",
+  "maintenance_frequency_label": "Frequenza notifiche manutenzione",
+  "checklist_title": "Rendiconto checklist",
+  "checklist_desc": "Attiva notifiche per le checklist da eseguire",
+  "checklist_frequency_label": "Frequenza notifiche checklist",
+  "support": "SUPPORTO",
+  "support_title": "Assistenza clienti",
+  "support_desc": "Sarai redirezionato al sito web per richieste di supporto generale",
+  "licenses": "LICENZE",
+  "license_label": "Licenza dispositivo",
+  "language": "LINGUA",
+  "language_label": "Seleziona Lingua",
+  "save_button": "Salva",
+  "weekly": "Settimanale",
+  "monthly": "Mensile",
+  "annual": "Annuale"
+}

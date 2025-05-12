@@ -9,7 +9,6 @@ import CartAdded from "@/components/spare/element/CartAdded";
 
 const SpareRow = ({ data }) => {
 
-  console.log(data)
 
   const [isOpen, setIsOpen] = useState(false);
   const [cartAdded, setCartAdded] = useState(false);
@@ -67,14 +66,20 @@ const SpareRow = ({ data }) => {
         <div className="border border-[#001c38] p-3 cursor-pointe justify-center flex flex-col items-center gap-2" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
           {data.location.length > 0 && 
             <div className="flex items-center justify-center">
+              {data.warehouseData && data.warehouseData.icon_url ? (
+                <div>
               <Image
                       src={data.warehouseData.icon_url}
                       alt="Position Icon"
                       width={20}
                       height={20}
                       className="inline-block mr-2 opacity-60"
-                    /> {data.warehouseData.name}
-                     <span className="text-white/60 text-[12px]"> &nbsp;({data.locationData.location})</span>
+                    />
+                  {data.warehouseData.name}
+                     <span className="text-white/60 text-[12px]"> &nbsp;({data.locationData.location})</span></div>
+                    ) : (
+                      <div>No Icon Available</div> 
+                    )}
             </div>
           }
           

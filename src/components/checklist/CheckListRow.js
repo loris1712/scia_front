@@ -81,7 +81,7 @@ const CheckListRow = ({ data }) => {
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
           <p className="text-white text-[18px] font-semibold truncate">{data.description}</p>
           <p className="text-white/60 text-[16px] text-sm truncate">
-            <ElementIcon elementId={data.element.element_model_id} /> {data.element.name}
+            <ElementIcon elementId={data.element.progressive_code} /> {data.element.name}
           </p>
         </div>
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>

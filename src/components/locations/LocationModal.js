@@ -46,21 +46,22 @@ export default function CreateLocationModal({ isOpen, onLoad, onClose, data, shi
         <div>
 
         <div className="mt-2">
-                <label className="text-[#789fd6] block mb-2">Magazzino</label>
-                <select
-  value={wareHouse}
-  onChange={(e) => setWarehouse(e.target.value)}
-  className="w-full bg-[#ffffff10] text-white px-4 py-2 rounded-md"
->
-  <option value="">Seleziona magazzino</option>
-  {[...new Map(data.map(item => [item.warehouseInfo.id, item.warehouseInfo])).values()]
-    .map((warehouse) => (
-      <option key={warehouse.id} value={warehouse.id}>
-        {warehouse.name}
-      </option>
-  ))}
-</select>
-              </div>
+  <label className="text-[#789fd6] block mb-2">Magazzino</label>
+  <select
+    value={wareHouse}
+    onChange={(e) => setWarehouse(e.target.value)}
+    className="w-full bg-[#ffffff10] text-white px-4 py-2 rounded-md"
+  >
+    <option value="">Seleziona magazzino</option>
+    {[...new Map(data.filter(item => item.warehouseInfo).map(item => [item.warehouseInfo.id, item.warehouseInfo])).values()]
+      .map((warehouse) => (
+        <option key={warehouse.id} value={warehouse.id}>
+          {warehouse.name}
+        </option>
+    ))}
+  </select>
+</div>
+
           
         </div>
 

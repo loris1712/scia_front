@@ -1,17 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LastScanPopup from "./LastScanPopup";
+import { useTranslation } from "@/app/i18n";
 
 export default function LastScan() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { t, i18n } = useTranslation("header");
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !i18n.isInitialized) return null;
 
   return (
     <>
       <div className="flex items-center p-3 rounded-lg w-full cursor-pointer" 
           onClick={() => setIsOpen(true)}> 
         <div>
-          <p className="text-sm text-[#ffffff60]">Ultima scansione</p>
+          <p className="text-sm text-[#ffffff60]">{t("last_scan")}</p>
           <p className="text-xl font-semibold">Motore centrale</p>
           <p className="text-xs text-[#ffffff60]">
             2.1.4 Propulsione Diesel - S/N 19028393028A - Ore moto: 1200h

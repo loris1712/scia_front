@@ -3,6 +3,7 @@ import StatusBadge from "./StatusBadge";
 import Icons from "./Icons";
 import NotesModal from "./NotesModal";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 const areaIcons = {
   "A bordo": "/icons/shape.png",
@@ -84,6 +85,15 @@ const MaintenanceRow = ({ data }) => {
     router.push(`/dashboard/maintenance/${data.job_id}`);
   };
 
+  const { t, i18n } = useTranslation("maintenance");
+  const [mounted, setMounted] = useState(false);
+    
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+    
+  if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div>
 
@@ -144,19 +154,19 @@ const MaintenanceRow = ({ data }) => {
                 className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
                 onClick={() => handleOptionClick("Pausa")}
               >
-                Pausa
+                {t("pause")}
               </button>
               <button
                 className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
                 onClick={() => handleOptionClick("Riprendi")}
               >
-                Riprendi
+                {t("resume")}
               </button>
               <button
                 className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
                 onClick={handleRowClick}
               >
-                Dettagli
+                {t("details")}
               </button>
             </div>
           )}

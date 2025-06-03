@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/app/i18n";
 
 export default function MoveProductTable({ data, scanning, setScanning, onDataChange, setActiveField }) {
   const [locations, setLocations] = useState(() => {
@@ -49,13 +50,16 @@ export default function MoveProductTable({ data, scanning, setScanning, onDataCh
     });
   }, [locations]);
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   return (
     <div>
       {locations.map((row, index) => (
         <div key={index} className="grid grid-cols-5 gap-4 items-center mb-4">
           {/* Magazzino */}
           <div>
-            <label className="text-[14px] text-[#789fd6] block mb-2">Magazzino</label>
+            <label className="text-[14px] text-[#789fd6] block mb-2">{t("warehouse")}</label>
             <input
               value={row.warehouse || data?.warehouseData?.name || ""}
               disabled
@@ -65,7 +69,7 @@ export default function MoveProductTable({ data, scanning, setScanning, onDataCh
 
           {/* Ubicazione attuale */}
           <div>
-            <label className="text-[14px] text-[#789fd6] block mb-2">Ubicazione attuale</label>
+            <label className="text-[14px] text-[#789fd6] block mb-2">{t("current_location")}</label>
             <div className="flex items-center gap-2 relative">
               <input
                 value={row.location || ""}
@@ -82,7 +86,7 @@ export default function MoveProductTable({ data, scanning, setScanning, onDataCh
 
           {/* Quantità */}
           <div>
-            <label className="text-[14px] text-[#789fd6] block mb-2">Q.tà</label>
+            <label className="text-[14px] text-[#789fd6] block mb-2">{t("quantity")}</label>
             <input
               value={row.quantity}
               onFocus={() => setActiveField("")}
@@ -103,7 +107,7 @@ export default function MoveProductTable({ data, scanning, setScanning, onDataCh
           </div>
 
           <div>
-            <label className="text-[14px] text-[#789fd6] block mb-2">Nuova ubicazione</label>
+            <label className="text-[14px] text-[#789fd6] block mb-2">{t("new_location")}</label>
             <input
               type="text"
               value={row.newLocation || ""}

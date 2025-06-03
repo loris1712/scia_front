@@ -1,4 +1,9 @@
 {
-  "last_scan": "Ultima scansione"
+  "last_scan": "Ultima scansione",
+  "facilities": "Impianti",
+  "cart": "Carrello",
+  "manage_warehouse": "Gestisci magazzino",
+  "remote_assistance": "Assistenza remota",
+  "settings": "Impostazioni"
 }
   

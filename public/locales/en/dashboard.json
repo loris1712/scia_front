@@ -1,7 +1,9 @@
 {
-    "language": "Language",
-    "save": "Save",
-    "notifications": "Notifications",
-    "maintenance_report": "Maintenance Report"
-  }
+  "maintenance": "Maintenance",
+  "checklist": "Checklist",
+  "readings": "Readings",
+  "spare_parts": "Spare Parts",
+  "manual": "Manual",
+  "failures": "Failures"
+}
   

@@ -44,3 +44,26 @@ export async function getFailures(filters = {}) {
     throw error;
   }
 }
+
+export async function addPhotographicNote(formData) {
+
+  return await fetch(`${BASE_URL}/api/uploadFiles/uploadPhoto`, {
+    method: "POST",
+    body: formData, // lascia che il browser imposti Content-Type con boundary
+  });
+}
+
+export async function addVocalNote(formData) {
+  return await fetch(`${BASE_URL}/api/uploadFiles/uploadAudio`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function addTextNote(payload) {
+  return await fetch(`${BASE_URL}/api/uploadFiles/uploadText`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}

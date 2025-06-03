@@ -1,13 +1,16 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
+import { useTranslation } from "@/app/i18n";
 
 export default function DropdownMenu({ isOpen, onClose }) {
   const menuRef = useRef(null);
   const router = useRouter();
+  const { t, i18n } = useTranslation("header");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -19,7 +22,11 @@ export default function DropdownMenu({ isOpen, onClose }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted || !i18n.isInitialized) return null;
 
   return (
     <div
@@ -47,7 +54,7 @@ export default function DropdownMenu({ isOpen, onClose }) {
                                                     className="mr-2"
                                                     width={14} 
                                                     height={14}
-                                                  />              Impianti
+                                                  />               {t("facilities")}
           </div>
         </li>
         <li>
@@ -59,10 +66,10 @@ export default function DropdownMenu({ isOpen, onClose }) {
                                                     width={14} 
                                                     height={14}
                                                   />
-                                                                Carrello
+                                                                {t("cart")}
           </Link>
         </li>
-        <li>
+        {/*<li>
           <Link href="/warehouse_management" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
           <Image 
                                                     src="/icons/storageico.svg"
@@ -71,9 +78,9 @@ export default function DropdownMenu({ isOpen, onClose }) {
                                                     width={14} 
                                                     height={14}
                                                   />
-              Gestisci magazzino
+               {t("manage_warehouse")}
           </Link>
-        </li>
+        </li>*/}
         <li>
           <Link href="/dashboard/remoteAssistance" className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
           <Image 
@@ -82,7 +89,7 @@ export default function DropdownMenu({ isOpen, onClose }) {
                                                     className="mr-2"
                                                     width={14} 
                                                     height={14}
-                                                  />              Assistenza remota
+                                                  />            {t("remote_assistance")}
           </Link>
         </li>
         <li>
@@ -93,7 +100,7 @@ export default function DropdownMenu({ isOpen, onClose }) {
                                                     className="mr-2"
                                                     width={14} 
                                                     height={14}
-                                                  />              Impostazioni
+                                                  />              {t("settings")}
           </Link>
         </li>
       </ul>

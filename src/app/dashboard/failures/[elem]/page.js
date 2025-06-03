@@ -9,11 +9,13 @@ import PauseModal from "@/components/failures/element/PauseModal";
 import NoteModal from "@/components/failures/element/NoteModal";
 import { getFailures } from "@/api/failures";
 import { useParams } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 export default function ElementPage({ params }) {
   const [isOpen, setIsOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
-  
+  const { t, i18n } = useTranslation("failures");
+
   const params2 = useParams();
   const id = params2.elem;
 
@@ -43,7 +45,7 @@ export default function ElementPage({ params }) {
     if (!failures || failures.length === 0) return;
 
     const failureData = failures.find((item) => String(item.id) === id);
-    console.log(failureData)
+    //console.log(failureData)
     setFailure(failureData);
 
     if (!failureData) return;
@@ -74,7 +76,7 @@ export default function ElementPage({ params }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen text-white">
-        Caricamento in corso...
+        {t("loading")}
       </div>
     );
   }
@@ -82,7 +84,7 @@ export default function ElementPage({ params }) {
   if (!failure) {
     return (
       <div className="flex items-center justify-center h-screen text-red-500">
-        Errore: avaria non trovata.
+        {t("error")}
       </div>
     );
   }
@@ -117,7 +119,7 @@ export default function ElementPage({ params }) {
       </div>
 
       {isOpen && <PauseModal onClose={() => setIsOpen(false)} />}
-      {noteModal && <NoteModal onClose={() => setNoteModal(false)} />}
+      {noteModal && <NoteModal onClose={() => setNoteModal(false)} id={id} />}
 
       <div className="flex gap-4">
         <div className="w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md">

@@ -6,6 +6,7 @@ import SpareModal from "./SpareModal";
 import Istructions from "./Istructions";
 import FacilitiesModal from "@/components/maintenance/FacilitiesModal";
 import { updateReading } from "@/api/readings";
+import { useTranslation } from "@/app/i18n";
 
 const ReadingsInfo = ({ details }) => {
   const [showIstructions, setShowIstructions] = useState(false);
@@ -54,9 +55,12 @@ const ReadingsInfo = ({ details }) => {
     '#c084fc', 
   ];
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   return (
     <div className="p-2">
-      <h2 className="text-lg text-[#789fd6] mb-2">Descrizione</h2>
+      <h2 className="text-lg text-[#789fd6] mb-2">{t("description")}</h2>
 
       <p
         className={`text-white ${
@@ -79,7 +83,7 @@ const ReadingsInfo = ({ details }) => {
           className="mt-2 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
           onClick={() => setShowIstructions(true)}
         >
-          Vedi istruzioni
+          {t("see_instructions")}
         </button>
       )}
 
@@ -103,7 +107,7 @@ const ReadingsInfo = ({ details }) => {
             placeholder="Nuovo tag"
           />
           <button onClick={handleAddTag} className="bg-[#789fd6] text-white px-3 py-1 rounded text-sm">
-            Aggiungi
+            {t("add")}
           </button>
         </div>
       )}
@@ -131,7 +135,7 @@ const ReadingsInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Impianto/Componente</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("system")}/{t("component")}</h2>
         </div>
       
 
@@ -159,7 +163,7 @@ const ReadingsInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Ricorrenza</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("anniversary")}</h2>
         </div>
       
 
@@ -174,7 +178,7 @@ const ReadingsInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Squadra di assegnazione</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("assignment_team")}</h2>
         </div>
       
 

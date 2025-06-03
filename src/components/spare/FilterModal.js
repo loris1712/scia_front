@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from 'next/image';
+import { useTranslation } from "@/app/i18n";
 
 export default function FilterSidebar({ isOpen, onClose }) {
   const [filters, setFilters] = useState({
@@ -71,10 +72,13 @@ export default function FilterSidebar({ isOpen, onClose }) {
     ))
   );
 
+  const { t, i18n } = useTranslation("maintenance");
+    if (!i18n.isInitialized) return null;
+
   return isOpen ? (
     <div className="fixed inset-0 flex justify-end bg-black/50 z-10">
       <div ref={sidebarRef} className="w-80 h-screen bg-[#022a52] text-white p-5" style={{ height: '100%', overflowY: 'scroll'}}>
-        <h2 className="text-2xl font-semibold mb-4">Filtri</h2>
+        <h2 className="text-2xl font-semibold mb-4">{t("filters")}</h2>
 
         {/* Task Filter */}
         <div className="mb-5">
@@ -86,7 +90,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
         </div>
         
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Fornitore</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("supplier")}</h3>
           {Object.keys(filters.fornitore).map((key) => (
             <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">
               {key.charAt(0).toUpperCase() + key.slice(1)}
@@ -104,7 +108,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Macrogruppo e ESWBS */}
         <div className="mb-5">
-                  <h3 className="text-[16px] text-[#789fd6] mb-2">Livello</h3>
+                  <h3 className="text-[16px] text-[#789fd6] mb-2">{t("level")}</h3>
                   {Object.keys(filters.magazzino).map((key) => (
                     <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">
                       
@@ -138,7 +142,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
           className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer"
           onClick={onClose}
         >
-          Conferma
+          {t("confirm")}
         </button>
       </div>
 

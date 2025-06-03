@@ -4,8 +4,12 @@ import { useEffect, useState } from "react";
 import InfoCard from "@/components/profile/InfoCard";
 import Link from "next/link";
 import Image from 'next/image';
+import { useTranslation } from "@/app/i18n";
 
 export default function RemoteAssistance() {
+
+    const { t, i18n } = useTranslation("remote_assistance");
+      const [mounted, setMounted] = useState(false);
 
     const handleButtonStartDevice = () => {
     
@@ -15,6 +19,12 @@ export default function RemoteAssistance() {
     
     };
 
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+      
+    if (!mounted || !i18n.isInitialized) return null;
+    
   return (
     <div className="flex flex-col text-white">
       <div className="flex gap-4">
@@ -30,20 +40,20 @@ export default function RemoteAssistance() {
                     />
                 </div>
 
-                    <p className="w-70 ml-auto mr-auto my-6">Come vuoi avviare la sessione di assistenza remota?</p>
+                    <p className="w-70 ml-auto mr-auto my-6">{t("remote_assistance_title")}</p>
 
                     <div className="w-[fit-content] flex items-center gap-6 ml-auto mr-auto">
                         <button
                             type="submit"
                             onClick={() => handleButtonStartDevice()}
                             className={`rounded-sm mt-6 w-70 bg-[#ffffff10] hover:bg-blue-500 text-white font-bold py-4 px-4 transition duration-200 cursor-pointer`}>
-                            Avvia con dispositivo
+                              {t("remote_assistance_button1")}
                         </button>
                         <button
                             type="submit"
                             onClick={() => handleButtonStartViewer()}
                             className={`rounded-sm mt-6 w-70 bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-4 px-4 transition duration-200 cursor-pointer`}>
-                            Avvia con visore
+                              {t("remote_assistance_button2")}
                         </button>
                     </div>
             </div>

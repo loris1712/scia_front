@@ -1,7 +1,10 @@
 {
-    "language": "Language",
-    "save": "Save",
-    "notifications": "Notifications",
-    "maintenance_report": "Maintenance Report"
-  }
+  "maintenance": "Manutenzioni",
+  "checklist": "Checklist",
+  "readings": "Letture",
+  "spare_parts": "Catalogo ricambi",
+  "manual": "Manuale integrato",
+  "failures": "Avarie"
+}
+
   

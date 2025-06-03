@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { fetchElementData } from '@/api/elements';
 import InfoCard from '@/components/element/InfoCard';
 import MaintenanceStatus from '@/components/element/MaintenanceStatus';
@@ -12,7 +15,7 @@ export default async function ElementPage({ params }) {
   const data = await fetchElementData(element);
 
   if (!data) {
-    return <p>Elemento non trovato</p>;
+    return <p>{t("element_not_found")}</p>;
   }
 
   return (
@@ -29,7 +32,7 @@ export default async function ElementPage({ params }) {
       <h2 className="text-2xl font-bold">{data.name}</h2>
       <button
             type="submit"
-            className={'flex items-center ml-auto bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer'}
+            className={'flex items-center ml-auto bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer rounded-md'}
           >
             <Image 
                                                                 src="/icons/download.svg"

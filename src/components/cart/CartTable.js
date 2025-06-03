@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import CartRow from "./CartRow";
 import { getCart } from "@/api/cart";
 import { useUser } from "@/context/UserContext";
+import { useTranslation } from "@/app/i18n";
 
 const CartTable = () => {
   const [cartData, setCartData] = useState([]);
@@ -11,6 +12,9 @@ const CartTable = () => {
 
   const shipId = 1;
   const { user } = useUser();
+
+  const { t, i18n } = useTranslation("cart");
+  const [mounted, setMounted] = useState(false);
 
   const getCartData = async () => {
     try {
@@ -34,6 +38,10 @@ const CartTable = () => {
     if (user) getCartData();
   }, [shipId, user]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -42,22 +50,24 @@ const CartTable = () => {
     return <div>{error}</div>;
   }
 
+  if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
       <div className="items-center flex mb-2">
         <h2 className="text-white text-2xl font-semibold flex items-center gap-2 py-2 ">
-          Carrello
+          {t("cart")}
         </h2>
       </div>
 
       <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
-        <p className="border border-[#022a52] p-3">Denominazione</p>
-        <p className="border border-[#022a52] p-3 text-center">Part Number</p>
-        <p className="border border-[#022a52] p-3 text-center">Fornitore</p>
+        <p className="border border-[#022a52] p-3">{t("name")}</p>
+        <p className="border border-[#022a52] p-3 text-center">{t("part_number")}</p>
+        <p className="border border-[#022a52] p-3 text-center">{t("supplier")}</p>
         <p className="border border-[#022a52] p-3 text-center flex items-center" style={{justifyContent: "center"}}>
-          Quantitá
+          {t("quantity")}
         </p>
-        <p className="border border-[#022a52] p-3 text-center">Azioni</p>
+        <p className="border border-[#022a52] p-3 text-center">{t("actions")}</p>
       </div>
 
       {cartData.map((product) => (

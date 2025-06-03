@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from 'next/image';
 import AudioPlayer from "@/components/element/audioPlayer";
 import NoteHistoryModal from "@/components/maintenance/element/NoteHistoryModal";
 import PhotoHistoryModal from "@/components/maintenance/element/PhotoHistoryModal";
 import TextHistoryModal from "@/components/maintenance/element/TextHistoryModal";
+import { useTranslation } from "@/app/i18n";
 
 const MaintenanceDetails = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
@@ -13,14 +14,23 @@ const MaintenanceDetails = ({ details }) => {
   const [textHistoryModal, setTextHistoryModal] = useState(false);
   const [photoHistoryModal, setPhotoHistoryModal] = useState(false);
 
+  const { t, i18n } = useTranslation("maintenance");
+  const [mounted, setMounted] = useState(false);
+    
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+    
+  if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="p-2 w-full">
 
       <div className="mb-6">
 
         <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">Note fotografiche</h2>
-          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setPhotoHistoryModal(true)}>Vedi storico</button>
+          <h2 className="text-lg text-[#789fd6]">{t("details")}</h2>
+          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setPhotoHistoryModal(true)}>{t("see_history")}</button>
         </div>
       
         <div className="flex items-center gap-4 cursor-pointer">
@@ -48,8 +58,8 @@ const MaintenanceDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Note vocali</h2>
-          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>Vedi storico</button>
+          <h2 className="text-lg text-[#789fd6]">{t("vocal_note")}</h2>
+          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>{t("see_history")}</button>
         </div>
       
 
@@ -66,11 +76,10 @@ const MaintenanceDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Note testuali</h2>
-          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setTextHistoryModal(true)}>Vedi storico</button>
+          <h2 className="text-lg text-[#789fd6]">{t("text_note")}</h2>
+          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setTextHistoryModal(true)}>{t("see_history")}</button>
         </div>
       
-
         <div className="flex items-center gap-4 cursor-pointer">
 
           <div className="w-full bg-[#00000038] p-4 rounded-md">
@@ -101,7 +110,7 @@ const MaintenanceDetails = ({ details }) => {
                 height={20} 
                 className="mr-2" 
             />
-            Esito OK
+              {t("ok")}
             </button>
 
             <button className="cursor-pointer flex items-center justify-center w-full py-6 bg-[#ffffff10] text-white rounded-md hover:bg-blue-700 transition duration-300">
@@ -112,7 +121,7 @@ const MaintenanceDetails = ({ details }) => {
                 height={20} 
                 className="mr-2" 
             />
-            Anomalia
+             {t("Anomaly")}
             </button>
 
             <button className="cursor-pointer flex items-center justify-center w-full py-6 bg-[#ffffff10] text-white rounded-md hover:bg-blue-700 transition duration-300">
@@ -123,7 +132,7 @@ const MaintenanceDetails = ({ details }) => {
                 height={20} 
                 className="mr-2" 
             />
-            Non eseguito
+              {t("not_perfomed")}
             </button>
         </div>
       </div>

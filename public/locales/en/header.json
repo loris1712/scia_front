@@ -1,4 +1,9 @@
 {
-    "last_scan": "Last scan"
+    "last_scan": "Last scan",
+    "facilities": "Facilities",
+    "cart": "Cart",
+    "manage_warehouse": "Manage warehouse",
+    "remote_assistance": "Remote assistance",
+    "settings": "Settings"
   }
   

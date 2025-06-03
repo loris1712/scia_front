@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from 'next/image';
 import SpareModal from "./SpareModal";
 import FacilitiesModal from "@/components/maintenance/FacilitiesModal";
+import { useTranslation } from "@/app/i18n";
 
 const MaintenanceInfo = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
@@ -15,9 +16,18 @@ const MaintenanceInfo = ({ details }) => {
     setSelectedProduct(imageSrc);
   };
 
+  const { t, i18n } = useTranslation("maintenance");
+    const [mounted, setMounted] = useState(false);
+      
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+      
+    if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="p-2">
-      <h2 className="text-lg text-[#789fd6] mb-2">Descrizione</h2>
+      <h2 className="text-lg text-[#789fd6] mb-2">{t("description")}</h2>
 
       <p
         className={`text-white ${
@@ -40,13 +50,13 @@ const MaintenanceInfo = ({ details }) => {
           className="mt-2 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
           onClick={() => setShowFull(true)}
         >
-          Vedi istruzioni
+          {t("see_instructions")}
         </button>
       )}
 
       <div className="mb-6">
       
-        <h2 className="text-lg text-[#789fd6] mb-2 mt-4">Ricambi</h2>
+        <h2 className="text-lg text-[#789fd6] mb-2 mt-4">{t("spare_parts")}</h2>
 
         <div className="flex flex-col gap-4">
 
@@ -74,7 +84,7 @@ const MaintenanceInfo = ({ details }) => {
             className="rounded-md flex items-center bg-[#ffffff10] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer"
           >
             <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
-            &nbsp;&nbsp; Aggiungi
+            &nbsp;&nbsp; {t("add")}
           </button>
 
           <button
@@ -94,7 +104,7 @@ const MaintenanceInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Impianto/Componente</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("system")}/{t("component")}</h2>
         </div>
       
 
@@ -122,7 +132,7 @@ const MaintenanceInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Ricorrenza</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("anniversary")}</h2>
         </div>
       
 
@@ -137,7 +147,7 @@ const MaintenanceInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Esecuzione</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("execution")}</h2>
         </div>
       
 

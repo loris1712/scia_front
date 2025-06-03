@@ -9,6 +9,7 @@ import TextHistoryModal from "@/components/readings/element/TextHistoryModal";
 import EditModal from "./EditModal";
 import { useRouter } from 'next/navigation';
 import { updateReading } from "@/api/readings";
+import { useTranslation } from "@/app/i18n";
 
 const ReadingsDetails = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
@@ -38,13 +39,16 @@ const ReadingsDetails = ({ details }) => {
     updateReading(readingId, { value: e });
   };
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   return (
     <div className="p-2 w-full">
 
       <div className="mb-6">
 
         <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">Valore</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("value")}</h2>
         </div>
       
         <div className="relative flex ">
@@ -56,7 +60,7 @@ const ReadingsDetails = ({ details }) => {
             onClick={handleDivClick}
             className={`ml-auto text-right rounded-br-md rounded-tr-md w-[30%] px-4 py-2 text-white cursor-pointer ${value ? 'bg-[rgb(45,182,71)]' : 'bg-[#ffffff10]'}`}
           >
-            {value || 'Scrivi qui...'}
+            {value || t("write_here")}
           </div>
         </div>
 
@@ -65,8 +69,8 @@ const ReadingsDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Note fotografiche</h2>
-          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>Aggiungi</button>
+          <h2 className="text-lg text-[#789fd6]">{t("photographic_note")}</h2>
+          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>{t("add")}</button>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer">
@@ -94,8 +98,8 @@ const ReadingsDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Note vocali</h2>
-          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>Aggiungi</button>
+          <h2 className="text-lg text-[#789fd6]">{t("vocal_note")}</h2>
+          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>{t("add")}</button>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer">
@@ -111,8 +115,8 @@ const ReadingsDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Note testuali</h2>
-          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setTextHistoryModal(true)}>Aggiungi</button>
+          <h2 className="text-lg text-[#789fd6]">{t("text_note")}</h2>
+          <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setTextHistoryModal(true)}>{t("add")}</button>
         </div>
       
 
@@ -143,7 +147,7 @@ const ReadingsDetails = ({ details }) => {
             onClick={() => router.push('/dashboard/readings')}
             className="cursor-pointer flex items-center justify-center w-full py-6 bg-[#ffffff10] text-white rounded-md hover:bg-blue-700 transition duration-300">
             
-            Torna alla lista
+            {t("return_to_the_list")}
             </button>
         </div>
       </div>

@@ -1,0 +1,26 @@
+{
+  "profile": "Profile",
+  "logout": "Logout",
+  "type": "Type",
+  "responsibile": "Responsible",
+  "team": "Team",
+  "subscription_date": "Subscription date",
+  "name": "Name",
+  "surname": "Surname",
+  "email": "Email",
+  "phone": "Phone",
+  "rank": "Rank",
+  "security": "Security",
+  "password_set_and_pin": "Set password and access pin",
+  "save": "Save",
+  "old_password": "Old password",
+  "new_password": "New password",
+  "confirm_password": "Confirm password",
+  "use_pin": "Use PIN for quick access",
+  "biometric_recognition": "Activate biometric recognition",
+  "add_pin": "Add PIN",
+  "confirm_pin": "Confirm PIN",
+  "enter_PIN_to_confirm": "Enter your password to confirm the use of the PIN",
+  "cancel": "Cancel"
+}
+  

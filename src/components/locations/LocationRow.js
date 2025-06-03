@@ -4,6 +4,7 @@ import Icons from "./Icons";
 import NotesModal from "./NotesModal";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
+import { useTranslation } from "@/app/i18n";
 
 const statusColors = {
   good: "text-white",
@@ -67,6 +68,9 @@ const LocationRow = ({ data }) => {
     };
   }, []);
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   return (
     <div>
       <div
@@ -80,7 +84,7 @@ const LocationRow = ({ data }) => {
           </p>
         ) : (
           <p className="text-white text-[18px] font-semibold truncate flex items-center"> 
-            Nessun magazzino
+            {t("no_warehouse")}
           </p>
         )
         }

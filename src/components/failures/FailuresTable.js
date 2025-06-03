@@ -1,47 +1,110 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import FailuresRow from "./FailuresRow";
 import LegendModal from "./LegendModal";
 import FilterModal from "./FilterModal";
 import FailuresModal from "./FailuresModal";
 import { getFailures } from "@/api/failures";
+import { useTranslation } from "@/app/i18n";
 
 const FailuresTable = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [legendOpen, setLegendOpen] = useState(false);
+  const [failures, setFailures] = useState([]);
+  const [filteredFailures, setFilteredFailures] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [addFailureOpen, setAddFailureOpen] = useState(false);
-  const [failures, setFailures] = useState([]);
+  const [filters, setFilters] = useState({
+    gravitá: {
+      critica: false,
+      alta: false,
+      media: false,
+      bassa: false,
+    },
+    squadra: {
+      connected_user: false,
+      crew: false,
+      maintenance: false,
+      command: false,
+    },
+  });
+
   const [loading, setLoading] = useState(true);
+
+  const { t, i18n } = useTranslation("failures");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     async function fetchFailures() {
       try {
         const data = await getFailures();
         setFailures(data);
+        setFilteredFailures(data);
+        console.log("Dati fetchati:", data);
       } catch (error) {
-        console.error("Errore durante il fetch delle avarie:", error);
+        console.error("Errore fetch avarie:", error);
       } finally {
         setLoading(false);
       }
     }
-
     fetchFailures();
   }, []);
 
+  // Mappa usata per tradurre i tipi utente, coerente con FilterModal
+  const executionUserTypeMap = {
+    connected_user: "operatori",
+    crew: "equipaggio",
+    maintenance: "manutentori",
+    command: "comando",
+  };
+
+  useEffect(() => {
+    if (!filters) return;
+
+    const applyFilters = () => {
+      const activeGravities = Object.entries(filters.gravitá)
+        .filter(([_, isActive]) => isActive)
+        .map(([gravity]) => gravity);
+
+      const activeTeams = Object.entries(filters.squadra)
+        .filter(([_, isActive]) => isActive)
+        .map(([team]) => team);
+
+      const result = failures.filter((failure) => {
+        const failureTeam = failure.executionUserType;
+
+        const matchGravity =
+          activeGravities.length === 0 || activeGravities.includes(failure.gravity);
+        const matchTeam = activeTeams.length === 0 || activeTeams.includes(failureTeam);
+
+        return matchGravity && matchTeam;
+      });
+
+      setFilteredFailures(result);
+    };
+
+    applyFilters();
+  }, [filters, failures]);
+
+  if (!mounted || !i18n.isInitialized) {
+    return <div className="text-white p-4">{t("loading")}</div>;
+  }
+
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
-      <div className="items-center flex mb-2">
+      <div className="flex items-center mb-2">
         <button
           className="text-white text-2xl font-semibold flex items-center gap-2 py-2 cursor-pointer"
-          onClick={() => setIsOpen(true)}
+          onClick={() => setFilterOpen(true)}
         >
-          Avarie ({failures.length})
+          {t("failures")} ({filteredFailures.length})
         </button>
 
         <div className="flex items-center ml-auto gap-4">
           {/* Gravitá Button */}
           <button
-            type="submit"
+            type="button"
             onClick={() => setFilterOpen(true)}
             className="rounded-md flex items-center bg-[#022a52] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer"
           >
@@ -51,51 +114,69 @@ const FailuresTable = () => {
               <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-green-500 rounded-bl-full"></div>
               <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-yellow-400 rounded-br-full"></div>
             </div>
-            &nbsp;&nbsp; Gravitá
+            &nbsp;&nbsp; {t("severity")}
           </button>
 
           {/* Filtri Button */}
           <button
-            type="submit"
+            type="button"
             onClick={() => setFilterOpen(true)}
             className="rounded-md flex items-center bg-[#022a52] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer"
           >
-            <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z"/></svg>
-
-            &nbsp; Filtri
+            <svg
+              width="18px"
+              height="18px"
+              fill="white"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 576 512"
+            >
+              <path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z" />
+            </svg>
+            &nbsp; {t("filters")}
           </button>
 
           {/* Aggiungi Avaria Button */}
           <button
-            type="submit"
+            type="button"
             onClick={() => setAddFailureOpen(true)}
             className="rounded-md flex items-center bg-[#789fd6] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer"
           >
-            <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
-            &nbsp; Aggiungi avaria
+            <svg
+              width="18px"
+              height="18px"
+              fill="white"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+            </svg>
+            &nbsp; {t("add_failure")}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-[3fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold" style={{ paddingLeft: `8px` }}>
-        <p className="border-r border-t border-b border-[#022a52] p-3">Titolo / ESWBS</p>
-        <p className="border border-[#022a52] p-3 text-center">Note</p>
-        <p className="border border-[#022a52] p-3 text-center flex items-center" style={{ justifyContent: "center" }}>
-          Utente
-        </p>
-        <p className="border border-[#022a52] p-3 text-center">Data di inserimento</p>
+      <div className="grid grid-cols-[3fr_1fr_1fr_1fr] bg-white rounded-t-lg font-semibold text-black/70">
+        <p className="border p-3">{t("title")} / ESWBS</p>
+        <p className="border p-3 text-center">{t("notes")}</p>
+        <p className="border p-3 text-center">{t("user")}</p>
+        <p className="border p-3 text-center">{t("date_of_insertion")}</p>
       </div>
 
       {loading ? (
-        <div className="text-white p-4">Caricamento in corso...</div>
-      ) : failures.length === 0 ? (
-        <div className="text-white p-4">Nessuna avaria trovata.</div>
+        <div className="text-white p-4">{t("loading")}</div>
+      ) : filteredFailures.length === 0 ? (
+        <div className="text-white p-4">{t("no_results")}</div>
       ) : (
-        failures.map((item) => <FailuresRow key={item.id} data={item} />)
+        filteredFailures.map((item) => <FailuresRow key={item.id} data={item} />)
       )}
 
       <FailuresModal isOpen={addFailureOpen} onClose={() => setAddFailureOpen(false)} />
-      <FilterModal isOpen={filterOpen} onClose={() => setFilterOpen(false)} />
+      <FilterModal
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        onApply={setFilters}
+        currentFilters={filters}
+      />
     </div>
   );
 };

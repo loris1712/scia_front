@@ -6,6 +6,7 @@ import { useUser } from "@/context/UserContext";
 import MoveProduct from "./MoveProduct";
 import FacilitiesModal from "./FacilitiesModal";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 const SpareTable = () => {
   const [selectedType, setSelectedType] = useState(null);
@@ -38,6 +39,9 @@ const SpareTable = () => {
     loadTasks();
   }, [shipId, user]);
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -63,7 +67,7 @@ const SpareTable = () => {
     <div className="w-full mx-auto rounded-lg shadow-md">
       <div className="items-center flex mb-2">
         <h2 className="text-white text-2xl font-semibold flex items-center gap-2 py-2 ">
-          Catalogo ricambi ({totalQuantity})
+          {t("spare_parts_catalogue")} ({totalQuantity})
         </h2>
 
         <div className="flex items-center ml-auto gap-4">
@@ -75,7 +79,7 @@ const SpareTable = () => {
           >
 
             <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
-              &nbsp; Sposta/Aggiungi
+              &nbsp; {t("move")}/{t("add")}
           </button>
 
           <button
@@ -86,7 +90,7 @@ const SpareTable = () => {
             <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 64 0 368 0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-128 64.3-16.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L64 48l0-16z" />
             </svg>              
-            &nbsp; Ubicazioni
+            &nbsp; {t("locations")}
           </button>
 
           <button
@@ -108,19 +112,19 @@ const SpareTable = () => {
             <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
               <path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z" />
             </svg>
-              &nbsp; Filtri
+              &nbsp; {t("filters")}
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
-        <p className="border border-[#022a52] p-3">Denominazione / ESWBS</p>
-        <p className="border border-[#022a52] p-3 text-center">Giacenza</p>
-        <p className="border border-[#022a52] p-3 text-center">Ubicazione</p>
+        <p className="border border-[#022a52] p-3">{t("name")} / ESWBS</p>
+        <p className="border border-[#022a52] p-3 text-center">{t("stock")}</p>
+        <p className="border border-[#022a52] p-3 text-center">{t("locations")}</p>
         <p className="border border-[#022a52] p-3 text-center flex items-center" style={{justifyContent: "center"}}>
           Part Number
         </p>
-        <p className="border border-[#022a52] p-3 text-center">Azioni</p>
+        <p className="border border-[#022a52] p-3 text-center">{t("actions")}</p>
       </div>
 
       <div className="flex items-center gap-2 p-4 bg-[#022a52]" style={{borderBottom: '1px solid black'}}>
@@ -128,7 +132,7 @@ const SpareTable = () => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Cerca per denominazione..."
+          placeholder={t("search_by_name")}
           onBlur={() => document.activeElement.blur()} 
           className="px-6 py-3 rounded-md w-full bg-[#ffffff10] outline-none"
         />

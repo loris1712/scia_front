@@ -1,9 +1,23 @@
+"use client"
+
+import { useState, useEffect } from "react";
 import Image from 'next/image';
+import { useTranslation } from "@/app/i18n";
 
 const MaintenanceStatus = ({ status }) => {
+
+  const { t, i18n } = useTranslation("facilities");
+    const [mounted, setMounted] = useState(false);
+  
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+  
+    if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div>
-      <h2 className="text-lg text-[#789fd6] mb-2">Stato manutenzioni</h2>
+      <h2 className="text-lg text-[#789fd6] mb-2">{t("maintenance_status")}</h2>
 
       <ul>
         {status.map((item, index) => (

@@ -21,7 +21,11 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",  // Questo è fondamentale per usare gli alias
+    "paths": {
+      "@/*": ["./src/*"]  // Questo crea l'alias per la cartella src
+    }
   },
   "include": [
     "next-env.d.ts",

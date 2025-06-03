@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from 'next/image';
 import FacilitiesModal from "./FacilitiesModal";
+import { useTranslation } from "@/app/i18n";
 
 export default function FilterSidebar({ isOpen, onClose }) {
   const [filters, setFilters] = useState({
@@ -77,10 +78,19 @@ export default function FilterSidebar({ isOpen, onClose }) {
     ))
   );
 
+  const { t, i18n } = useTranslation("maintenance");
+      const [mounted, setMounted] = useState(false);
+        
+      useEffect(() => {
+        setMounted(true);
+      }, []);
+        
+      if (!mounted || !i18n.isInitialized) return null;
+
   return isOpen ? (
     <div className="fixed inset-0 flex justify-end bg-black/50 z-10">
       <div ref={sidebarRef} className="w-80 h-screen bg-[#022a52] text-white p-5" style={{ height: '100%', overflowY: 'scroll'}}>
-        <h2 className="text-2xl font-semibold mb-4">Filtri</h2>
+        <h2 className="text-2xl font-semibold mb-4">{t("filters")}</h2>
 
         {/* Task Filter */}
         <div className="mb-5">
@@ -92,7 +102,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Squadra di assegnazione Filter */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Squadra di assegnazione</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("assignment_team")}</h3>
           {renderCheckboxes("squadraDiAssegnazione", [
             { key: "operatori", label: "Operatori" },
             { key: "equipaggio", label: "Equipaggio" },
@@ -103,7 +113,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Macrogruppo e ESWBS */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Macrogruppo e ESWBS</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("macrogroup")}</h3>
           {renderCheckboxes("macrogruppoESWBS", [
             { key: "100 - Scafo", label: "100 - Scafo" },
             { key: "200 - Propulsioni/Motori", label: "200 - Propulsioni/Motori" },
@@ -121,7 +131,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
           className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer"
           onClick={onClose}
         >
-          Conferma
+          {t("confirm")}
         </button>
       </div>
 

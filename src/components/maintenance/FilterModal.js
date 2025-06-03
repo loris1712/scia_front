@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from 'next/image';
 import FacilitiesModal from "./FacilitiesModal";
+import { useTranslation } from "@/app/i18n";
 
 export default function FilterSidebar({ isOpen, onClose }) {
   const [filters, setFilters] = useState({
@@ -78,15 +79,24 @@ export default function FilterSidebar({ isOpen, onClose }) {
     };
   }, [isOpen, onClose]);  
 
+  const { t, i18n } = useTranslation("maintenance");
+    const [mounted, setMounted] = useState(false);
+      
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+      
+    if (!mounted || !i18n.isInitialized) return null;
+
     return isOpen ? (
       <div className="fixed inset-0 flex justify-end bg-black/50 z-10">
 
         <div ref={sidebarRef} className="w-80 h-screen bg-[#022a52] text-white p-5" style={{ height: '100%', overflowY: 'scroll'}}>
-        <h2 className="text-2xl font-semibold mb-4">Filtri</h2>
+        <h2 className="text-2xl font-semibold mb-4">{t("filters")}</h2>
 
         {/* Stato */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-3">Stato</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-3">{t("state")}</h3>
           {[
             { key: "scaduta", label: "Scaduta", color: "bg-red-500" },
             { key: "scadutaDaPoco", label: "Scaduta da poco", color: "bg-orange-500" },
@@ -112,7 +122,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Ricorrenza */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Ricorrenza</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("anniversary")}</h3>
           {Object.keys(filters.ricorrenza).map((key) => (
             <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">
               {key.charAt(0).toUpperCase() + key.slice(1)}
@@ -130,7 +140,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Livello */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Livello</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("level")}</h3>
           {Object.keys(filters.livello).map((key) => (
             <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">
               
@@ -162,7 +172,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Squadra */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Squadra di assegnazione</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("assignment_team")}</h3>
           {Object.keys(filters.squadra).map((key) => (
             <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">
               
@@ -181,16 +191,16 @@ export default function FilterSidebar({ isOpen, onClose }) {
 
         {/* Squadra */}
         <div className="mb-5">
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Impianti</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("system")}</h3>
           
           <div className="flex items-center cursor-pointer" onClick={() => setFacilitiesOpen(true)}>
-            <p>Selezione impianti</p>
+            <p>{t("select_systems")}</p>
             <svg className="ml-auto" fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
           </div>
         </div>
 
         <div>
-          <h3 className="text-[16px] text-[#789fd6] mb-2">Ricambi</h3>
+          <h3 className="text-[16px] text-[#789fd6] mb-2">{t("spare_parts")}</h3>
           {Object.keys(filters.ricambi).map((key) => (
             <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">
 
@@ -224,7 +234,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
           className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer"
           onClick={onClose}
         >
-          Conferma
+          {t("confirm")}
         </button>
       </div>
 

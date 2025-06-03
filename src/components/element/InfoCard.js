@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from 'next/image';
 import EditModal from "@/components/element/EditModal";
+import { useTranslation } from "@/app/i18n";
 
 const InfoCard = ({ data }) => {
   
@@ -48,21 +49,30 @@ const InfoCard = ({ data }) => {
     }
   };
 
+  const { t, i18n } = useTranslation("facilities");
+    const [mounted, setMounted] = useState(false);
+  
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+  
+    if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="flex px-2">
       <div className="w-1/2">
         <div className="mb-4">
-          <h2 className="text-lg text-[#789fd6] mb-2">Impianto/Componente</h2>
+          <h2 className="text-lg text-[#789fd6] mb-2">{t("system")}/{t("component")}</h2>
           <p className="text-white">{data.component}</p>
         </div>
 
         <div className="mb-4">
-          <h2 className="text-lg text-[#789fd6] mb-2">Costruttore</h2>
+          <h2 className="text-lg text-[#789fd6] mb-2">{t("builder")}</h2>
           <p className="text-white">{data.manufacturer}</p>
         </div>
 
         <div className="mb-4">
-          <h2 className="text-lg text-[#789fd6] mb-2">Immagine</h2>
+          <h2 className="text-lg text-[#789fd6] mb-2">{t("image")}</h2>
           <Image 
             src="/motor.jpg"
             alt={data.name} 
@@ -76,7 +86,7 @@ const InfoCard = ({ data }) => {
       <div className="w-1/2">
         <div className="flex items-center mb-4">
             <div>
-              <h2 className="text-lg text-[#789fd6] mb-2">Ore moto</h2>
+              <h2 className="text-lg text-[#789fd6] mb-2">{t("motorcycles_hours")}</h2>
               <p className="text-white">{data.usageHours}</p>
               <p className="text-[#ffffffa6]">06/05/2024 - 10:23</p>
             </div>
@@ -95,7 +105,7 @@ const InfoCard = ({ data }) => {
         </div>
 
         <div className="mb-4">
-          <h2 className="text-lg text-[#789fd6] mb-2">Modello 3D</h2>
+          <h2 className="text-lg text-[#789fd6] mb-2">{t("3D_model")}</h2>
           <Image 
             src="/motor.jpg"
             alt={data.name} 
@@ -106,7 +116,7 @@ const InfoCard = ({ data }) => {
         </div>
       </div>
 {/* Modale per modificare le ore di utilizzo */}
-<EditModal 
+        <EditModal 
           isOpen={isPopupOpen} 
           onClose={() => setIsOpen(false)} 
           handleSave={handleSave} 

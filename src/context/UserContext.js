@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getProfileData } from "@/api/profile";
+import { getProfileData } from "../api/profile";
 
 const UserContext = createContext(null);
 

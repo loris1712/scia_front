@@ -8,6 +8,7 @@ import MaintenanceInfo from "@/components/checklist/element/MaintenanceInfo";
 import PauseModal from "@/components/checklist/element/PauseModal";
 import NoteModal from "@/components/checklist/element/NoteModal";
 import { useParams } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 export default function ElementPage({ params }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,15 @@ export default function ElementPage({ params }) {
     bgColor = "bg-[rgb(45,182,71)]";
   }*/
 
+    const { t, i18n } = useTranslation("maintenance");
+    const [mounted, setMounted] = useState(false);
+      
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+      
+    if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="flex flex-col bg-[#001c38] text-white p-4">
       <DashboardHeader />
@@ -50,7 +60,7 @@ export default function ElementPage({ params }) {
             className="rounded-md flex items-center bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-1 px-4 transition duration-200 cursor-pointer"
           >
             <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
-            &nbsp;&nbsp; Aggiungi nota
+            &nbsp;&nbsp; {t("add_note")}
           </button>
         </div>
       </div>

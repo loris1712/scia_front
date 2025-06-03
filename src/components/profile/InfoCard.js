@@ -5,6 +5,7 @@ import Image from "next/image";
 import PasswordModal from "./PasswordModal";
 import ImageProfileUpload from "./ImageProfileUpload";
 import { updateProfileData, getRanks } from "@/api/profile";
+import { useTranslation } from "@/app/i18n";
 
 export default function InfoCard({ data }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,9 @@ export default function InfoCard({ data }) {
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false); 
   const [militaryRanks, setMilitaryRanks] = useState("false"); 
   const [selectedRank, setSelectedRank] = useState(null);
+
+  const { t, i18n } = useTranslation("profile");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -78,6 +82,12 @@ export default function InfoCard({ data }) {
     setProfileImage(newImageUrl);
   };
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="bg-[#022a52] p-2 rounded-lg shadow-md text-white w-full">
       <div className="flex items-center mb-4">
@@ -98,22 +108,22 @@ export default function InfoCard({ data }) {
 
       <div className="grid grid-cols-4 gap-4 mb-4">
         <div className="rounded-md text-left">
-            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">Tipo</h3>
+            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">{t("type")}</h3>
             <p className="text-lg">{data?.type}</p>
           </div>
 
           <div className="rounded-md text-left">
-            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">Responsabile</h3>
+            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">{t("responsible")}</h3>
             <p className="text-lg">{data?.teamLeader?.firstName} {data?.teamLeader?.lastName}</p>
           </div>
 
           <div className="rounded-md text-left">
-            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">Squadra</h3>
+            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">{t("team")}</h3>
             <p className="text-lg">{data?.team?.name}</p>
           </div>
 
           <div className="rounded-md text-left">
-            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">Data di iscrizione</h3>
+            <h3 className="text-sm text-[#789FD6] font-semibold mb-2">{t("subscription_date")}</h3>
             <p className="text-lg">
               {data?.registrationDate
                 ? new Date(data.registrationDate).toLocaleDateString("it-IT")
@@ -124,7 +134,7 @@ export default function InfoCard({ data }) {
       
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-            <label className="text-[#789FD6] text-sm mb-2">Nome</label>
+            <label className="text-[#789FD6] text-sm mb-2">{t("name")}</label>
             <input
               type="text"
               value={firstName}
@@ -134,7 +144,7 @@ export default function InfoCard({ data }) {
           </div>
 
           <div className="flex flex-col">
-            <label className="text-[#789FD6] text-sm mb-2">Cognome</label>
+            <label className="text-[#789FD6] text-sm mb-2">{t("surname")}</label>
             <input
               type="text"
               value={lastName}
@@ -144,7 +154,7 @@ export default function InfoCard({ data }) {
           </div>
 
           <div className="flex flex-col">
-            <label className="text-[#789FD6] text-sm mb-2">Email</label>
+            <label className="text-[#789FD6] text-sm mb-2">{t("email")}</label>
             <input
               type="text"
               value={email}
@@ -154,7 +164,7 @@ export default function InfoCard({ data }) {
           </div>
 
           <div className="flex flex-col">
-            <label className="text-[#789FD6] text-sm mb-2">Telefono</label>
+            <label className="text-[#789FD6] text-sm mb-2">{t("phone")}</label>
             <input
               type="text"
               value={phone}
@@ -164,7 +174,7 @@ export default function InfoCard({ data }) {
           </div>
 
           <div className="flex flex-col relative">
-      <label className="text-[#789FD6] text-sm mb-2">Grado</label>
+      <label className="text-[#789FD6] text-sm mb-2">{t("rank")}</label>
 
       <button
         onClick={() => setIsOpen2(!isOpen2)}
@@ -211,9 +221,9 @@ export default function InfoCard({ data }) {
 
 
         <div className="flex flex-col">
-            <label className="text-[#789FD6] text-sm mb-4">Sicurezza</label>
+            <label className="text-[#789FD6] text-sm mb-4">{t("security")}</label>
             <button className="items-center flex cursor-pointer" onClick={() => setIsOpen(true)}>
-              <p>Imposta password e pin di accesso</p>
+              <p>{t("password_set_and_pin")}</p>
 
               <svg 
               width="18px"
@@ -224,10 +234,9 @@ export default function InfoCard({ data }) {
             
           </div>
       </div>
-
-      {/* Ultima riga: Bottone Save */}
+      
       <button className="w-full bg-[#789fd6] mt-4 cursor-pointer p-3 rounded-md text-white font-semibold" onClick={handleSave}>
-        Save
+        {t("save")}
       </button>
 
       {isOpen && <PasswordModal userId={data?.id} onClose={() => setIsOpen(false)} />}

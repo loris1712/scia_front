@@ -1,4 +1,5 @@
-"use client"; // Indica che è un Client Component
+"use client"; 
+
 import { useEffect, useState } from "react";
 import { getProfileData } from "@/api/profile";
 import InfoCard from "@/components/profile/InfoCard";
@@ -13,6 +14,7 @@ export default function ProfileCard() {
     }
     loadData();
   }, []);
+
 
   return (
     <div className="flex flex-col text-white">

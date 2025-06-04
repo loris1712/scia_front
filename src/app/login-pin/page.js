@@ -36,7 +36,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
     setError(null);
   
     try {
-      const response = await fetch(`${BASE_URL}/api/auth/login-pin`, {
+      const response = await fetch("/api/auth/login-pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -47,6 +47,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
         const data = await response.json();
         throw new Error(data.error || "Errore di login");
       }
+
+      console.log("Ciao")
   
       router.push("/dashboard");
     } catch (err) {

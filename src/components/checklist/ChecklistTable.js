@@ -16,6 +16,39 @@ const ChecklistTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [filters, setFilters] = useState({
+      task: {
+        nascondiTaskEseguiti: false,
+      },
+      squadraDiAssegnazione: {
+        operatori: false,
+        equipaggio: false,
+        manutentori: false,
+        comando: false,
+      },
+      macrogruppoESWBS: {
+        "100 - Scafo": false,
+        "200 - Propulsioni/Motori": false,
+        "300 - Impianto elettrico": false,
+        "400 - Comando, controllo e sorveglianza": false,
+        "500 - Impianti ausiliari": false,
+        "600 - Allestimento e arredamento": false,
+        "700 - Armamenti": false,
+        "800 - Integration / Engineering": false,
+        "900 - Ship assembly / Support services": false,
+      }
+    });
+  
+    const toggleFilter = (category, key) => {
+      setFilters((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [key]: !prev[category][key],
+        },
+      }));
+    };
+
   const shipId = 1;
   const { user } = useUser();
 
@@ -60,7 +93,36 @@ const ChecklistTable = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  const tasksToShow = selectedType ? selectedType.tasks : tasksData.flatMap(t => t.tasks);
+
+  const allTasks = selectedType ? selectedType.tasks : tasksData.flatMap(t => t.tasks);
+
+  const tasksToShow = allTasks.filter(task => {
+  if (!filters) return true;
+
+  const { task: taskFilters, squadraDiAssegnazione, macrogruppoESWBS } = filters;
+
+  if (taskFilters.nascondiTaskEseguiti && task.status_id === 3) {
+    return false;
+  }
+
+  const macrogruppo = task.element?.macrogruppo;
+    if (macrogruppo && macrogruppoESWBS[macrogruppo] === true) {
+      return true;
+    }
+    if (Object.values(macrogruppoESWBS).some(v => v) && (!macrogruppo || !macrogruppoESWBS[macrogruppo])) {
+      return false;
+    }
+
+    const assignedTeam = task.assigned_to?.team;
+    if (
+      Object.values(squadraDiAssegnazione).some(v => v) &&
+      (!assignedTeam || !squadraDiAssegnazione[assignedTeam])
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
@@ -103,7 +165,12 @@ const ChecklistTable = () => {
 
       <LegendModal isOpen={legendOpen} onClose={() => setLegendOpen(false)} />
 
-      <FilterModal isOpen={filterOpen} onClose={() => setFilterOpen(false)} />
+        <FilterModal
+                isOpen={filterOpen}
+                onClose={() => setFilterOpen(false)}
+                filters={filters}
+                toggleFilter={toggleFilter}
+              />
         
     </div>
   );

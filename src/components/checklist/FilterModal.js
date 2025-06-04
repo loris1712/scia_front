@@ -5,39 +5,7 @@ import Image from 'next/image';
 import FacilitiesModal from "./FacilitiesModal";
 import { useTranslation } from "@/app/i18n";
 
-export default function FilterSidebar({ isOpen, onClose }) {
-  const [filters, setFilters] = useState({
-    task: {
-      nascondiTaskEseguiti: false,
-    },
-    squadraDiAssegnazione: {
-      operatori: false,
-      equipaggio: false,
-      manutentori: false,
-      comando: false,
-    },
-    macrogruppoESWBS: {
-      "100 - Scafo": false,
-      "200 - Propulsioni/Motori": false,
-      "300 - Impianto elettrico": false,
-      "400 - Comando, controllo e sorveglianza": false,
-      "500 - Impianti ausiliari": false,
-      "600 - Allestimento e arredamento": false,
-      "700 - Armamenti": false,
-      "800 - Integration / Engineering": false,
-      "900 - Ship assembly / Support services": false,
-    }
-  });
-
-  const toggleFilter = (category, key) => {
-    setFilters((prev) => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [key]: !prev[category][key],
-      },
-    }));
-  };
+export default function FilterSidebar({ isOpen, onClose, filters, toggleFilter }) {
 
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
   const sidebarRef = useRef(null);
@@ -58,7 +26,6 @@ export default function FilterSidebar({ isOpen, onClose }) {
     };
   }, [isOpen, onClose]);
 
-  // Helper function to map the filters
   const renderCheckboxes = (category, filterList) => (
     filterList.map(({ key, label, iconSrc, iconAlt }) => (
       <label key={key} className="flex items-center gap-2 mb-4 cursor-pointer">

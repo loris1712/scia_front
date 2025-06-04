@@ -16,5 +16,8 @@
   "save_button": "Save",
   "weekly": "Weekly",
   "monthly": "Monthly",
-  "annual": "Annual"
+  "annual": "Annual",
+  "settingsSaved": "Settings saved successfully",
+  "settingsSaveFailed": "Error saving settings. Please try again."
+
 }

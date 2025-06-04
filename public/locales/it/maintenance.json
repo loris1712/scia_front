@@ -74,7 +74,7 @@
   "actions": "Azioni",
   "search_by_name": "Cerca per denominazione...",
   "added_to_the_cart": "Aggiunto al carrello",
-  "added_cart_text": "Il prodotto “Guarnizione della testa” è stato aggiunto al tuo carrello ",
+  "added_cart_text": "Il prodotto è stato aggiunto al tuo carrello ",
   "supplier": "Fornitore",
   "system_filter": "Filtro impianti",
   "search_by_plant": "Cerca per nome impianto...",
@@ -92,5 +92,12 @@
   "create_location": "Crea ubicazione",
   "no_warehouse": "Nessun magazzino",
   "select_warehouse": "Seleziona magazzino",
-  "location": "Ubicazione"
-  }
+  "location": "Ubicazione",
+  "texthistory_title": "Storico note testuali",
+  "audiohistory_title": "Storico note vocali",
+  "photohistory_title": "Storico note fotografiche",
+  "no_audio_notes": "Nessuna nota vocale trovata.",
+  "select_maintenance": "Seleziona manutenzione",
+  "all": "Tutti"
+
+}

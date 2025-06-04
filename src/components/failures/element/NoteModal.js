@@ -7,6 +7,7 @@ import {
   addVocalNote,
   addTextNote,
 } from "@/api/failures";
+import { useUser } from "@/context/UserContext";
 
 export default function NoteModal({ onClose, id }) {
   const { t } = useTranslation("failures");
@@ -15,6 +16,9 @@ export default function NoteModal({ onClose, id }) {
   const [textNote, setTextNote] = useState("");
   const [photoFile, setPhotoFile] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
+
+  const { user } = useUser();
+  const userId = user.id;
 
   const resetAndClose = () => {
     setSelectedNoteType(null);
@@ -30,16 +34,20 @@ export default function NoteModal({ onClose, id }) {
         const formData = new FormData();
         formData.append("file", photoFile);
         formData.append("failureId", id);
+        formData.append("authorId", userId);
+        formData.append("type", "failure");
         await addPhotographicNote(formData);
         alert("Nota fotografica inviata");
       } else if (selectedNoteType === "vocal" && audioFile) {
         const formData = new FormData();
         formData.append("file", audioFile);
         formData.append("failureId", id);
+        formData.append("authorId", userId);
+        formData.append("type", "failure");
         await addVocalNote(formData);
         alert("Nota vocale inviata");
       } else if (selectedNoteType === "text" && textNote.trim()) {
-        await addTextNote({ content: textNote.trim(), failureId: id });
+        await addTextNote({ content: textNote.trim(), failureId: id, authorId: userId, type: "failure" });
         alert("Nota testuale inviata");
       } else {
         alert("Per favore, compila il contenuto della nota");
@@ -113,7 +121,7 @@ export default function NoteModal({ onClose, id }) {
               type="file"
               accept="image/*"
               onChange={(e) => setPhotoFile(e.target.files[0])}
-              className="text-white"
+              className="text-white cursor-pointer"
             />
           </div>
         )}
@@ -125,7 +133,7 @@ export default function NoteModal({ onClose, id }) {
               type="file"
               accept="audio/*"
               onChange={(e) => setAudioFile(e.target.files[0])}
-              className="text-white"
+              className="text-white cursor-pointer"
             />
           </div>
         )}
@@ -146,13 +154,13 @@ export default function NoteModal({ onClose, id }) {
         {selectedNoteType && (
           <div className="flex justify-between mt-4 gap-4">
             <button
-              className="bg-[#fff] text-black px-4 py-2 rounded-md w-1/2"
+              className="bg-[#fff] text-black px-4 py-2 rounded-md w-1/2 cursor-pointer"
               onClick={() => setSelectedNoteType(null)}
             >
               {t("back")}
             </button>
             <button
-              className="bg-[#789fd6] text-white px-4 py-2 rounded-md w-1/2"
+              className="bg-[#789fd6] text-white px-4 py-2 rounded-md w-1/2 cursor-pointer"
               onClick={handleSubmit}
             >
               {t("send")}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 
-const AudioPlayer = ({ audioSrc, username = "MDA", dateTime = "02/05/2024 - 17:59" }) => {
+const AudioPlayer = ({ audioSrc, username, dateTime }) => {
   const waveformRef = useRef(null);
   const wavesurfer = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -83,7 +83,7 @@ const AudioPlayer = ({ audioSrc, username = "MDA", dateTime = "02/05/2024 - 17:5
         <div ref={waveformRef} className="w-full"></div>
         <div className="flex items-center text-white text-sm gap-4">
           <p className="opacity-60">{duration}</p>
-          <p className="ml-auto opacity-60">{dateTime}</p>
+          <p className="ml-auto opacity-60">{new Date(dateTime).toLocaleString()}</p>
         </div>
       </div>
     </div>

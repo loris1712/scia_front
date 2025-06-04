@@ -148,7 +148,7 @@ export default function FailureModal({ isOpen, onClose, data }) {
                   >
                     <option value="">{t("select_severity")}</option>
                     <option value="critica">{t("critical")}</option>
-                    <option value="alta">{t("hight")}</option>
+                    <option value="alta">{t("high")}</option>
                     <option value="media">{t("medium")}</option>
                     <option value="bassa">{t("low")}</option>
                   </select>

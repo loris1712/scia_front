@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from 'next/image';
+import { useTranslation } from "@/app/i18n";
 
 export default function CartAdded({ onClose }) {
 

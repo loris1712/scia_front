@@ -22,7 +22,7 @@ export default function LoginPage() {
     setSuccess("");
   }, []);
 
-  const BASE_URL = "http://localhost:4000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
   // const BASE_URL = "http://52.59.162.108:4000";
 
   const handleSubmit = async (e) => {

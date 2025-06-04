@@ -31,7 +31,7 @@ const CartTable = () => {
   };
 
   const handleRemoveProduct = (spareId) => {
-    setCartData(cartItems.filter(item => item.Spare.id !== spareId));
+    setCartData(prev => prev.filter(item => item.Spare.ID !== spareId));
   };
 
   useEffect(() => {

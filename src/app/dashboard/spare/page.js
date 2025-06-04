@@ -12,19 +12,6 @@ export default function SparePage() {
 
   const [tasks, setTasks] = useState([]);
 
-  useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const response = await fetch("/api/tasks");
-        const data = await response.json();
-        setTasks(data[category] || []);
-      } catch (error) {
-        console.error("Errore nel recupero dei task:", error);
-      }
-    }
-    /*fetchTasks();*/
-  }, [category]);
-
   return (
     <div className="flex flex-col h-screen bg-[#001c38] text-white p-4">
       <DashboardHeader />

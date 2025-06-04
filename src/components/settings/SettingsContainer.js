@@ -67,9 +67,9 @@ export default function SettingsContainer() {
     const success = await updateSettings(payload);
 
     if (success) {
-      alert(t("success.settingsSaved"));
+      alert(t("settingsSaved"));
     } else {
-      alert(t("error.settingsSaveFailed"));
+      alert(t("settingsSaveFailed"));
     }
   };
 

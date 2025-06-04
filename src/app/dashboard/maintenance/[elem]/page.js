@@ -7,7 +7,7 @@ import MaintenanceDetails from "@/components/maintenance/element/MaintenanceDeta
 import MaintenanceInfo from "@/components/maintenance/element/MaintenanceInfo";
 import PauseModal from "@/components/maintenance/element/PauseModal";
 import NoteModal from "@/components/maintenance/element/NoteModal";
-import { maintenanceData } from "@/api/maintenance";
+import { fetchMaintenanceJob } from "@/api/maintenance";
 import { useParams } from "next/navigation";
 import { useTranslation } from "@/app/i18n";
 
@@ -18,12 +18,15 @@ export default function ElementPage({ params }) {
   const params2 = useParams();
   const jobId = params2.elem;
 
-  const maintenanceInfo = maintenanceData.find((item) => item.job_id === jobId);
+  //const maintenanceInfo = maintenanceData.find((item) => item.job_id === jobId);
  
   let bgColor = "bg-gray-400";
   let textColor = "text-white"; 
 
-  if (maintenanceInfo.dueDays < -15) {
+  const [maintenancedata, setMaintenanceData] = useState(false);
+
+
+  /*if (maintenanceInfo.dueDays < -15) {
     bgColor = "bg-[rgb(208,2,27)]"; 
   } else if (maintenanceInfo.dueDays < 0) {
     bgColor = "bg-[rgb(244,114,22)]"; 
@@ -32,7 +35,13 @@ export default function ElementPage({ params }) {
     textColor = "text-black"; 
   } else if (maintenanceInfo.dueDays > 15) {
     bgColor = "bg-[rgb(45,182,71)]";
-  }
+  }*/
+
+  useEffect(() => {
+          fetchMaintenanceJob(jobId).then((data) => {
+            setMaintenanceData(data || []);
+          });
+      }, [jobId]);
 
   const { t, i18n } = useTranslation("maintenance");
   const [mounted, setMounted] = useState(false);
@@ -53,9 +62,9 @@ export default function ElementPage({ params }) {
 
       <div className="flex items-center pt-2 pb-4">
         <div className='flex items-center gap-4'>
-          <h2 className="text-2xl font-bold">{maintenanceInfo.job_id}</h2>
+          <h2 className="text-2xl font-bold">{maintenancedata.job_id}</h2>
           <div className={`rounded-full py-1 px-4 ${bgColor} ${textColor}`}>
-            {maintenanceInfo.data_recovery_expiration}
+            {maintenancedata.data_recovery_expiration}
           </div>
         </div>
 
@@ -99,12 +108,12 @@ export default function ElementPage({ params }) {
       <div className="flex gap-4">
         <div className="w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md">
           <div className="flex px-2">
-            <MaintenanceDetails details={maintenanceInfo} />
+            <MaintenanceDetails details={maintenancedata} />
           </div>
         </div>
 
         <div className="w-1/4 bg-[#022a52] p-4 rounded-md">
-          <MaintenanceInfo details={maintenanceInfo}/>
+          <MaintenanceInfo details={maintenancedata}/>
         </div>
       </div>
     </div>

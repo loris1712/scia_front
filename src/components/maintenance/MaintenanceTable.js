@@ -2,29 +2,34 @@
 
 import { useState, useEffect } from "react";
 import MaintenanceRow from "./MaintenanceRow";
-import { maintenanceData } from "@/api/maintenance";
+import { fetchMaintenanceJobs } from "@/api/maintenance";
 import SelectModal from "./SelectModal";
 import LegendModal from "./LegendModal";
 import FilterModal from "./FilterModal";
 import { useTranslation } from "@/app/i18n";
-
-const maintenanceTypes = [
-  { id: 1, title: "Manutenzioni ordinarie", tasks: 12, dueDate: "10/05/2024", lastExecution: "09/05/2024" },
-  { id: 2, title: "Manutenzioni straordinarie", tasks: 20, dueDate: "21/05/2024", lastExecution: "18/04/2024" },
-  { id: 3, title: "Manutenzioni annuali", tasks: 7, dueDate: "24/05/2024", lastExecution: "22/04/2024" },
-  { id: 4, title: "Manutenzioni extra", tasks: 31, dueDate: "21/05/2024", lastExecution: "18/04/2024" },
-];
+import { useUser } from "@/context/UserContext";
 
 const MaintenanceTable = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState(maintenanceTypes[0]);
+  const [selectedType, setSelectedType] = useState(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [maintenancedata, setMaintenanceData] = useState(false);
+
+  const shipId = 1;
+  const { user } = useUser();
+
 
   const handleSelectType = (type) => {
     setSelectedType(type);
     setIsOpen(false);
   };
+
+  useEffect(() => {
+        fetchMaintenanceJobs(selectedType?.id, shipId, user?.id).then((data) => {
+          setMaintenanceData(data || []);
+        });
+    }, [selectedType, shipId, user]);
 
   const { t, i18n } = useTranslation("maintenance");
   const [mounted, setMounted] = useState(false);
@@ -43,7 +48,11 @@ const MaintenanceTable = () => {
           className="text-white text-2xl font-semibold flex items-center gap-2 py-2 cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
-          {selectedType.title} ({selectedType.tasks}) &nbsp;
+         {selectedType
+            ? `${selectedType.title} (${selectedType.tasks})`
+            : `${t("all")} (${maintenancedata.length})`
+          } &nbsp;
+
           <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
           </svg>
@@ -73,11 +82,14 @@ const MaintenanceTable = () => {
         <p className="border border-[#022a52] p-3 w-8 text-center"></p>
       </div>
 
-      {maintenanceData.map((item) => (
-        <MaintenanceRow key={item.id} data={item} />
-      ))}
+      {maintenancedata.length > 0 && maintenancedata
+        .filter((item) => !selectedType || item.maintenanceTypeId === selectedType.id)
+        .map((item) => (
+          <MaintenanceRow key={item.id} data={item} />
+        ))
+      }
 
-      <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} />
+      <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} shipId={shipId} userId={user?.id} />
 
       <LegendModal isOpen={legendOpen} onClose={() => setLegendOpen(false)} />
 

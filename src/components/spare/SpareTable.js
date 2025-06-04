@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from "react";
 import SpareRow from "./SpareRow";
 import FilterModal from "./FilterModal";
@@ -21,6 +22,26 @@ const SpareTable = () => {
 
   const shipId = 1;
   const { user } = useUser();
+
+        const [filters, setFilters] = useState({
+          task: {
+            inGiacenza: false,
+            nonDisponibile: false,
+          },
+          fornitore: {
+            myCompany1: false,
+            myCompany2: false,
+            myCompany3: false,
+            myCompany4: false,
+          },
+          magazzino: {
+            aBordo: false,
+            inBanchina: false,
+            inBacino: false,
+            fornitoreEsterno: false,
+          },
+        });
+
 
   const loadTasks = async () => {
     try {
@@ -55,13 +76,59 @@ const SpareTable = () => {
     return total + quantity; 
   }, 0);
 
-  const tasksToShow = selectedType
-    ? selectedType.spares.filter((spare) =>
-        spare.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : tasksData.filter((task) =>
-        task.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  const filteredTasks = tasksData.filter((task) => {
+  const matchesSearch = task.Part_name.toLowerCase().includes(searchTerm.toLowerCase());
+
+const parseQuantity = (q) => {
+  if (!q) return 0;
+  // Cambia virgola con punto e parseFloat
+  return parseFloat(q.replace(',', '.'));
+};
+
+const quantity = parseQuantity(task.quantity);
+
+const matchTaskFilters = (
+  (filters.task.inGiacenza ? quantity > 0 : true) &&
+  (filters.task.nonDisponibile ? quantity <= 0 : true)
+);
+
+const matchWarehouseFilters = (() => {
+  if (
+    !filters.magazzino.aBordo &&
+    !filters.magazzino.inBanchina &&
+    !filters.magazzino.inBacino &&
+    !filters.magazzino.fornitoreEsterno
+  ) {
+    // Se nessun filtro selezionato, passa tutto
+    return true;
+  }
+
+  // Controlla se almeno una location del task corrisponde a un filtro attivo
+  return task.warehouses.some(loc => {
+    if (filters.magazzino.aBordo && loc.name.toLowerCase().includes("a bordo")) return true;
+    if (filters.magazzino.inBanchina && loc.name.toLowerCase().includes("banchina")) return true;
+    if (filters.magazzino.inBacino && loc.name.toLowerCase().includes("bacino")) return true;
+    if (filters.magazzino.fornitoreEsterno && loc.name.toLowerCase().includes("fornitore")) return true;
+    return false;
+  });
+})();
+
+
+  // Add more filters as needed
+
+  return matchesSearch && matchTaskFilters && matchWarehouseFilters;
+});
+
+const toggleFilter = (category, key) => {
+  setFilters((prev) => ({
+    ...prev,
+    [category]: {
+      ...prev[category],
+      [key]: !prev[category][key],
+    },
+  }));
+};
+
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
@@ -138,12 +205,16 @@ const SpareTable = () => {
         />
       </div>
 
-      {tasksToShow.map((task) => (
-        <SpareRow key={task.id} data={task} />
+      {filteredTasks.map((task) => (
+        <SpareRow key={task.ID} data={task} />
       ))}
 
-      <FilterModal isOpen={filterOpen} onClose={() => setFilterOpen(false)} />
-        
+      <FilterModal
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        filters={filters}
+        toggleFilter={toggleFilter}
+      />        
       <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
 
       <MoveProduct isOpen={isOpen2} onClose={() => setIsOpen2(false)} />

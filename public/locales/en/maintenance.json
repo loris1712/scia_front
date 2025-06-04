@@ -74,7 +74,7 @@
     "actions": "Action",
     "search_by_name": "Search by name...",
     "added_to_the_cart": "Added to the cart",
-    "added_cart_text": "The product “Head gasket” has been added to your cart",
+    "added_cart_text": "The product has been added to your cart",
     "supplier": "Fornitore",
     "system_filter": "System filter",
     "search_by_plant": "Search by plant name...",
@@ -92,6 +92,12 @@
     "create_location": "Create location",
     "no_warehouse": "No warehouse",
     "select_warehouse": "Select warehouse",
-    "location": "Location"
+    "location": "Location",
+    "texthistory_title": "Textual historical note",
+    "audiohistory_title": "History of voice notes",
+    "photohistory_title": "Historical photographic notes",
+    "no_audio_notes": "No voice notes found.",
+    "select_maintenance": "Select maintenance",
+    "all": "All"
 }
   

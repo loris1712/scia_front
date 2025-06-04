@@ -4,36 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
 
-export default function FilterSidebar({ isOpen, onClose }) {
-  const [filters, setFilters] = useState({
-    task: {
-      inGiacenza: false,
-      nonDisponibile: false,
-    },
-    fornitore: {
-      myCompany1: false,
-      myCompany2: false,
-      myCompany3: false,
-      myCompany4: false,
-    },
-    magazzino: {
-      aBordo: false,
-      inBanchina: false,
-      inBacino: false,
-      fornitoreEsterno: false,
-    },
-  });
-
-  const toggleFilter = (category, key) => {
-    setFilters((prev) => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [key]: !prev[category][key],
-      },
-    }));
-  };
-
+export default function FilterSidebar({ isOpen, onClose, filters, toggleFilter }) {
   const sidebarRef = useRef(null);
 
   useEffect(() => {

@@ -16,6 +16,40 @@ const ReadingsTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [filters, setFilters] = useState({
+      task: {
+        nascondiTaskEseguiti: false,
+      },
+      squadraDiAssegnazione: {
+        operatori: false,
+        equipaggio: false,
+        manutentori: false,
+        comando: false,
+      },
+      macrogruppoESWBS: {
+        "100 - Scafo": false,
+        "200 - Propulsioni/Motori": false,
+        "300 - Impianto elettrico": false,
+        "400 - Comando, controllo e sorveglianza": false,
+        "500 - Impianti ausiliari": false,
+        "600 - Allestimento e arredamento": false,
+        "700 - Armamenti": false,
+        "800 - Integration / Engineering": false,
+        "900 - Ship assembly / Support services": false,
+      }
+    });
+
+    const toggleFilter = (category, key) => {
+      setFilters((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [key]: !prev[category][key],
+        },
+      }));
+    };
+
+
   const shipId = 1;
   const { user } = useUser();
 
@@ -58,9 +92,55 @@ const ReadingsTable = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  const tasksToShow = selectedType
-  ? tasksData.filter((task) => task.type.id === selectedType.id)
-  : tasksData;
+  
+  const tasksToShow = tasksData.filter((task) => {
+  if (selectedType && task.type.id !== selectedType.id) {
+    return false;
+  }
+
+  if (filters.task.nascondiTaskEseguiti) {
+    if (task.value && task.value !== "") return false;
+  }
+
+  const squadFilters = filters.squadraDiAssegnazione;
+  if (Object.values(squadFilters).some(Boolean)) {
+    
+    const teamMap = {
+      operatori: "Operatori",
+      equipaggio: "Equipaggio",
+      manutentori: "Manutentori",
+      comando: "Comando",
+    };
+
+    const teamMatch = Object.entries(squadFilters)
+      .filter(([, active]) => active)
+      .some(([key]) => task.team.toLowerCase().includes(teamMap[key].toLowerCase()));
+
+    if (!teamMatch) return false;
+  }
+
+  const macroFilters = filters.macrogruppoESWBS;
+  if (Object.values(macroFilters).some(Boolean)) {
+    
+    const eswbsToMacro = {
+      "1": "100 - Scafo",
+      "2": "200 - Propulsioni/Motori",
+      "3": "300 - Impianto elettrico",
+      "4": "400 - Comando, controllo e sorveglianza",
+      "5": "500 - Impianti ausiliari",
+      "6": "600 - Allestimento e arredamento",
+      "7": "700 - Armamenti",
+      "8": "800 - Integration / Engineering",
+      "9": "900 - Ship assembly / Support services",
+    };
+
+    const macroOfTask = eswbsToMacro[task.eswbs_id];
+    if (!macroOfTask || !macroFilters[macroOfTask]) return false;
+  }
+
+  return true;
+});
+
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
@@ -100,7 +180,12 @@ const ReadingsTable = () => {
 
       <LegendModal isOpen={legendOpen} onClose={() => setLegendOpen(false)} />
 
-      <FilterModal isOpen={filterOpen} onClose={() => setFilterOpen(false)} />
+      <FilterModal
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        filters={filters}
+        toggleFilter={toggleFilter}
+      />
         
     </div>
   );

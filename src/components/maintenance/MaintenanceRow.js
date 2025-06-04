@@ -45,9 +45,9 @@ const getStatusColor = (dueDays) => {
 };
 
 const MaintenanceRow = ({ data }) => {
-  const status = calculateStatus(data.data_recovery_expiration);
+  const status = calculateStatus(data.ending_date);
   const today = new Date();
-  const dueDate = new Date(data.data_recovery_expiration);
+  const dueDate = new Date(data.ending_date);
   const dueDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
   const [isOpen, setIsOpen] = useState(false);
@@ -82,7 +82,7 @@ const MaintenanceRow = ({ data }) => {
   const router = useRouter();
 
   const handleRowClick = () => {
-    router.push(`/dashboard/maintenance/${data.job_id}`);
+    router.push(`/dashboard/maintenance/${data.id}`);
   };
 
   const { t, i18n } = useTranslation("maintenance");
@@ -102,13 +102,13 @@ const MaintenanceRow = ({ data }) => {
       style={{ borderLeft: `8px solid ${getStatusColor(dueDays)}` }}
     >
       <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}>
-        <p className="text-white text-[18px] font-semibold truncate">{data.job_id}</p>
+        <p className="text-white text-[18px] font-semibold truncate">{data.job.name}</p>
         <p className="text-white/60 text-[16px] text-sm truncate">
-          Elemento ID: {data.element_eswbs_instance_id}
+          {data.Element.element_model.LCN_name}
         </p>
       </div>
       <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
-        <p className="text-[18px] text-white">{data.execution}</p>
+        <p className="text-[18px] text-white">{data.recurrencyType.name}</p>
         <div className="flex items-center gap-2">
           {areaIcons[data.area] && <img src={areaIcons[data.area]} alt={data.area} className="w-4 h-4" />}
           <p className="text-[16px] text-[#67c2ae]">{data.area}</p>
@@ -141,7 +141,7 @@ const MaintenanceRow = ({ data }) => {
         <Icons icons={data.attachment_link ? ["📎"] : []} />
       </div>
       <div className="border border-[#001c38]" style={{ height: "-webkit-fill-available" }}>
-        <StatusBadge dueDate={data.data_recovery_expiration} dueDays={dueDays} />
+        <StatusBadge dueDate={data.ending_date} dueDays={dueDays} />
       </div>
       <div className="p-3 flex items-center justify-center w-8 relative" ref={dropdownRef}>
         <svg onClick={toggleDropdown} className="cursor-pointer" fill="white" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">

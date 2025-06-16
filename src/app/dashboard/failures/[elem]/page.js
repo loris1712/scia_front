@@ -121,14 +121,14 @@ export default function ElementPage({ params }) {
       {isOpen && <PauseModal onClose={() => setIsOpen(false)} />}
       {noteModal && <NoteModal onClose={() => setNoteModal(false)} id={id} />}
 
-      <div className="flex gap-4">
-        <div className="w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md">
+      <div className="block sm:flex gap-4">
+        <div className="sm:w-3/4 w-full space-y-4 bg-[#022a52] p-4 rounded-md sm:mb-0 mb-4">
           <div className="flex px-2">
             <MaintenanceDetails details={failure} />
           </div>
         </div>
 
-        <div className="w-1/4 bg-[#022a52] p-4 rounded-md">
+        <div className="sm:w-1/4 w-full bg-[#022a52] p-4 rounded-md">
           <MaintenanceInfo details={failure}/>
         </div>
       </div>

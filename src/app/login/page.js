@@ -72,7 +72,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
               value={email}
               placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-[#1E2A3D] text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 bg-[#1E2A3D] text-white focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md"
               required
             />
           </div>
@@ -83,7 +83,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
               value={password}
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-[#1E2A3D] text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 bg-[#1E2A3D] text-white focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md"
               required
             />
           </div>
@@ -97,7 +97,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
           <button
             type="submit"
             disabled={loading}
-            className={`mt-6 w-full bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-4 px-4 transition duration-200 ${
+            className={`mt-6 w-full bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-4 px-4 transition duration-200 rounded-md ${
               loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           >

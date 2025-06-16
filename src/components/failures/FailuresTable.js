@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import FailuresRow from "./FailuresRow";
-import LegendModal from "./LegendModal";
 import FilterModal from "./FilterModal";
 import FailuresModal from "./FailuresModal";
 import { getFailures } from "@/api/failures";
 import { useTranslation } from "@/app/i18n";
+import { useUser } from "@/context/UserContext";
 
 const FailuresTable = () => {
   const [failures, setFailures] = useState([]);
@@ -28,6 +28,9 @@ const FailuresTable = () => {
     },
   });
 
+  const shipId = 1;
+  const { user } = useUser();
+
   const [loading, setLoading] = useState(true);
 
   const { t, i18n } = useTranslation("failures");
@@ -38,10 +41,10 @@ const FailuresTable = () => {
   useEffect(() => {
     async function fetchFailures() {
       try {
-        const data = await getFailures();
+        const data = await getFailures("", shipId);
         setFailures(data);
         setFilteredFailures(data);
-        console.log("Dati fetchati:", data);
+        
       } catch (error) {
         console.error("Errore fetch avarie:", error);
       } finally {
@@ -50,14 +53,6 @@ const FailuresTable = () => {
     }
     fetchFailures();
   }, []);
-
-  // Mappa usata per tradurre i tipi utente, coerente con FilterModal
-  const executionUserTypeMap = {
-    connected_user: "operatori",
-    crew: "equipaggio",
-    maintenance: "manutentori",
-    command: "comando",
-  };
 
   useEffect(() => {
     if (!filters) return;
@@ -71,7 +66,7 @@ const FailuresTable = () => {
         .filter(([_, isActive]) => isActive)
         .map(([team]) => team);
 
-      const result = failures.filter((failure) => {
+        const result = failures.filter((failure) => {
         const failureTeam = failure.executionUserType;
 
         const matchGravity =
@@ -93,7 +88,7 @@ const FailuresTable = () => {
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
-      <div className="flex items-center mb-2">
+      <div className="sm:flex items-center mb-2">
         <button
           className="text-white text-2xl font-semibold flex items-center gap-2 py-2 cursor-pointer"
           onClick={() => setFilterOpen(true)}
@@ -102,7 +97,6 @@ const FailuresTable = () => {
         </button>
 
         <div className="flex items-center ml-auto gap-4">
-          {/* Gravitá Button */}
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
@@ -114,10 +108,9 @@ const FailuresTable = () => {
               <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-green-500 rounded-bl-full"></div>
               <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-yellow-400 rounded-br-full"></div>
             </div>
-            &nbsp;&nbsp; {t("severity")}
+            <span className="hidden sm:block">&nbsp;&nbsp; {t("severity")}</span>
           </button>
 
-          {/* Filtri Button */}
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
@@ -132,10 +125,9 @@ const FailuresTable = () => {
             >
               <path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z" />
             </svg>
-            &nbsp; {t("filters")}
+            <span className="hidden sm:block">&nbsp; {t("filters")}</span>
           </button>
 
-          {/* Aggiungi Avaria Button */}
           <button
             type="button"
             onClick={() => setAddFailureOpen(true)}
@@ -150,12 +142,12 @@ const FailuresTable = () => {
             >
               <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
             </svg>
-            &nbsp; {t("add_failure")}
+            <span className="hidden sm:block">&nbsp; {t("add_failure")}</span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-[3fr_1fr_1fr_1fr] bg-white rounded-t-lg font-semibold text-black/70">
+      <div className="hidden sm:grid grid-cols-[3fr_1fr_1fr_1fr] bg-white rounded-t-lg font-semibold text-black/70">
         <p className="border p-3">{t("title")} / ESWBS</p>
         <p className="border p-3 text-center">{t("notes")}</p>
         <p className="border p-3 text-center">{t("user")}</p>

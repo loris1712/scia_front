@@ -16,7 +16,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, files }) {
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[70%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] sm:w-[70%] w-full sm:h-auto h-full p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">Selezione File</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -25,7 +25,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, files }) {
         </div>
 
         <div className="bg-transparent rounded-md overflow-hidden">
-          <table className="w-full text-white border-collapse">
+          <table className="w-full text-white border-collapse sm:table hidden">
             <thead className="bg-white text-black">
               <tr>
                 <th className="p-3 text-left border border-[#022a52]">Seleziona</th>
@@ -63,6 +63,33 @@ export default function SelectModal({ isOpen, onClose, onSelect, files }) {
               )}
             </tbody>
           </table>
+
+          <div className="sm:hidden flex flex-col gap-4">
+            {files.length > 0 ? (
+                files.map((file) => (
+                <label
+                  key={file.id}
+                  className={`cursor-pointer rounded-md p-4 flex items-center gap-4 border-b border-black
+`}
+                >
+                  <input
+                        type="radio"
+                        name="maintenanceType"
+                        value={file.id}
+                        onChange={() => setSelectedType(file)}
+                        checked={selectedType?.id === file.id}
+                      />
+                  <div className="flex flex-col flex-grow gap-2">
+                    <span className={`rounded-full py-1 px-3 w-[fit-content] bg-[#395575] text-[10px]`}>{file.file_name}</span>
+                    <span className="font-semibold text-2xl text-white">{file.file_name}</span>
+                    <span className="text-[#9ba7b9]">Pag: 390 - Ultima agg: 18/04/2024</span>
+                  </div>
+                </label>
+              ))
+            ) : (
+              <p className="text-center">{t("no_data_available")}</p>
+            )}
+          </div>
         </div>
 
         <button

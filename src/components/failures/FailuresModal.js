@@ -47,6 +47,7 @@ export default function FailureModal({ isOpen, onClose, data }) {
   };
 
   const { user } = useUser();
+  const ship_id = 1;
 
   const handleSubmit = async () => {
     const resolvedExecutionUserType =
@@ -61,6 +62,7 @@ export default function FailureModal({ isOpen, onClose, data }) {
       userExecution: resolvedExecutionUserType,
       partNumber,
       customFields,
+      ship_id
     };
   //console.log(payload)
     try {
@@ -72,13 +74,13 @@ export default function FailureModal({ isOpen, onClose, data }) {
       console.error("Errore durante la creazione dell'avaria:", error);
     }
   };
-  
+   
   const { t, i18n } = useTranslation("failures");
   if (!i18n.isInitialized) return null;
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[50%] p-6 rounded-md shadow-lg text-white" style={{overflowY: 'scroll', height: '70vh'}}>
+      <div className="bg-[#022a52] sm:w-[50%] w-full p-6 rounded-md shadow-lg text-white" style={{overflowY: 'scroll', height: '70vh'}}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">{t("add_failure")}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -86,9 +88,9 @@ export default function FailureModal({ isOpen, onClose, data }) {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 mb-4">
                 <div className="flex flex-col">
-                  <label className="text-[#789FD6] text-sm mb-2">{t("title")}</label>
+                  <label className="text-[#789FD6] text-sm mb-2">{t("titolo")}</label>
                   <div className="relative">
                     <input
                       type="text"
@@ -125,7 +127,7 @@ export default function FailureModal({ isOpen, onClose, data }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid sm:grid-cols-2 grid-cols-1  gap-4 mb-4">
                 <div className="flex flex-col">
                   <label className="text-[#789FD6] text-sm mb-2">{t("date")}</label>
                   <div className="relative">
@@ -158,7 +160,7 @@ export default function FailureModal({ isOpen, onClose, data }) {
                 
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 mb-4">
                 <div className="flex flex-col">
                   <label className="text-[#789FD6] text-sm mb-2">{t("failure_modal1")}</label>
                   <div className="relative">

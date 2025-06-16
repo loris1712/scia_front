@@ -23,15 +23,24 @@ export async function addFailure(payload) {
   }
 }
 
-export async function getFailures(filters = {}) {
+export async function getFailures(filters = {}, ship_id) {
   try {
-    const queryParams = new URLSearchParams(filters).toString();
-    const res = await fetch(`${BASE_URL}/api/failures/getFailures${queryParams ? "?" + queryParams : ""}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
+    const query = {
+      ...filters,
+      ...(ship_id && { ship_id })
+    };
+
+    const queryParams = new URLSearchParams(query).toString();
+
+    const res = await fetch(
+      `${BASE_URL}/api/failures/getFailures${queryParams ? "?" + queryParams : ""}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
 
     if (!res.ok) {
       throw new Error(`Errore HTTP ${res.status}: Impossibile recuperare le avarie`);
@@ -45,11 +54,12 @@ export async function getFailures(filters = {}) {
   }
 }
 
+
 export async function addPhotographicNote(formData) {
 
   return await fetch(`${BASE_URL}/api/uploadFiles/uploadPhoto`, {
     method: "POST",
-    body: formData, // lascia che il browser imposti Content-Type con boundary
+    body: formData,
   });
 }
 
@@ -62,6 +72,29 @@ export async function addVocalNote(formData) {
 
 export async function addTextNote(payload) {
   return await fetch(`${BASE_URL}/api/uploadFiles/uploadText`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function addPhotographicNoteGeneral(formData) {
+
+  return await fetch(`${BASE_URL}/api/uploadFiles/uploadPhotoGeneral`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function addVocalNoteGeneral(formData) {
+  return await fetch(`${BASE_URL}/api/uploadFiles/uploadAudioGeneral`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function addTextNoteGeneral(payload) {
+  return await fetch(`${BASE_URL}/api/uploadFiles/uploadTextGeneral`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

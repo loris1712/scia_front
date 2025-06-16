@@ -5,16 +5,13 @@ import Image from 'next/image';
 import SpareModal from "./SpareModal";
 import FacilitiesModal from "@/components/maintenance/FacilitiesModal";
 import { useTranslation } from "@/app/i18n";
+import SpareSelector from "./SpareSelector";
 
 const MaintenanceInfo = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
-
-  const handleProductSelect = (imageSrc) => {
-    setSelectedProduct(imageSrc);
-  };
+  const [selectedSpare, setSelectedSpare] = useState([]);
 
   const { t, i18n } = useTranslation("maintenance");
     const [mounted, setMounted] = useState(false);
@@ -42,7 +39,7 @@ const MaintenanceInfo = ({ details }) => {
           overflow: "hidden",
         }}
       >
-        {details.job_id}
+        {details[0]?.job.long_description}
       </p>
 
       {!showFull && (
@@ -61,18 +58,10 @@ const MaintenanceInfo = ({ details }) => {
         <div className="flex flex-col gap-4">
 
         <div className="flex overflow-x-auto gap-4 py-2 custom-carousel" style={{display: 'flex !important', flexFlow: 'nowrap !important'}}>
-          <div className="overflow-x-scroll flex space-x-4" style={{overflowX: 'scroll'}}>
-            {['/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg'].map((src, index) => (
-              <div
-                key={index}
-                className={`w-20 h-20 relative cursor-pointer rounded-lg overflow-hidden ${selectedProduct === src ? 'border-4 border-[#789fd6]' : ''}`}
-                onClick={() => handleProductSelect(src)}
-                style={{flex: 'none'}}
-              >
-                <Image src={src} alt={`Motor ${index + 1}`} layout="fill" objectFit="cover" />
-              </div>
-            ))}
-          </div>
+          <SpareSelector
+            images={['/motor.jpg', '/motor.jpg', '/motor.jpg', '/motor.jpg']}
+            onSelectChange={(selected) => setSelectedSpare(selected)}
+          />
         </div>
 
         </div>
@@ -98,7 +87,7 @@ const MaintenanceInfo = ({ details }) => {
       </div>
 
       {isOpen && (
-        <SpareModal onClose={() => setIsOpen(false)}/>
+        <SpareModal onClose={() => setIsOpen(false)} maintenanceListId={details[0]?.id}/>
       )}
 
       <div className="mb-6">
@@ -138,7 +127,7 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>1 settimana</p>
+        <p>{details[0]?.job.recurrency_days} gg</p>
   
         </div>
 
@@ -153,13 +142,21 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>1 settimana</p>
+        <p>
+          {details[0]?.execution_date &&
+            new Date(details[0].execution_date).toLocaleDateString("it-IT", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}
+        </p>
+
   
         </div>
 
       </div>
 
-      <FacilitiesModal isOpen={facilitiesOpen} onClose={() => setFacilitiesOpen(false)} />
+      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
       
     </div>
   );

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
-import { getTexts } from "@/api/shipFiles";
+import { getTextsGeneral } from "@/api/shipFiles";
 
 export default function NoteModal({ onClose, failureId = 1 }) {
     const [texts, setText] = useState([]);
@@ -16,7 +16,7 @@ export default function NoteModal({ onClose, failureId = 1 }) {
 
     useEffect(() => {
         const fetchTexts = async () => {
-                const data = await getTexts(failureId, "failure");
+                const data = await getTextsGeneral(failureId, "maintenance");
                 setText(data.notes || []);
             };
 
@@ -29,7 +29,7 @@ export default function NoteModal({ onClose, failureId = 1 }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-2">
-            <div className="bg-[#022a52] w-[70%] p-5 rounded-md shadow-lg text-white">
+            <div className="bg-[#022a52] sm:w-[70%] w-full p-5 rounded-md shadow-lg text-white">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-[26px] font-semibold">{t("texthistory_title")}</h2>
                     <button className="text-white text-xl cursor-pointer" onClick={onClose}>

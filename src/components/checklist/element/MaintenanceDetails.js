@@ -110,7 +110,7 @@ const MaintenanceDetails = ({ details }) => {
                 height={20} 
                 className="mr-2" 
             />
-            {t("ok")}
+            <span className="sm:block hidden">{t("ok")}</span>
             </button>
 
             <button className="cursor-pointer flex items-center justify-center w-full py-6 bg-[#ffffff10] text-white rounded-md hover:bg-blue-700 transition duration-300">
@@ -121,22 +121,22 @@ const MaintenanceDetails = ({ details }) => {
                 height={20} 
                 className="mr-2" 
             />
-            {t("anomaly")}
+            <span className="sm:block hidden">{t("anomaly")}</span>
             </button>
         </div>
       </div>
 
       {noteHistoryModal &&
-              <NoteHistoryModal onClose={() => setNoteHistoryModal(false)} />
-            }
+        <NoteHistoryModal onClose={() => setNoteHistoryModal(false)} />
+      }
 
-            {photoHistoryModal &&
-                    <PhotoHistoryModal onClose={() => setPhotoHistoryModal(false)} />
-                  }
+      {photoHistoryModal &&
+        <PhotoHistoryModal onClose={() => setPhotoHistoryModal(false)} />
+      }
             
-                  {textHistoryModal &&
-                    <TextHistoryModal onClose={() => setTextHistoryModal(false)} />
-                  }
+      {textHistoryModal &&
+        <TextHistoryModal onClose={() => setTextHistoryModal(false)} />
+      }
       
     </div>
   );

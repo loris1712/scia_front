@@ -3,15 +3,16 @@
 import { useState } from "react";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
+import Link from "next/link";
 
 export default function CartAdded({ onClose }) {
 
     const { t, i18n } = useTranslation("maintenance");
-        if (!i18n.isInitialized) return null;
+    if (!i18n.isInitialized) return null;
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-10">
-            <div className="bg-[#022a52] w-[70%] p-5 rounded-md shadow-lg text-white">
+            <div className="bg-[#022a52] sm:w-[70%] w-full p-5 rounded-md shadow-lg text-white">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-[26px] font-semibold">{t("added_to_the_cart")}</h2>
                     <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -21,9 +22,14 @@ export default function CartAdded({ onClose }) {
 
                 <p>{t("added_cart_text")}</p>
 
+                <Link href="/dashboard/cart">
+                    <button className="w-full bg-[#ffffff10] px-3 py-4 rounded-md mt-4 text-white font-semibold cursor-pointer">
+                        {t("go_to_cart")}
+                    </button>
+                </Link>
 
                 <button onClick={onClose} className="w-full bg-[#789fd6] px-3 py-4 rounded-md mt-4 text-white font-semibold cursor-pointer">
-                    {t("close_button")}
+                    {t("add_other_products")}
                 </button>
             </div>
         </div>

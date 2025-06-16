@@ -60,7 +60,7 @@ const CartTable = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
+      <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
         <p className="border border-[#022a52] p-3">{t("name")}</p>
         <p className="border border-[#022a52] p-3 text-center">{t("part_number")}</p>
         <p className="border border-[#022a52] p-3 text-center">{t("supplier")}</p>

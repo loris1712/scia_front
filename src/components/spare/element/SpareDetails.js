@@ -6,6 +6,7 @@ import FacilitiesModal from "@/components/maintenance/FacilitiesModal";
 import ElementIcon from "@/components/ElementIcon";
 import PositionIcon from "@/components/PositionIcon";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 const SpareDetails = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
@@ -13,9 +14,12 @@ const SpareDetails = ({ details }) => {
 
   const router = useRouter();
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   return (
 
-    <div className="grid grid-cols-2 gap-4 px-2">
+    <div className="grid sm:grid-cols-2 gap-4 px-2">
       <div className="p-2 w-full">
 
       <div className="mb-6">
@@ -31,7 +35,7 @@ const SpareDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Immagine</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("image")}</h2>
         </div>
 
         <Image 
@@ -47,7 +51,7 @@ const SpareDetails = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">Q.tá installata</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("q_installed")}</h2>
         </div>
 
         <p className="text-md text-[#fff]">{details && details.length > 0 ? details[0].quantity : "Non disponibile"}</p>
@@ -195,10 +199,9 @@ const SpareDetails = ({ details }) => {
 
       </div> 
 
-            <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
+      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
                     
     </div>
-    
     
   );
 };

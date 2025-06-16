@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useTranslation } from "@/app/i18n";
+import { updateMaintenanceJobStatus, handleSaveStatusComment } from "@/api/maintenance";
 
-export default function PauseModal({ onClose }) {
+export default function PauseModal({ oldStatusId, jobId, onClose }) {
   const { t, i18n } = useTranslation("maintenance");
 
   const [reactivationDate, setReactivationDate] = useState("");
@@ -11,6 +12,22 @@ export default function PauseModal({ onClose }) {
   const [reactivation, setReactivation] = useState(false);
   const [oneReason, setOneReason] = useState(false);
   const [allFacilities, setAllFacilities] = useState(false);
+
+  const handleSaveStatus = async () => {
+    const commentData = {
+      maintenance_id: jobId,
+      date: reactivationDate ? new Date(reactivationDate) : null,
+      date_flag: reactivation ? "no_reactivation" : null,
+      reason,
+      only_this: oneReason ? "true" : null,
+      all_from_this_product: allFacilities ? "true" : null,
+      old_status_id: oldStatusId,
+      new_status_id: 2,
+    };
+
+    await handleSaveStatusComment(jobId, commentData);
+    await updateMaintenanceJobStatus(jobId, 1);
+  };
 
   if (!i18n.isInitialized) return null;
 
@@ -32,11 +49,14 @@ export default function PauseModal({ onClose }) {
             <div className="flex w-full">
               <div className="w-[50%]">
                 <input
-                  type="text"
+                  type="date"
                   placeholder={t("write_here")}
                   value={reactivationDate}
                   onChange={(e) => setReactivationDate(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none mt-2"
+                  disabled={reactivation}
+                  className={`w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none mt-2 ${
+                    reactivation ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 />
               </div>
 
@@ -96,7 +116,8 @@ export default function PauseModal({ onClose }) {
           </div>
         </div>
 
-        <button className="w-full bg-[#789fd6] px-3 py-4 rounded-md mt-4 text-white font-semibold cursor-pointer">
+        <button onClick={() => handleSaveStatus()}
+ className="w-full bg-[#789fd6] px-3 py-4 rounded-md mt-4 text-white font-semibold cursor-pointer">
           {t("save")}
         </button>
       </div>

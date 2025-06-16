@@ -12,7 +12,7 @@ export default function NotesModal({ isOpen, onClose, data }) {
     
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[50%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] sm:w-[50%] w-full p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">{t("notes")}: {data.element_eswbs_instance_id}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -55,7 +55,7 @@ export default function NotesModal({ isOpen, onClose, data }) {
             </div>
         </div>
         <button
-          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6"
+          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6 rounded-md"
           onClick={onClose}
         >
           {t("close_button")}

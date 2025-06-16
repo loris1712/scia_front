@@ -22,8 +22,6 @@ export default function withAuth(Component) {
             credentials: "include",
           });
 
-          console.log(response)
-
           if (!response.ok) {
             throw new Error("Sessione non valida");
           }

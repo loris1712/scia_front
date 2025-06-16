@@ -22,11 +22,11 @@ export default function DashboardHeader() {
           className="flex-[1] h-full flex items-center justify-center bg-[#022a52] rounded-lg cursor-pointer"
           onClick={() => router.back()}
         >
-          <BackIcon className="w-6 h-6 text-white" />
+          <BackIcon className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
         </div>
       )}
 
-      <div className="flex-[3] h-full flex items-center bg-[#022a52] rounded-lg p-3">
+      <div className="sm:flex-[3] flex-[1] h-full flex items-center bg-[#022a52] rounded-lg p-3">
         <UserInfo />
       </div>
 
@@ -34,7 +34,7 @@ export default function DashboardHeader() {
         <QRCode />
       </div>
 
-      <div className="flex-[5] h-full flex items-center bg-[#022a52] rounded-lg p-3">
+      <div className="flex-[5] h-full flex items-center bg-[#022a52] rounded-lg py-3 px-6 hidden sm:block">
         <LastScan />
       </div>
 

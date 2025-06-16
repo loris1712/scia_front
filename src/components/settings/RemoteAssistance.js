@@ -42,7 +42,7 @@ export default function RemoteAssistance() {
 
                     <p className="w-70 ml-auto mr-auto my-6">{t("remote_assistance_title")}</p>
 
-                    <div className="w-[fit-content] flex items-center gap-6 ml-auto mr-auto">
+                    <div className="w-[fit-content] sm:flex block items-center gap-6 ml-auto mr-auto">
                         <button
                             type="submit"
                             onClick={() => handleButtonStartDevice()}

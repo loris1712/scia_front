@@ -41,7 +41,6 @@ const ManualInterface = () => {
       }
     };
     
-  
     useEffect(() => {
       loadTasks();
     }, [shipId, user]);

@@ -5,7 +5,12 @@ import Image from "next/image";
 import { useUser } from "@/context/UserContext";
 import { fetchTasks } from "@/api/checklist";
 import { fetchMaintenanceJobs } from "@/api/maintenance";
+import { getReadings } from "@/api/readings";
+import { fetchSpares } from "@/api/spare";
+import { getFailures } from "@/api/failures";
+
 import { useTranslation } from "@/app/i18n";
+import { useRouter } from "next/navigation";
 
 const categories = [
   { id: "Maintenance", titleKey: "maintenance", imageSrc: "/icons/ico_dashboard_maintenance.png" },
@@ -19,30 +24,57 @@ const categories = [
 const fetchByCategory = {
   Checklist: fetchTasks,
   Maintenance: fetchMaintenanceJobs,
+  Readings: getReadings,
+  Spare: fetchSpares,
+  failures: getFailures,
 };
 
 export default function DashboardGrid() {
   const [tasks, setTasks] = useState({});
+  const router = useRouter(); 
 
-  const shipId = 1;
-    const { user } = useUser();
+    const shipId = 1;
+    const { user, loading } = useUser();
     const [checklist, setChecklist] = useState([]);
 
     const { t, i18n } = useTranslation("dashboard");
-  const [mounted, setMounted] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     const loadDataForCategory = async (categoryId) => {
-      const fetchFunction = fetchByCategory[categoryId];
-      if (!fetchFunction) return null;
-    
-      try {
-        const data = await fetchFunction(shipId, user?.id);
-        return data;
-      } catch (err) {
-        console.error(`Errore nel fetch di ${categoryId}:`, err);
-        return null;
+    const fetchFunction = fetchByCategory[categoryId];
+    if (!fetchFunction) return null;
+
+    try {
+      switch (categoryId) {
+        case "Checklist":
+          return await fetchFunction(shipId, user?.id);
+
+        case "Maintenance":
+          return await fetchFunction("undefined",shipId, user?.id);
+
+        case "Readings":
+          return await fetchFunction(shipId, user?.id);
+
+        case "Spare":
+          return await fetchFunction(shipId);
+        case "failures":
+          return await fetchFunction("", shipId);
+
+        default:
+          return null;
       }
+    } catch (err) {
+      console.error(`Errore nel fetch di ${categoryId}:`, err);
+      return null;
+    }
     };
+
+    useEffect(() => {
+      if (!loading && user === null) {
+        console.log("User è null, faccio refresh");
+        window.location.reload();
+      }
+    }, [user, loading]);
   
     useEffect(() => {
       const loadAllData = async () => {
@@ -59,7 +91,7 @@ export default function DashboardGrid() {
       };
     
       if (user) loadAllData();
-    }, [shipId, user]);
+    }, [user]);
 
     useEffect(() => {
       setMounted(true);
@@ -69,7 +101,7 @@ export default function DashboardGrid() {
 
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full sm:pb-0 pb-8">
       {categories.map((category) => (
         <DashboardCard
           key={category.id}
@@ -78,10 +110,8 @@ export default function DashboardGrid() {
           imageSrc={category.imageSrc} 
           tasks={tasks[category.id] || []}
           data={checklist}
-        >
-        </DashboardCard>
+        />
       ))}
     </div>
   );
 }
-

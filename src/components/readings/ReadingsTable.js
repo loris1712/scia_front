@@ -141,7 +141,6 @@ const ReadingsTable = () => {
   return true;
 });
 
-
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
       <div className="items-center flex mb-2">
@@ -165,7 +164,7 @@ const ReadingsTable = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
+      <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] text-black/70 bg-white rounded-t-lg font-semibold">
         <p className="border border-[#022a52] p-3">Task / ESWBS</p>
         <p className="border border-[#022a52] p-3 text-center">{t("anniversary")}</p>
         <p className="border border-[#022a52] p-3 text-center">{t("notes")}</p>
@@ -177,8 +176,6 @@ const ReadingsTable = () => {
       })}
 
       <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} datas={tasksData} />
-
-      <LegendModal isOpen={legendOpen} onClose={() => setLegendOpen(false)} />
 
       <FilterModal
         isOpen={filterOpen}

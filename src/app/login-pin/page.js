@@ -47,8 +47,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
         const data = await response.json();
         throw new Error(data.error || "Errore di login");
       }
-
-      console.log("Ciao")
   
       router.push("/dashboard");
     } catch (err) {

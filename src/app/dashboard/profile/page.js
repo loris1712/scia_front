@@ -14,7 +14,7 @@ export default function DashboardPage() {
   const { t, i18n } = useTranslation("profile");
   const [mounted, setMounted] = useState(false);
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
   //const BASE_URL = "http://52.59.162.108:4000";
 
   const handleLogout = async () => {
@@ -47,20 +47,21 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
       <div className="flex items-center pt-2 pb-4">
       <h2 className="text-2xl font-bold">{t("profile")}</h2>
       <button
-                  type="submit"
-                  onClick={handleLogout}
-                  className={'flex items-center rounded-md ml-auto bg-[#D0021B] hover:bg-blue-500 text-white font-bold py-1 px-4 transition duration-200 cursor-pointer'}
-                >
-                  <Image 
-                                                                      src="/icons/logout.svg"
-                                                                      alt="Logout"
-                                                                      width={15} 
-                                                                      height={15}
-                                                                      className=""
-                                                                    />
-                                                                    &nbsp;
-                                                                    {t("logout")}
-                </button>
+  type="submit"
+  onClick={handleLogout}
+  className="flex items-center rounded-md ml-auto bg-[#D0021B] hover:bg-blue-500 text-white font-bold p-4 sm:px-4 sm:py-1 sm:p-0 transition duration-200 cursor-pointer"
+>
+  <Image 
+    src="/icons/logout.svg"
+    alt="Logout"
+    width={15} 
+    height={15}
+    className="sm:mr-2"
+  />
+  <span className="hidden sm:inline">{t("logout")}</span>
+</button>
+ 
+
     </div>
 
       <div className="flex-1">

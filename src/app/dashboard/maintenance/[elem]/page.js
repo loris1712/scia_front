@@ -10,32 +10,21 @@ import NoteModal from "@/components/maintenance/element/NoteModal";
 import { fetchMaintenanceJob } from "@/api/maintenance";
 import { useParams } from "next/navigation";
 import { useTranslation } from "@/app/i18n";
+import { updateMaintenanceJobStatus } from "@/api/maintenance";
+import StatusBadgeDetail from "@/components/maintenance/StatusBadgeDetail";
 
 export default function ElementPage({ params }) {
   const [isOpen, setIsOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
   
   const params2 = useParams();
-  const jobId = params2.elem;
-
-  //const maintenanceInfo = maintenanceData.find((item) => item.job_id === jobId);
- 
-  let bgColor = "bg-gray-400";
-  let textColor = "text-white"; 
+  const jobId = params2.elem; 
 
   const [maintenancedata, setMaintenanceData] = useState(false);
 
-
-  /*if (maintenanceInfo.dueDays < -15) {
-    bgColor = "bg-[rgb(208,2,27)]"; 
-  } else if (maintenanceInfo.dueDays < 0) {
-    bgColor = "bg-[rgb(244,114,22)]"; 
-  } else if (maintenanceInfo.dueDays <= 3) {
-    bgColor = "bg-[rgb(255,191,37)]";
-    textColor = "text-black"; 
-  } else if (maintenanceInfo.dueDays > 15) {
-    bgColor = "bg-[rgb(45,182,71)]";
-  }*/
+  const handleOptionClick = async (option) => {
+    await updateMaintenanceJobStatus(jobId, option);
+  };
 
   useEffect(() => {
           fetchMaintenanceJob(jobId).then((data) => {
@@ -60,59 +49,82 @@ export default function ElementPage({ params }) {
         <Breadcrumbs />
       </div>
 
-      <div className="flex items-center pt-2 pb-4">
-        <div className='flex items-center gap-4'>
-          <h2 className="text-2xl font-bold">{maintenancedata.job_id}</h2>
-          <div className={`rounded-full py-1 px-4 ${bgColor} ${textColor}`}>
-            {maintenancedata.data_recovery_expiration}
-          </div>
+      <div className="flex items-start sm:items-center pt-2 pb-4">
+        <div className='block sm:flex items-center gap-4'>
+          
+          <h2 className="text-2xl font-bold sm:mb-0 mb-2">{maintenancedata[0]?.job.name}</h2>
+          <StatusBadgeDetail dueDate={maintenancedata[0]?.ending_date} />
+
+          {maintenancedata[0]?.status.id === 1 && (
+            <div className={`w-[fit-content] sm:mt-0 mt-2 rounded-full py-1 px-4 bg-[#15375d] text-[12px] text-white`}>
+              {t("active")}
+            </div>
+          )}
+
+          {maintenancedata[0]?.status.id === 2 && (
+            <div className={`w-[fit-content] sm:mt-0 mt-2 rounded-full py-1 px-4 bg-[#15375d] text-[12px] text-white`}>
+            {t("inPause")}
+            </div>
+          )}
         </div>
 
-        <div className='ml-auto flex items-center gap-4'>
-          <button
-            type="submit"
-            onClick={() => setIsOpen(!isOpen)}
-            className="rounded-md flex items-center bg-[#022a52] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer"
-          >
-              <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"/></svg> 
-              &nbsp;&nbsp; {t("pause")}
-          </button>
+        <div className="ml-auto flex items-center gap-4">
+          {maintenancedata[0]?.status.id === 1 && (
+            <button
+              type="submit"
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-md flex items-center bg-[#022a52] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer"
+            >
+              <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"/>
+              </svg>
+               <span className="hidden sm:block">&nbsp;&nbsp; {t("pause")}</span>
+            </button>
+          )}
 
-          <button
-            type="submit"
-            className="rounded-md flex items-center bg-[#022a52] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer"
-          >
-              <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
-              &nbsp;&nbsp; {t("start")}
-          </button>
+          {maintenancedata[0]?.status.id === 2 && (
+            <button
+              type="submit"
+              onClick={() => handleOptionClick(1)}
+              className="rounded-md flex items-center bg-[#022a52] hover:bg-blue-500 text-white font-bold py-2 px-4 transition duration-200 cursor-pointer"
+            >
+              <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+              </svg>
+              <span className="hidden sm:block">&nbsp;&nbsp; {t("start")}</span>
+            </button>
+          )}
 
           <button
             type="submit"
             onClick={() => setNoteModal(!noteModal)}
             className="rounded-md flex items-center bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-1 px-4 transition duration-200 cursor-pointer"
           >
-            <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
-            &nbsp;&nbsp; {t("add_note")}
+            <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+            </svg>
+            &nbsp;&nbsp; <span className="hidden sm:block">{t("add_note")}</span>
           </button>
         </div>
+
       </div>
 
       {isOpen && (
-        <PauseModal onClose={() => setIsOpen(false)} />
+        <PauseModal oldStatusId={maintenancedata[0].status.id} jobId={jobId} onClose={() => setIsOpen(false)} />
       )}
 
       {noteModal && (
-        <NoteModal onClose={() => setNoteModal(false)} />
+        <NoteModal onClose={() => setNoteModal(false)} id={maintenancedata[0].id} />
       )}
 
-      <div className="flex gap-4">
-        <div className="w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md">
-          <div className="flex px-2">
+      <div className="block sm:flex gap-4">
+        <div className="sm:w-3/4 w-full space-y-4 bg-[#022a52] p-4 rounded-md sm:mb-0 mb-4">
+          <div className="flex sm:px-2">
             <MaintenanceDetails details={maintenancedata} />
           </div>
         </div>
 
-        <div className="w-1/4 bg-[#022a52] p-4 rounded-md">
+        <div className="sm:w-1/4 w-full bg-[#022a52] p-4 rounded-md">
           <MaintenanceInfo details={maintenancedata}/>
         </div>
       </div>

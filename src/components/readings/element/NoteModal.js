@@ -23,7 +23,7 @@ export default function NoteModal({ onClose }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-10">
-            <div className="bg-[#022a52] w-[70%] p-5 rounded-md shadow-lg text-white">
+            <div className="bg-[#022a52] sm:w-[70%] w-full p-5 rounded-md shadow-lg text-white">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-[26px] font-semibold">{t("add_note")}</h2>
                     <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -31,7 +31,7 @@ export default function NoteModal({ onClose }) {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid sm:grid-cols-3 gap-4 mb-4">
     
                     <div className={`bg-[#00000020] p-8 w-full rounded-md mb-4 cursor-pointer`}>
                         <div>

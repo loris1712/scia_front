@@ -16,7 +16,7 @@ export default function LegendModal({ isOpen, onClose }) {
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[50%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] w-[100%] sm:w-[50%] p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">{t("legend_title")}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -26,7 +26,7 @@ export default function LegendModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-2 grid-cols-1 sm:gap-6 gap-3">
           
           <div className="space-y-3">
             <LegendItem icon="/icons/Shape-2.png" label={t("items.time_deadline")} />
@@ -45,7 +45,7 @@ export default function LegendModal({ isOpen, onClose }) {
         </div>
 
         <button
-          className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer"
+          className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer rounded-md"
           onClick={onClose}
         >
           {t("close_button")}

@@ -18,12 +18,12 @@ export default function LastScan() {
 
   return (
     <>
-      <div className="flex items-center p-3 rounded-lg w-full cursor-pointer" 
+      <div className="flex items-center rounded-lg w-full cursor-pointer" 
           onClick={() => setIsOpen(true)}> 
         <div>
-          <p className="text-sm text-[#ffffff60]">{t("last_scan")}</p>
+          <p className="text-[11px] text-[#ffffff60]">{t("last_scan")}</p>
           <p className="text-xl font-semibold">Motore centrale</p>
-          <p className="text-xs text-[#ffffff60]">
+          <p className="text-[11px] text-[#ffffff60]">
             2.1.4 Propulsione Diesel - S/N 19028393028A - Ore moto: 1200h
           </p>
         </div>

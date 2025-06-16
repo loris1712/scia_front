@@ -21,17 +21,17 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
     }
   };
   const { t, i18n } = useTranslation("maintenance");
-    const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
       setMounted(true);
     }, []);
       
-    if (!mounted || !i18n.isInitialized) return null;
+  if (!mounted || !i18n.isInitialized) return null;
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[70%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] sm:w-[70%] w-full h-full sm:h-auto p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">{t("select_checklist")}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -40,7 +40,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
         </div>
 
         <div className="bg-transparent rounded-md overflow-hidden">
-          <table className="w-full text-white border-collapse">
+          <table className="w-full text-white border-collapse hidden sm:table">
             <thead className="bg-white text-black">
               <tr>
                 <th className="p-3 text-left border border-[#022a52]">{t("select")}</th>
@@ -50,7 +50,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
                 <th className="p-3 text-left border border-[#022a52]">{t("last_execution")}</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody> 
               {types.length > 0 ? (
                 types.map((type) => (
                   <tr
@@ -80,10 +80,43 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
               )}
             </tbody>
           </table>
+
+          <div className="sm:hidden flex flex-col gap-4">
+            {types.length > 0 ? (
+                types.map((type) => (
+
+                  <label
+                  key={type.id}
+                  className={`cursor-pointer rounded-md p-4 flex items-center gap-4 border-b border-black
+`}
+                >
+                  <input
+                        type="radio"
+                        name="maintenanceType"
+                        value={type.id}
+                        onChange={() => setSelectedType(type)}
+                        checked={selectedType?.id === type.id}
+                      />
+                  <div className="flex flex-col flex-grow gap-2">
+                    <span className={`rounded-full py-1 px-3 w-[fit-content] bg-[#395575] text-[10px]`}>{type.tasks[0].start_date !== "N/A" ? new Date(type.tasks[0].start_date).toLocaleDateString("it-IT") : "N/A"}</span>
+                    <span className="font-semibold text-2xl text-white">{type.title}</span>
+                    <span className="text-[#9ba7b9]">Task: 12 - Ultima esec: {type.tasks[0].end_date}</span>
+                  </div>
+                </label>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="p-3 text-center border border-[#022a52]">
+                    {t("no_data_available")}
+                  </td>
+                </tr>
+              )}
+          </div>
+
         </div>
 
         <button
-          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer"
+          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer rounded-md"
           onClick={handleConfirm}
           disabled={!selectedType}
         >

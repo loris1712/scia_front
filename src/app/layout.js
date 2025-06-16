@@ -28,32 +28,6 @@ export default function RootLayout({ children }) {
         className={barlow.className}
       >
 
-      <Script
-        id="algho-viewer"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            const tag = document.createElement("algho-viewer");
-            tag.setAttribute("bot-id", "53e8499c4205151d273038360adedd30");
-            tag.setAttribute("widget", "true");
-            tag.setAttribute("audio", "true");
-            tag.setAttribute("voice", "true");
-            tag.setAttribute("open", "false");
-            tag.setAttribute("z-index", "9999");
-            document.body.appendChild(tag);
-
-            const script = document.createElement("script");
-            script.setAttribute("id", "algho-viewer-module");
-            script.setAttribute("type", "text/javascript");
-            script.setAttribute("defer", "defer");
-            script.setAttribute("charset", "UTF-8");
-            script.setAttribute("src", "https://virtualassistant.alghoncloud.com/algho-viewer.min.js");
-            document.body.appendChild(script);
-          `,
-        }}
-      />
-
-
         <Providers>
           {children}
         </Providers>

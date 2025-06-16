@@ -25,7 +25,7 @@ export default function LastScanPopup({ onClose, shipId, userId }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-2">
-      <div className="bg-[#022a52] w-[100%] max-w-lg p-5 rounded-md shadow-lg">
+      <div className="bg-[#022a52] w-full max-w-lg p-5 rounded-md shadow-lg sm:h-auto h-[100vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[26px] font-semibold">Ultime scansioni</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>

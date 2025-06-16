@@ -5,12 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
+import { getAPIbackend } from "@/api/profile";
 
 export default function DropdownMenu({ isOpen, onClose }) {
   const menuRef = useRef(null);
   const router = useRouter();
   const { t, i18n } = useTranslation("header");
   const [mounted, setMounted] = useState(false);
+  const [BEVersion, setBEVersion] = useState([]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -21,6 +23,12 @@ export default function DropdownMenu({ isOpen, onClose }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
+
+  useEffect(() => {
+            getAPIbackend().then((data) => {
+              setBEVersion(data || []);
+            });
+        }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -102,6 +110,13 @@ export default function DropdownMenu({ isOpen, onClose }) {
                                                     height={14}
                                                   />              {t("settings")}
           </Link>
+        </li>
+        <li >
+          <div className="px-4 py-2">
+            <p className="text-[#aeaeae] text-[12px]">FE: 1.0.0</p>
+            <p className="text-[#aeaeae] text-[12px]">BE: {BEVersion.version}</p>
+            <Link href="/logpage"className="text-[#aeaeae] text-[12px]">Log page</Link>
+          </div>
         </li>
       </ul>
     </div>

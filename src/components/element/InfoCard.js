@@ -61,8 +61,8 @@ const InfoCard = ({ data }) => {
     if (!mounted || !i18n.isInitialized) return null;
 
   return (
-    <div className="flex px-2">
-      <div className="w-1/2">
+    <div className="sm:flex block px-2">
+      <div className="sm:w-1/2 w-full">
         <div className="mb-4">
           <h2 className="text-lg text-[#789fd6] mb-2">{t("system")}/{t("component")}</h2>
           <p className="text-white">{data.component}</p>
@@ -85,7 +85,7 @@ const InfoCard = ({ data }) => {
         </div>
       </div>
 
-      <div className="w-1/2">
+      <div className="sm:w-1/2 w-full">
         <div className="flex items-center mb-4">
             <div>
               <h2 className="text-lg text-[#789fd6] mb-2">{t("motorcycles_hours")}</h2>
@@ -117,7 +117,7 @@ const InfoCard = ({ data }) => {
           />
         </div>
       </div>
-{/* Modale per modificare le ore di utilizzo */}
+      
         <EditModal 
           isOpen={isPopupOpen} 
           onClose={() => setIsOpen(false)} 

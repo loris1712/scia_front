@@ -103,3 +103,45 @@ export const getRanks = async () => {
     return [];
   }
 };
+
+export async function getAPIbackend() {
+  try {
+    const response = await fetch(`${BASE_URL}/api/profile/getAPIbackend`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore nel recupero del profilo");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Errore API getProfileData:", error);
+    return null;
+  }
+}
+
+export async function getLogs(logType) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/profile/getLogs?type=${logType}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore nel recupero del profilo");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Errore API getProfileData:", error);
+    return null;
+  }
+}

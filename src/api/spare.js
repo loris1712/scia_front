@@ -127,3 +127,35 @@ export async function uploadProductImage(formData) {
     return null;
   }
 };
+
+export async function addSpareToMaintenanceList(maintenanceListId, spareData, file) {
+  try {
+    const formData = new FormData();
+
+    if (file) {
+      formData.append("file", file);
+    }
+
+    for (const key in spareData) {
+      if (spareData.hasOwnProperty(key) && spareData[key] !== undefined && spareData[key] !== null) {
+        formData.append(key, spareData[key]);
+      }
+    }
+
+    const response = await fetch(`${BASE_URL}/api/spare/${maintenanceListId}/spares`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Errore HTTP ${response.status}: Impossibile aggiungere il ricambio`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Errore durante l'aggiunta del ricambio alla Maintenance List:", error);
+    return null;
+  }
+}

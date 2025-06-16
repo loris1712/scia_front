@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import AudioPlayer from "@/components/element/audioPlayer";
 import { useTranslation } from "@/app/i18n";
-import { getAudios } from "@/api/shipFiles";
+import { getAudiosGeneral } from "@/api/shipFiles";
 
 export default function NoteHistoryModal({ onClose, failureId }) {
     const [audioNotes, setAudioNotes] = useState([]);
@@ -17,7 +17,7 @@ export default function NoteHistoryModal({ onClose, failureId }) {
     }, [failureId]);
 
     const fetchAudios = async () => {
-        const data = await getAudios(failureId, "failure");
+        const data = await getAudiosGeneral(failureId, "maintenance");
         setAudioNotes(data.notes || []);
     };
 
@@ -25,7 +25,7 @@ export default function NoteHistoryModal({ onClose, failureId }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-2">
-            <div className="bg-[#022a52] w-[70%] p-5 rounded-md shadow-lg text-white">
+            <div className="bg-[#022a52] sm:w-[70%] w-full p-5 rounded-md shadow-lg text-white">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-[26px] font-semibold">{t("audiohistory_title")}</h2>
                     <button className="text-white text-xl cursor-pointer" onClick={onClose}>

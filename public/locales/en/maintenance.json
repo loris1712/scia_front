@@ -76,6 +76,7 @@
     "added_to_the_cart": "Added to the cart",
     "added_cart_text": "The product has been added to your cart",
     "supplier": "Fornitore",
+    "part_name": "Part Name",
     "system_filter": "System filter",
     "search_by_plant": "Search by plant name...",
     "move_or_add_spare": "Move or add spare part",
@@ -98,6 +99,28 @@
     "photohistory_title": "Historical photographic notes",
     "no_audio_notes": "No voice notes found.",
     "select_maintenance": "Select maintenance",
-    "all": "All"
+    "all": "All",
+    "loading": "Loading",
+    "inPause": "On break",
+    "active": "Active",
+    "spare_added": "Spare part added successfully!",
+    "spare_not_added": "Error while adding the spare part.",
+    "add_spare": "Add Spare Part",
+    "brand": "Brand",
+    "model": "Model",
+    "confirm_mark": "Conferm outcome",
+    "confirm_maintenance_text": "Are you sure you want to confirm Maintenance?",
+    "time_taken": "Time taken",
+    "user_type_executor": "User type executor",
+    "user_executor": "User executor",
+    "failure_modal2": "Select type",
+    "failure_modal3": "User logged in",
+  "name_not_available": "Name not available",
+  "image": "Image",
+  "q_installed": "Installed quantity",
+  "go_to_cart": "Go to cart",
+  "add_other_products": "Add other products"
+
+
 }
   

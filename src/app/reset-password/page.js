@@ -41,7 +41,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#001c38]">
-      <div className="w-full max-w-md p-8 rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-8">
       <h2 className="text-2xl font-semibold text-white text-center mb-6">Reset password</h2>
         {message && <p className="text-green-500">{message}</p>}
         {error && <p className="text-red-500">{error}</p>}
@@ -54,14 +54,14 @@ export default function ResetPasswordPage() {
               value={newPassword}
               placeholder="Email"
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-[#1E2A3D] text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 bg-[#1E2A3D] text-white focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md"
               required
             />
           </div>
 
           <button
             type="submit"
-            className={"mt-6 w-full bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-4 px-4 transition duration-200"}
+            className={"mt-6 w-full bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-4 px-4 transition duration-200 rounded-md"}
           >
             Reimposta password
           </button>

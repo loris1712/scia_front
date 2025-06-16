@@ -14,7 +14,7 @@ export default function NotesModal({ isOpen, onClose2, data }) {
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[70%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] sm:w-[70%] w-full sm:h-auto h-full p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">{t("system_filter")}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose2}>
@@ -36,7 +36,7 @@ export default function NotesModal({ isOpen, onClose2, data }) {
 
         </div>
         <button
-          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6"
+          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6 rounded-md"
           onClick={onClose2}
         >
           {t("confirm")}

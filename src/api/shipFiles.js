@@ -49,3 +49,36 @@ export async function getTexts(failureId, type) {
     return { notes: [] };
   }
 }
+
+export async function getAudiosGeneral(failureId, type) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/uploadFiles/getAudiosGeneral/${failureId}/${type}`);
+    if (!response.ok) throw new Error("Errore nel recupero delle note vocali");
+    return await response.json();
+  } catch (error) {
+    console.error("Errore getAudios:", error);
+    return { notes: [] };
+  }
+}
+
+export async function getPhotosGeneral(failureId, type) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/uploadFiles/getPhotosGeneral/${failureId}/${type}`);
+    if (!response.ok) throw new Error("Errore nel recupero delle note vocali");
+    return await response.json();
+  } catch (error) {
+    console.error("Errore getAudios:", error);
+    return { notes: [] };
+  }
+}
+
+export async function getTextsGeneral(failureId, type) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/uploadFiles/getTextNotesGeneral/${failureId}/${type}`);
+    if (!response.ok) throw new Error("Errore nel recupero delle note vocali");
+    return await response.json();
+  } catch (error) {
+    console.error("Errore getAudios:", error);
+    return { notes: [] };
+  }
+}

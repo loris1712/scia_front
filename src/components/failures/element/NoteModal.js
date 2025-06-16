@@ -23,7 +23,7 @@ export default function NoteModal({ onClose, id }) {
   const resetAndClose = () => {
     setSelectedNoteType(null);
     setTextNote("");
-    setPhotoFile(null);
+    setPhotoFile(null); 
     setAudioFile(null);
     onClose();
   };
@@ -74,7 +74,7 @@ export default function NoteModal({ onClose, id }) {
         </div>
 
         {!selectedNoteType && (
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
             <div className="bg-[#00000020] p-8 rounded-md cursor-pointer" onClick={() => setSelectedNoteType("photo")}>
               <svg 
                                 fill="white" 

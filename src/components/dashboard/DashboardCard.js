@@ -13,8 +13,6 @@ export default function DashboardCard({ id, title, imageSrc, tasks }) {
         <Image 
         src={imageSrc} 
         alt={title}
-
-        
         width="0"
             height="0"
             sizes="100vw"
@@ -30,16 +28,21 @@ export default function DashboardCard({ id, title, imageSrc, tasks }) {
       <div className="mt-auto">
 
       {tasks.length > 0 && (
-        <p className="text-[14px] text-[#789fd6] font-semibold">
-          {title.trim().toLowerCase() === "manutenzioni" ? "tasks" : title}
+        <p className="text-[14px] text-[#789fd6] font-semibold sm:mt-0 mt-4">
+          {title}
         </p>
       )}
 
         {tasks.length > 0 && (
           <div>
             <p className="text-md text-[#ffffff60] mt-2">
-              {tasks.map((task) => task.title).join(", ")}
+              {tasks
+                .map((task) => task.title || task.task_name || task.Part_name || task.job.name)
+                .filter(Boolean)
+                .join(", ")
+              }
             </p>
+
           </div>
         )}
 

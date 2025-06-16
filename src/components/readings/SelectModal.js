@@ -68,7 +68,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, datas, defaultT
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[70%] p-6 rounded-md shadow-lg text-white">
+      <div className="bg-[#022a52] sm:w-[70%] w-full sm:h-auto h-full p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[22px] font-semibold">{t("select_checklist")}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -79,7 +79,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, datas, defaultT
         </div>
 
         <div className="bg-transparent rounded-md overflow-hidden">
-          <table className="w-full text-white border-collapse">
+          <table className="w-full text-white border-collapse hidden sm:table">
             <thead className="bg-white text-black">
               <tr>
                 <th className="p-3 text-left border border-[#022a52]">{t("select")}</th>
@@ -111,16 +111,43 @@ export default function SelectModal({ isOpen, onClose, onSelect, datas, defaultT
               ) : (
                 <tr>
                   <td colSpan="5" className="p-3 text-center border border-[#022a52]">
-                    Nessun dato disponibile
+                    {t("no_data_available")}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+
+          <div className="sm:hidden flex flex-col gap-4">
+            {groupedData.length > 0 ? (
+                groupedData.map((group) => (
+                <label
+                  key={group.id}
+                  className={`cursor-pointer rounded-md p-4 flex items-center gap-4 border-b border-black
+`}
+                >
+                  <input
+                        type="radio"
+                        name="maintenanceType"
+                        value={group.id}
+                        onChange={() => setSelectedTypeId(group.id)}
+                        checked={selectedTypeId === group.id}
+                      />
+                  <div className="flex flex-col flex-grow gap-2">
+                    <span className={`rounded-full py-1 px-3 w-[fit-content] bg-[#395575] text-[10px]`}>{group.latestDueDate !== "N/A" ? new Date(group.latestDueDate).toLocaleDateString("it-IT") : "N/A"}</span>
+                    <span className="font-semibold text-2xl text-white">{group.name}</span>
+                    <span className="text-[#9ba7b9]">Task: {group.taskCount} - Ultima esec: {group.secondLatestDueDate !== "N/A" ? new Date(group.secondLatestDueDate).toLocaleDateString("it-IT") : "N/A"}</span>
+                  </div>
+                </label>
+              ))
+            ) : (
+              <p className="text-center">{t("no_data_available")}</p>
+            )}
+          </div>
         </div>
 
         <button
-          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer"
+          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold cursor-pointer rounded-md"
           onClick={handleConfirm}
           disabled={selectedTypeId === null}
         >

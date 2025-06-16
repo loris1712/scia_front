@@ -46,23 +46,23 @@ export default async function ElementPage({ params }) {
           </button>
     </div>
 
-    <div className="flex gap-4">
-      <div className="w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md">
+    <div className="sm:flex block gap-4">
+      <div className="sm:w-3/4 w-full space-y-4 bg-[#022a52] p-4 rounded-md sm:mb-0 mb-4">
       
         <InfoCard data={data} />
 
-        <div className="flex px-2">
-          <div className="w-1/2">
+        <div className="sm:flex block px-2">
+          <div className="sm:w-1/2 w-full">
             <MaintenanceStatus status={data.maintenanceStatus} />
           </div>
-          <div className="w-1/2">
+          <div className="sm:w-1/2 w-full">
             <SparePartsStatus status={data.sparePartsStatus} />
           </div>
 
         </div>
       </div>
 
-      <div className="w-1/4 bg-[#022a52] p-4 rounded-md">
+      <div className="sm:w-1/4 w-full bg-[#022a52] p-4 rounded-md">
         <DetailsPanel details={data.details} />
       </div>
       </div>

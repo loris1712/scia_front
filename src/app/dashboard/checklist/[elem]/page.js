@@ -57,10 +57,10 @@ export default function ElementPage({ params }) {
           <button
             type="submit"
             onClick={() => setNoteModal(!noteModal)}
-            className="rounded-md flex items-center bg-[#789fd6] hover:bg-blue-500 text-white font-bold py-1 px-4 transition duration-200 cursor-pointer"
+            className="rounded-md flex items-center bg-[#789fd6] hover:bg-blue-500 text-white font-bold sm:py-1 py-2 px-2 sm:px-4 transition duration-200 cursor-pointer"
           >
             <svg width="16px" height="16px" fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
-            &nbsp;&nbsp; {t("add_note")}
+            <span className="sm:block hidden">&nbsp;&nbsp; {t("add_note")}</span>
           </button>
         </div>
       </div>
@@ -73,14 +73,14 @@ export default function ElementPage({ params }) {
         <NoteModal onClose={() => setNoteModal(false)} />
       )}
 
-      <div className="flex gap-4">
-        <div className="w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md">
-          <div className="flex px-2">
+      <div className="block sm:flex gap-4">
+        <div className="w-full sm:w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md sm:mb-0 mb-4">
+          <div className="flex sm:px-2">
             <MaintenanceDetails details={""} />
           </div>
         </div>
 
-        <div className="w-1/4 bg-[#022a52] p-4 rounded-md">
+        <div className="w-full sm:w-1/4 bg-[#022a52] p-4 rounded-md">
           <MaintenanceInfo details={""}/>
         </div>
       </div>

@@ -42,10 +42,14 @@ export default function MoveProduct({ isOpen, onClose, data }) {
               scanId: data?.id || null,
             });
           } catch (error) {
-            console.error("Errore durante il salvataggio dello scan:", error);
+            //console.error("Errore durante il salvataggio dello scan:", error);
           }
         },
-        (error) => console.error("Errore scansione:", error)
+        (error) => {
+          if (error.name !== "NotFoundException") {
+            //console.warn("Errore scansione:", error);
+          }
+        }
       );
 
       return () => {
@@ -66,6 +70,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
       if(response.length > 0){
 
         setResults(response[0]);
+        console.log(response[0])
         setShowResults(true)
       }else{
         setAddSpare(true);
@@ -103,9 +108,9 @@ export default function MoveProduct({ isOpen, onClose, data }) {
         scanId: data?.id || null,
       };
   
-      const response = await updateSpare(updatedData.id, updatedData, shipId, user.id);
-
-      handleClose();
+      const response = await updateSpare(updatedData.ID, updatedData, shipId, user.id);
+      console.log(updatedData)
+      //handleClose();
     } catch (error) {
       console.error("Errore durante la conferma:", error);
     }
@@ -118,7 +123,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="bg-[#022a52] w-[50%] p-6 rounded-md shadow-lg text-white overflow-y-auto max-h-[95vh]">
+      <div className="bg-[#022a52] sm:w-[70%] w-full sm:h-auto h-full p-6 rounded-md shadow-lg text-white overflow-y-auto max-h-[95vh]">
 
       {
         addSpare ? (
@@ -156,7 +161,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
                 <div className="flex-grow h-[2px] bg-white opacity-60"></div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div className="flex flex-col">
                   <label className="text-[#789FD6] text-sm mb-2">EAN13</label>
                   <div className="relative">
@@ -220,7 +225,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
           ) : (
             <div>
                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-[22px] font-semibold">{t("move")}/{t("upload")} {t("spare")}</h2>
+                      <h2 className="text-[22px] font-semibold">{t("move")}/{t("upload")} {t("spare_parts")}</h2>
                       <button className="text-white text-xl cursor-pointer" onClick={handleClose}>
                         <svg width="24px" height="24px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                           <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -228,7 +233,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6 mb-4 mt-4">
+                    <div className="grid sm:grid-cols-3 gap-6 mb-4 mt-4">
                       <div className="flex">
                           <Image 
                                           src="/motor.jpg"
@@ -236,17 +241,18 @@ export default function MoveProduct({ isOpen, onClose, data }) {
                                           width={160} 
                                           height={160} 
                                           className="rounded-lg"
+                                          style={{width: '100%'}}
                                         />                
                       </div>
 
                       <div className="flex flex-col items-start">
                         <p className="text-[14px] text-[#789fd6]">Part Number</p>
-                        <p className="text-[18px] text-white">{results && results.serial_number}</p>
+                        <p className="text-[18px] text-white">{results && results.Serial_number}</p>
                       </div>
 
                       <div className="flex flex-col items-start">
-                        <p className="text-[14px] text-[#789fd6]">{t("supplier")}</p>
-                        <p className="text-[18px] text-white">{results && results.company}</p>
+                        <p className="text-[14px] text-[#789fd6]">{t("part_name")}</p>
+                        <p className="text-[18px] text-white">{results && results.Part_name}</p>
                       </div>
                     </div>
 

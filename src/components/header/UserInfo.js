@@ -58,7 +58,7 @@ export default function UserInfo() {
     >
       <img src={profileImage} alt="User Avatar" className="w-14 h-14 rounded-full object-cover" />
 
-      <div className="overflow-hidden">
+      <div className="overflow-hidden hidden sm:block">
         {user ? (
           <>
            <p className="text-sm text-[#789fd6]">
@@ -67,7 +67,9 @@ export default function UserInfo() {
             <p className="text-lg font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[150px] sm:max-w-[200px]">
               {user.firstName} {user.lastName}
             </p>
-            <p className="text-sm text-[#ffffffa6]">{user.type}</p>
+            <p className="text-sm text-[#ffffffa6] whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[150px] sm:max-w-[200px]">
+              {user.type}
+            </p>
           </>
         ) : (
           <p className="text-white text-sm">{t("loading")}</p>

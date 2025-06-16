@@ -5,7 +5,7 @@ import Image from 'next/image';
 import FacilitiesModal from "./FacilitiesModal";
 import { useTranslation } from "@/app/i18n";
 
-export default function FilterSidebar({ isOpen, onClose }) {
+export default function FilterSidebar({ isOpen, onClose, onFiltersChange }) {
   const [filters, setFilters] = useState({
     stato: {
       scaduta: false,
@@ -78,6 +78,10 @@ export default function FilterSidebar({ isOpen, onClose }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, onClose]);  
+
+  useEffect(() => {
+    onFiltersChange(filters);
+  }, [filters]);
 
   const { t, i18n } = useTranslation("maintenance");
     const [mounted, setMounted] = useState(false);
@@ -231,7 +235,7 @@ export default function FilterSidebar({ isOpen, onClose }) {
         </div>
 
         <button
-          className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer"
+          className="w-full bg-[#789fd6] p-3 mt-8 text-white font-semibold cursor-pointer rounded-md"
           onClick={onClose}
         >
           {t("confirm")}

@@ -10,18 +10,26 @@ export function UserProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function loadData() {
-            try {
-                const result = await getProfileData();
-                console.log(result)
-                setUser(result);
-            } catch (error) {
-                console.error("Errore nel caricamento dei dati utente:", error);
-            } finally {
-                setLoading(false);
+        const isAuthPage = typeof window !== "undefined" &&
+            (window.location.pathname.startsWith("/login") || window.location.pathname.startsWith("/login-pin"));
+
+        if (isAuthPage) {
+            setLoading(false);
+            return;
+        }else{
+            async function loadData() {
+                try {
+                    const result = await getProfileData();
+                    setUser(result);
+                } catch (error) {
+                    console.error("Errore nel caricamento dei dati utente:", error);
+                } finally {
+                    setLoading(false);
+                }
             }
-        }
         loadData();
+        }
+
     }, []);
 
     return (
@@ -38,4 +46,3 @@ export function useUser() {
     }
     return context;
 }
-

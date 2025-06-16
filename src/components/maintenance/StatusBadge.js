@@ -1,32 +1,50 @@
 const StatusBadge = ({ dueDate, dueDays }) => {
-  let bgColor = "bg-gray-400"; // Default color
+  let bgColor = "bg-gray-400";
   let textColor = "text-white";
-  let symbol= "+" // Default text color
+  let symbol = "+";
 
   if (dueDays < -15) {
     bgColor = "bg-[rgb(208,2,27)]";
-    symbol = "+" // Scaduto da più di 15gg
+    symbol = "+";
   } else if (dueDays < 0) {
     bgColor = "bg-[rgb(244,114,22)]";
-    symbol = "+" // Scaduto da meno di 15gg
+    symbol = "+";
   } else if (dueDays <= 3) {
     bgColor = "bg-[rgb(255,191,37)]";
-    symbol = "-"
-    textColor = "text-black"; // Manca meno di 3gg
+    textColor = "text-black";
+    symbol = "-";
   } else if (dueDays > 15) {
-    symbol = "-"
-    bgColor = "bg-[rgb(45,182,71)]"; // Mancano più di 15gg
+    bgColor = "bg-[rgb(45,182,71)]";
+    symbol = "-";
   }
 
+  const formattedDate = dueDate !== "N/A"
+    ? new Date(dueDate).toLocaleDateString("it-IT")
+    : "N/A";
+
   return (
-    <div className={`px-2 py-1 ${bgColor} ${textColor} text-center`} style={{ padding: "1rem" }}>
-      <p className="text-xl">{dueDate !== "N/A"
-                ? new Date(dueDate).toLocaleDateString("it-IT")
-                : "N/A"}</p>
-      <p className="text-[16px] opacity-60">{symbol} {dueDays}gg</p>
+    <div className={`text-center sm:p-4 ${textColor}`}>
+      {/* Mobile: inline row with only date having bg, icon, spacing */}
+      <div className="flex sm:hidden items-center justify-center gap-2 text-xs">
+        <span className={`px-2 py-1 rounded-full ${bgColor} flex items-center gap-1`}>
+          {formattedDate}
+        </span>
+        <span className="opacity-60">
+          {symbol} {dueDays}gg
+        </span>
+      </div>
+
+      {/* Desktop: stacked layout, original spacing */}
+      <div className="hidden sm:block">
+        <p className="text-xl">{formattedDate}</p>
+        <p className="text-[16px] opacity-60">
+          {symbol} {dueDays}gg
+        </p>
+      </div>
     </div>
   );
 };
 
 export default StatusBadge;
+
   

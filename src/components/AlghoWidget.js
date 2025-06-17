@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { useUser } from "@/context/UserContext";
 import { usePathname } from "next/navigation";
 
@@ -23,7 +22,7 @@ export default function AlghoWidget() {
   useEffect(() => {
     if (isHidden) return;
 
-    const lang = Cookies.get("language");
+    const lang = localStorage.getItem("language");  // <-- qui
 
     if (user && lang) {
       const bot = lang === "it" ? user.bot_id_ita : user.bot_id_ing;

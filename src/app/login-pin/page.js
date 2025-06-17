@@ -36,19 +36,23 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
     setError(null);
   
     try {
-      const response = await fetch("/api/auth/login-pin", {
+      const response = await fetch(`${BASE_URL}/api/auth/login-pin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ pin }),
       });
   
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Errore di login");
+        throw new Error(data.error || "Errore login");
       }
-  
+
+      // Salva il token nel localStorage o sessionStorage
+      localStorage.setItem("token", data.token);
+      console.log(data)
       router.push("/dashboard");
+  
     } catch (err) {
       console.error("Errore login PIN:", err);
       setError(err.message);

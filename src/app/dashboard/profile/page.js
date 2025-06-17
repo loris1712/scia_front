@@ -17,18 +17,28 @@ export default function DashboardPage() {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
   //const BASE_URL = "http://52.59.162.108:4000";
 
-  const handleLogout = async () => {
-    try {
-      await fetch(`${BASE_URL}/api/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+const handleLogout = async () => {
+  try {
+    // Se hai una route backend che invalida token lato server, chiamala
+    await fetch(`${BASE_URL}/api/auth/logout`, {
+      method: "POST",
+      // Se usi token via header non serve "credentials: include"
+      headers: {
+        "Content-Type": "application/json",
+        // Manda il token per invalidarlo lato server, se vuoi
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-      router.push("/login");
-    } catch (error) {
-      console.error("Errore durante il logout:", error);
-    }
-  };
+    // Rimuovi il token dal localStorage per "logout" client-side
+    localStorage.removeItem("token");
+
+    // Reindirizza a login
+    router.push("/login");
+  } catch (error) {
+    console.error("Errore durante il logout:", error);
+  }
+};
 
   useEffect(() => {
       setMounted(true);

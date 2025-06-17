@@ -6,7 +6,6 @@ import Link from "next/link";
 import { getSettings, updateSettings } from "@/api/settings";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from "@/app/i18n";
-import Cookies from "js-cookie";
 
 export default function SettingsContainer() {
   const [isNotificationsEnabledMaintenance, setIsNotificationsEnabledMaintenance] = useState(false);
@@ -21,13 +20,12 @@ export default function SettingsContainer() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const langFromCookie = Cookies.get("language");
-    if (langFromCookie && i18n.language !== langFromCookie) {
-      i18n.changeLanguage(langFromCookie);
+    const langFromStorage = localStorage.getItem("language");
+    if (langFromStorage && i18n.language !== langFromStorage) {
+      i18n.changeLanguage(langFromStorage);
     }
     setMounted(true);
   }, [i18n]);
-
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -208,7 +206,7 @@ export default function SettingsContainer() {
                 onChange={(e) => {
                   const newLang = e.target.value;
                   i18n.changeLanguage(newLang);
-                  Cookies.set("language", newLang, { expires: 365 });
+                  localStorage.setItem("language", newLang);  // <-- qui
                 }}
               >
                 <option value="it">Italiano</option>

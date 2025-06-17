@@ -3,11 +3,17 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
 export async function getProfileData() {
   try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Utente non autenticato");
+    }
+
     const response = await fetch(`${BASE_URL}/api/profile/getProfile`, {
       method: "GET",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,  // token nell'header
       },
     });
 
@@ -24,11 +30,16 @@ export async function getProfileData() {
 
 export async function getProfileById(id) {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token mancante. Utente non autenticato.");
+    }
+
     const response = await fetch(`${BASE_URL}/api/profile/getProfileById/${id}`, {
       method: "GET",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 

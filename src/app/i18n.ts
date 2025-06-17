@@ -16,7 +16,7 @@ if (!i18n.isInitialized) {
     .init({
       fallbackLng: 'it',  
       debug: false,
-      lng: Cookies.get("language") || "it", 
+      lng: localStorage.getItem("language") || "it",  // <-- qui
       supportedLngs: ['it', 'en'], 
       backend: {
         loadPath: '/locales/{{lng}}/{{ns}}.json', 

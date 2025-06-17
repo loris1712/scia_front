@@ -35,14 +35,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Errore di login");
+        throw new Error(data.error || "Errore login");
       }
+
+      localStorage.setItem("token", data.token);
 
       router.push("/dashboard");
     } catch (err) {

@@ -70,7 +70,7 @@ export default function ElementPage({ params }) {
       )}
 
       {noteModal && (
-        <NoteModal onClose={() => setNoteModal(false)} />
+        <NoteModal onClose={() => setNoteModal(false)} id={3} />
       )}
 
       <div className="block sm:flex gap-4">

@@ -48,9 +48,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
         throw new Error(data.error || "Errore login");
       }
 
-      // Salva il token nel localStorage o sessionStorage
       localStorage.setItem("token", data.token);
-      console.log(data)
       router.push("/dashboard");
   
     } catch (err) {

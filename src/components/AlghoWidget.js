@@ -22,10 +22,16 @@ export default function AlghoWidget() {
   useEffect(() => {
     if (isHidden) return;
 
-    const lang = localStorage.getItem("language");  // <-- qui
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : null;
 
     if (user && lang) {
-      const bot = lang === "it" ? user.bot_id_ita : user.bot_id_ing;
+      const bot =
+        lang === "it"
+          ? user.bot_id_ita
+          : lang === "es"
+          ? user.bot_id_esp
+          : user.bot_id_ing;
+
       setBotId(bot);
     }
   }, [user, pathname]);

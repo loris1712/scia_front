@@ -11,8 +11,6 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const getToken = localStorage.getItem("token")
-
   useEffect(() => {
     const isAuthPage =
       typeof window !== "undefined" &&
@@ -24,33 +22,28 @@ export function UserProvider({ children }) {
       return;
     }
 
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    if (!token || token === "undefined") {
+      router.replace("/login"); // redirect pulito, no reload
+      return;
+    }
+
     async function loadData() {
-      try {
-        const result = await getProfileData();
-        setUser(result);
-      } catch (error) {
-        console.error("Errore nel caricamento dei dati utente:", error);
-        router.push("/login"); // assicurati di resettare user se fallisce
-      } finally {
-        setLoading(false);
+      const result = await getProfileData();
+
+      if (!result) {
+        localStorage.removeItem("token"); // cleanup
+        router.replace("/login");
+        return;
       }
+
+      setUser(result);
+      setLoading(false);
     }
 
-    if(!getToken && getToken != "undefined"){
-        router.push("/login"); 
-    }else{
-        loadData();
-    }
-
-    
+    loadData();
   }, []);
-
-  // Redirect a login se non autenticato e caricamento finito e non siamo in pagina auth
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [loading, user, router]);
 
   return (
     <UserContext.Provider value={{ user, setUser, loading }}>

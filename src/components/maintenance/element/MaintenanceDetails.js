@@ -67,7 +67,6 @@ const MaintenanceDetails = ({ details }) => {
         }
 
         if (audios?.length) {
-          console.log(audios.notes[0])
           setLatestAudio(audios.notes[0]);
         }
 

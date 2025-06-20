@@ -55,7 +55,7 @@ const MaintenanceTable = () => {
 
         const matchScaduta        = diffDays < -15;
         const matchScadutaDaPoco  = diffDays >= -15 && diffDays < 0;
-        const matchInScadenza     = diffDays >= 0 && diffDays <= 3;
+        const matchInScadenza     = diffDays >= 0 && diffDays <= 15;
         const matchProgrammata    = startDate > today;
 
         if (filterScaduta || filterScadutaDaPoco || filterInScadenza || filterProgrammata) {

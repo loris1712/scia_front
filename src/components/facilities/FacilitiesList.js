@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export const impiantiData = [
   {
     id: "100",
     name: "Scafo",
-    icon: "/icons/facilities/ico1.svg",
+    icon: "/icons/ico1.svg",
     children: [
       {
         id: "1.1",
@@ -23,42 +24,42 @@ export const impiantiData = [
   {
     id: "200",
     name: "Propulsioni/Motori",
-    icon: "/icons/facilities/ico2.svg",
+    icon: "/icons/ico2.svg",
   },
   {
     id: "300",
     name: "Impianto elettrico",
-    icon: "/icons/facilities/ico3.svg",
+    icon: "/icons/ico3.svg",
   },
   {
     id: "400",
     name: "Comando, controllo e sorveglianza",
-    icon: "/icons/facilities/ico4.svg",
+    icon: "/icons/ico4.svg",
   },
   {
     id: "500",
     name: "Impianti ausiliari",
-    icon: "/icons/facilities/ico5.svg",
+    icon: "/icons/ico5.svg",
   },
   {
     id: "600",
     name: "Allestimento e Arredamento",
-    icon: "/icons/facilities/ico6.svg",
+    icon: "/icons/ico6.svg",
   },
   {
     id: "700",
     name: "Armamenti",
-    icon: "/icons/facilities/ico7.svg",
+    icon: "/icons/ico7.svg",
   },
   {
     id: "800",
     name: "Integration / Engineering",
-    icon: "/icons/facilities/ico8.svg",
+    icon: "/icons/ico8.svg",
   },
   {
     id: "900",
     name: "Ship Assembly / Support Services",
-    icon: "/icons/facilities/ico9.svg",
+    icon: "/icons/ico9.svg",
   },
 ];
 
@@ -103,7 +104,16 @@ export default function ImpiantiList({ search, modal }) {
                 <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
               </svg>
             )}
-            {node.icon && <img src={node.icon} alt={node.name} className="w-6 h-6 opacity-60" />}
+            {node.icon && (
+              <Image
+                src={node.icon}
+                alt={node.name}
+                width={24} 
+                height={24}
+                className="w-6 h-6 opacity-60"
+              />
+            )}
+
             <span>{node.id} - {node.name}</span>
           </div>
 

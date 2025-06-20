@@ -1,33 +1,30 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Image from 'next/image';
+import Image from "next/image";
+import { useTranslation } from "@/app/i18n";
 
 export default function Breadcrumbs({ title, position }) {
   const pathname = usePathname();
   const paths = pathname.split("/").filter(Boolean);
 
-  const customLabels = {
-    cart: "Carrello",
-    maintenance: "Manutenzione",
-    settings: "Impostazioni",
-    remoteassistance: "Assistenza Remota",
-    spare: "Ricambi",
-    locations: "Ubicazioni",
-    readings: "Letture",
-    failures: "Avarie",
-  };
+  const { t } = useTranslation("breadcrumbs");
 
-  const capitalizeFirstLetter = (string) => {
-    return string
+  const capitalizeFirstLetter = (string) =>
+    string
       .split(" ")
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  };
 
   const getLabel = (segment) => {
     const lower = segment.toLowerCase();
-    return customLabels[lower] || capitalizeFirstLetter(segment.replace(/%20/g, " "));
+    // prova a tradurre la chiave
+    const translated = t(lower);
+    if (translated === lower) {
+      // fallback: capitalizza se non c'è la traduzione
+      return capitalizeFirstLetter(segment.replace(/%20/g, " "));
+    }
+    return translated;
   };
 
   return (
@@ -38,17 +35,15 @@ export default function Breadcrumbs({ title, position }) {
             {index === 0 && (
               <Image 
                 src="/icons/breadcrumbHome.svg"
-                alt="Home"
-                width="0"
-            height="0"
-            sizes="100vw"
-            style={{ width: '1rem', height: 'auto' }}
+                alt={t("home")}
+                width={16}
+                height={16}
                 className="mr-2"
               />
             )}
             <span className="text-white">
               {index === paths.length - 1 && position === "last" 
-                ? title // Se la posizione è "last", mostra il title
+                ? title 
                 : getLabel(decodeURIComponent(path))}
             </span>
             {index < paths.length - 1 && <span className="mx-2">›</span>}

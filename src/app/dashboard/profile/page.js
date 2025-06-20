@@ -26,7 +26,7 @@ const handleLogout = async () => {
       headers: {
         "Content-Type": "application/json",
         // Manda il token per invalidarlo lato server, se vuoi
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Authorization": typeof window !== "undefined" ? `Bearer ${localStorage.getItem("token")}` : "",
       },
     });
 

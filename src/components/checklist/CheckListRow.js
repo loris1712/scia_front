@@ -48,6 +48,8 @@ const CheckListRow = ({ data }) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log(data)
+
   const cameraStatus = data.img ? data.img_status || "good" : "default";
   const micStatus = data.audio ? data.audio_status || "good" : "default";
   const docStatus = data.note ? data.note_status || "good" : "default";
@@ -142,7 +144,7 @@ const CheckListRow = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex sm:hidden pl-4 mb-4 rounded-md bg-[#022a52] cursor-pointer flex flex-col">
+      <div className="flex sm:hidden pl-4 mb-4 rounded-md bg-[#022a52] cursor-pointer flex flex-col h-[22vh]">
         <div onClick={handleRowClick} className="p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
           <p className="text-white text-[18px] font-semibold truncate">{data.description}</p>
           <p className="text-white/60 text-[16px] text-sm truncate">
@@ -153,7 +155,11 @@ const CheckListRow = ({ data }) => {
             <div onClick={handleRowClick} className="p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
               <p className="text-[18px] text-white">{data.recurrenceDays}gg</p>
             </div>
-            <div className="p-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
+            <div className="p-3 flex items-center justify-center cursor-pointer" onClick={
+  (data.img?.length > 0 || data.audio?.length > 0 || data.note?.length > 0)
+    ? () => setIsOpen(true)
+    : undefined
+} style={{ height: "-webkit-fill-available" }}>
               <div className="flex gap-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

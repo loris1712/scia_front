@@ -3,7 +3,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
 export async function getProfileData() {
   try {
-    const token = localStorage.getItem("token");
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
     if (!token) {
       throw new Error("Utente non autenticato");
@@ -13,9 +13,13 @@ export async function getProfileData() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,  // token nell'header
+        Authorization: `Bearer ${token}`,
       },
     });
+
+    if (response.status === 401) {
+      return null;
+    }
 
     if (!response.ok) {
       throw new Error("Errore nel recupero del profilo");
@@ -30,7 +34,8 @@ export async function getProfileData() {
 
 export async function getProfileById(id) {
   try {
-    const token = localStorage.getItem("token");
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
     if (!token) {
       throw new Error("Token mancante. Utente non autenticato.");
     }

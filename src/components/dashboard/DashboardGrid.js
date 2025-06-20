@@ -31,16 +31,16 @@ const fetchByCategory = {
 
 export default function DashboardGrid() {
   const [tasks, setTasks] = useState({});
-  const router = useRouter(); 
+  const [checklist, setChecklist] = useState([]);
+  const [mounted, setMounted] = useState(false);
 
-    const shipId = 1;
-    const { user, loading } = useUser();
-    const [checklist, setChecklist] = useState([]);
+  const { user, loading } = useUser();
+  const { t, i18n } = useTranslation("dashboard");
+  const router = useRouter();
+  const shipId = 1;
 
-    const { t, i18n } = useTranslation("dashboard");
-    const [mounted, setMounted] = useState(false);
-
-    const loadDataForCategory = async (categoryId) => {
+  // Load data based on category
+  const loadDataForCategory = async (categoryId) => {
     const fetchFunction = fetchByCategory[categoryId];
     if (!fetchFunction) return null;
 
@@ -48,18 +48,14 @@ export default function DashboardGrid() {
       switch (categoryId) {
         case "Checklist":
           return await fetchFunction(shipId, user?.id);
-
         case "Maintenance":
-          return await fetchFunction("undefined",shipId, user?.id);
-
+          return await fetchFunction(undefined, shipId, user?.id);
         case "Readings":
           return await fetchFunction(shipId, user?.id);
-
         case "Spare":
           return await fetchFunction(shipId);
         case "failures":
           return await fetchFunction("", shipId);
-
         default:
           return null;
       }
@@ -67,37 +63,43 @@ export default function DashboardGrid() {
       console.error(`Errore nel fetch di ${categoryId}:`, err);
       return null;
     }
+  };
+
+  // Inizializza dopo il mount client-side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Se user è null e non sta caricando, forziamo reload (caso raro)
+  useEffect(() => {
+    if (!loading && user === null) {
+      console.warn("User null, forzo reload");
+      window.location.reload();
+    }
+  }, [user, loading]);
+
+  // Carica tutti i dati quando user è pronto
+  useEffect(() => {
+    const loadAllData = async () => {
+      const updatedTasks = {};
+
+      for (const category of categories) {
+        const data = await loadDataForCategory(category.id);
+        if (data) {
+          updatedTasks[category.id] = data;
+        }
+      }
+
+      setTasks(updatedTasks);
     };
 
-    useEffect(() => {
-      if (!loading && user === null) {
-        console.log("User è null, faccio refresh");
-        window.location.reload();
-      }
-    }, [user, loading]);
-  
-    useEffect(() => {
-      const loadAllData = async () => {
-        const updatedTasks = {};
-    
-        for (const category of categories) {
-          const data = await loadDataForCategory(category.id);
-          if (data) {
-            updatedTasks[category.id] = data;
-          }
-        }
-    
-        setTasks(updatedTasks);
-      };
-    
-      if (user) loadAllData();
-    }, [user]);
+    if (!loading && user) {
+      loadAllData();
+    }
+  }, [user, loading]);
 
-    useEffect(() => {
-      setMounted(true);
-    }, []);
-
-    if (!mounted || !i18n.isInitialized) return null;
+  // Blocca il rendering fino a che i18n e il mount sono completati
+  if (!mounted || !i18n?.isInitialized) return null;
 
 
   return (

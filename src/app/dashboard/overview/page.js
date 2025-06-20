@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardHeader from "@/components/header/DashboardHeader";
 import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
-import CartTable from "@/components/overview/OverviewTable";
+import OverviewTable from "@/components/overview/OverviewTable";
 
 export default function CartPage() {
   const params = useParams();

@@ -119,7 +119,11 @@
   "image": "Image",
   "q_installed": "Installed quantity",
   "go_to_cart": "Go to cart",
-  "add_other_products": "Add other products"
+  "add_other_products": "Add other products",
+  "photographic_notes": "Photographic notes",
+"vocal_notes": "Voice notes",
+"text_notes": "Text notes"
+
 
 
 }

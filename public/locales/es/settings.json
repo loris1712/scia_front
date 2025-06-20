@@ -1,0 +1,22 @@
+{
+  "notifications": "Notificaciones",
+  "maintenance_title": "Informe de mantenimiento",
+  "maintenance_desc": "Habilitar notificaciones para próximas tareas de mantenimiento",
+  "maintenance_frequency_label": "Frecuencia de notificaciones de mantenimiento",
+  "checklist_title": "Informe de lista de verificación",
+  "checklist_desc": "Habilitar notificaciones para listas de verificación pendientes",
+  "checklist_frequency_label": "Frecuencia de notificaciones de lista de verificación",
+  "support": "SOPORTE",
+  "support_title": "Soporte al cliente",
+  "support_desc": "Serás redirigido al sitio web para solicitudes generales de soporte",
+  "licenses": "LICENCIAS",
+  "license_label": "Licencia del dispositivo",
+  "language": "IDIOMA",
+  "language_label": "Seleccionar idioma",
+  "save_button": "Guardar",
+  "weekly": "Semanal",
+  "monthly": "Mensual",
+  "annual": "Anual",
+  "settingsSaved": "Configuración guardada con éxito",
+  "settingsSaveFailed": "Error al guardar la configuración. Por favor, inténtalo de nuevo."
+}

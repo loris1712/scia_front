@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "@/app/i18n";
 import { updateMaintenanceJobStatus } from "@/api/maintenance";
 import Image from 'next/image';
+import { getTextsGeneral, getPhotosGeneral, getAudiosGeneral } from "@/api/shipFiles";
 
 const areaIcons = {
   "IV - BACINO": "/icons/shape.png",
@@ -38,7 +39,7 @@ const getStatusColor = (dueDays) => {
     return "#d0021b";
   } else if (dueDays < 0) {
     return "rgb(244,114,22)"; 
-  } else if (dueDays <= 3) {
+  } else if (dueDays <= 15) {
     return "#ffbf25";
   } else if (dueDays > 15) {
     return "rgb(45,182,71)";
@@ -117,7 +118,11 @@ const MaintenanceRow = ({ data }) => {
           <p className="text-[16px] text-[#67c2ae]">{data.job.maintenance_list.maintenance_level.Level_MMI}</p>
         </div>
       </div>
-      <div className="border border-[#001c38] p-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
+      <div className="border border-[#001c38] p-3 flex items-center justify-center cursor-pointer" onClick={
+    data.photographicNotes.length > 0 || data.vocalNotes.length > 0 || data.textNotes.length > 0
+      ? () => setIsOpen(true)
+      : undefined
+  } style={{ height: "-webkit-fill-available" }}>
         <div className="flex gap-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -186,13 +191,13 @@ const MaintenanceRow = ({ data }) => {
       </div>
     </div>
 
-    <div className="flex sm:hidden pl-4 mb-4 rounded-md border-b border-[#001c38] bg-[#022a52] cursor-pointer flex flex-col"
+    <div className="flex sm:hidden pt-4 pb-4 pl-6 pr-6 mb-4 rounded-md border-b border-[#001c38] bg-[#022a52] cursor-pointer flex flex-col"
       style={{
         borderLeft: `8px solid ${getStatusColor(dueDays)}`,
+        height: '24vh',
       }}
-      onClick={handleRowClick}
     >
-      <div className="flex items-center">
+      <div className="flex items-center" >
         <StatusBadge dueDate={data.ending_date} dueDays={dueDays} />
 
         <div className="p-3 flex items-center justify-center w-8 relative ml-auto" ref={dropdownRef}>
@@ -225,19 +230,42 @@ const MaintenanceRow = ({ data }) => {
         </div>
       </div>
 
-      <p className="text-white text-[18px] font-semibold truncate">{data.job.name}</p>
-        <p className="text-white/60 text-[16px] text-sm truncate">
-          {data.Element.element_model.LCN_name}
-        </p>
+        <div className="mt-2 mb-2" onClick={handleRowClick}>
+          <p className="text-white text-[18px] font-semibold truncate">{data.job.name}</p>
+            <p className="text-white/60 text-[16px] text-sm truncate">
+              {data.Element.element_model.LCN_name}
+            </p>
+        </div>
 
-      <div className="flex items-center">
-        <div className="flex items-center gap-2">
+      <div className="ml-1 flex items-center gap-4 mb-2" style={{ height: "-webkit-fill-available" }}>
+        {data.ending_date &&
+              <LegendItem icon="/icons/Shape-2.png" label={t("items.time_deadline")} />
+        }
+
+        {data.status.id == 2 &&
+              <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
+        }
+
+        {data.execution_state == 2 &&
+              <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
+        }
+        </div>
+
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mr-2">
           {areaIcons[data.job.maintenance_list.maintenance_level.Level_MMI] 
           && <img src={areaIcons[data.job.maintenance_list.maintenance_level.Level_MMI]} alt={data.job.maintenance_list.maintenance_level.Level_MMI} className="w-4 h-4" />}
           <p className="text-[18px] text-white">{data.recurrencyType.name}</p>
 
         </div>
-        <div className="p-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
+
+        <div className="text-[#ffffff60]"> | </div>
+
+        <div className="p-3 flex items-center justify-center cursor-pointer" onClick={
+    data.photographicNotes.length > 0 || data.vocalNotes.length > 0 || data.textNotes.length > 0
+      ? () => setIsOpen(true)
+      : undefined
+  } style={{ height: "-webkit-fill-available" }}>
           <div className="flex gap-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -260,22 +288,8 @@ const MaintenanceRow = ({ data }) => {
           <svg fill="currentColor" className={`w-6 h-6 ${statusColors[docStatus]}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
           </div>
         </div>
-        <div className="p-3 flex items-center justify-center gap-4" style={{ height: "-webkit-fill-available" }}>
-        {data.ending_date &&
-              <LegendItem icon="/icons/Shape-2.png" label={t("items.time_deadline")} />
-        }
-
-        {data.status.id == 2 &&
-              <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
-        }
-
-        {data.execution_state == 2 &&
-              <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
-        }
-        </div>
       </div>
-
-      
+ 
     </div>
 
     <NotesModal isOpen={isOpen} onClose={() => setIsOpen(false)} data={data} />

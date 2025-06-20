@@ -20,7 +20,8 @@ export default function SettingsContainer() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const langFromStorage = localStorage.getItem("language");
+    const langFromStorage = typeof window !== "undefined" ? localStorage.getItem("language") : null;
+
     if (langFromStorage && i18n.language !== langFromStorage) {
       i18n.changeLanguage(langFromStorage);
     }
@@ -211,6 +212,7 @@ export default function SettingsContainer() {
               >
                 <option value="it">Italiano</option>
                 <option value="en">English</option>
+                <option value="es">Spanish</option>
               </select>
             </div>
           </div>

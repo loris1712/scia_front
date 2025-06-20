@@ -6,7 +6,8 @@ import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import HttpBackend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import Cookies from "js-cookie";
+
+const lang = typeof window !== "undefined" ? localStorage.getItem("language") : null;
 
 if (!i18n.isInitialized) {
   i18n
@@ -14,14 +15,14 @@ if (!i18n.isInitialized) {
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-      fallbackLng: 'it',  
+      fallbackLng: 'it',
       debug: false,
-      lng: localStorage.getItem("language") || "it",  // <-- qui
-      supportedLngs: ['it', 'en'], 
+      lng: lang || "it",  // uso la variabile protetta
+      supportedLngs: ['it', 'en', 'es'],
       backend: {
-        loadPath: '/locales/{{lng}}/{{ns}}.json', 
+        loadPath: '/locales/{{lng}}/{{ns}}.json',
       },
-      ns: ['common', 'settings'],  
+      ns: ['common', 'settings'],
       defaultNS: 'common',
       react: {
         useSuspense: false,

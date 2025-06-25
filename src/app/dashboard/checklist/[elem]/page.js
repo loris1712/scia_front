@@ -5,31 +5,26 @@ import DashboardHeader from "@/components/header/DashboardHeader";
 import Breadcrumbs from "@/components/dashboard/Breadcrumbs";
 import MaintenanceDetails from "@/components/checklist/element/MaintenanceDetails";
 import MaintenanceInfo from "@/components/checklist/element/MaintenanceInfo";
-import PauseModal from "@/components/checklist/element/PauseModal";
 import NoteModal from "@/components/checklist/element/NoteModal";
 import { useParams } from "next/navigation";
 import { useTranslation } from "@/app/i18n";
+import { fetchMaintenanceJob } from "@/api/maintenance";
 
 export default function ElementPage({ params }) {
-  const [isOpen, setIsOpen] = useState(false);
   const [noteModal, setNoteModal] = useState(false);
-  
+  const [maintenancedata, setMaintenanceData] = useState([]);
+
   const params2 = useParams();
   const jobId = params2.elem;
  
   let bgColor = "bg-gray-400";
   let textColor = "text-white"; 
 
-  /*if (maintenanceInfo.dueDays < -15) {
-    bgColor = "bg-[rgb(208,2,27)]"; 
-  } else if (maintenanceInfo.dueDays < 0) {
-    bgColor = "bg-[rgb(244,114,22)]"; 
-  } else if (maintenanceInfo.dueDays <= 3) {
-    bgColor = "bg-[rgb(255,191,37)]";
-    textColor = "text-black"; 
-  } else if (maintenanceInfo.dueDays > 15) {
-    bgColor = "bg-[rgb(45,182,71)]";
-  }*/
+  useEffect(() => {
+    fetchMaintenanceJob(jobId).then((data) => {
+      setMaintenanceData(data || []);
+    });
+  }, [jobId]);
 
     const { t, i18n } = useTranslation("maintenance");
     const [mounted, setMounted] = useState(false);
@@ -38,7 +33,7 @@ export default function ElementPage({ params }) {
       setMounted(true);
     }, []);
       
-    if (!mounted || !i18n.isInitialized) return null;
+  if (!mounted || !i18n.isInitialized || maintenancedata.length === 0) return null;
 
   return (
     <div className="flex flex-col bg-[#001c38] text-white p-4">
@@ -50,7 +45,7 @@ export default function ElementPage({ params }) {
 
       <div className="flex items-center pt-2 pb-4">
         <div className='flex items-center gap-4'>
-          <h2 className="text-2xl font-bold">Test</h2>
+          <h2 className="text-2xl font-bold">{maintenancedata[0]?.job.name}</h2>
         </div>
 
         <div className='ml-auto flex items-center gap-4'>
@@ -65,23 +60,19 @@ export default function ElementPage({ params }) {
         </div>
       </div>
 
-      {isOpen && (
-        <PauseModal onClose={() => setIsOpen(false)} />
-      )}
-
       {noteModal && (
-        <NoteModal onClose={() => setNoteModal(false)} id={3} />
+        <NoteModal onClose={() => setNoteModal(false)} id={jobId} />
       )}
 
       <div className="block sm:flex gap-4">
         <div className="w-full sm:w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md sm:mb-0 mb-4">
           <div className="flex sm:px-2">
-            <MaintenanceDetails details={""} />
+            <MaintenanceDetails details={maintenancedata[0]} />
           </div>
         </div>
 
         <div className="w-full sm:w-1/4 bg-[#022a52] p-4 rounded-md">
-          <MaintenanceInfo details={""}/>
+          <MaintenanceInfo details={maintenancedata[0]} />
         </div>
       </div>
     </div>

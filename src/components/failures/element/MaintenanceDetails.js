@@ -34,7 +34,6 @@ const MaintenanceDetails = ({ details }) => {
 
           setLatestAudio(audios.notes[0]);
 
-          console.log(texts.notes[0])
           setLatestText(texts.notes[0]);
 
         if (photos?.length) {
@@ -43,7 +42,6 @@ const MaintenanceDetails = ({ details }) => {
         }
 
         if (audios?.length) {
-          console.log(audios.notes[0])
           setLatestAudio(audios.notes[0]);
         }
 

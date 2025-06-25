@@ -67,7 +67,6 @@ export default function FailureModal({ isOpen, onClose, data }) {
   //console.log(payload)
     try {
       const response = await addFailure(payload);
-      console.log("Avaria creata con successo:", response);
       onClose();
       window.location.reload();
     } catch (error) {

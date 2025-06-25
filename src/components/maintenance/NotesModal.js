@@ -14,6 +14,7 @@ export default function NotesModal({ isOpen, onClose, data }) {
     const [latestText, setLatestText] = useState(null);
 
     const { t, i18n } = useTranslation("maintenance");
+
   
     useEffect(() => {
       if (!data?.id) return;
@@ -36,7 +37,7 @@ export default function NotesModal({ isOpen, onClose, data }) {
           }
   
           if (audios?.length) {
-            console.log(audios.notes[0])
+            //console.log(audios.notes[0])
             setLatestAudio(audios.notes[0]);
           }
   
@@ -59,14 +60,34 @@ export default function NotesModal({ isOpen, onClose, data }) {
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
       <div className="bg-[#022a52] sm:w-[50%] w-full p-6 rounded-md shadow-lg text-white">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-[22px] font-semibold">{t("notes")}: {data.element_eswbs_instance_id}</h2>
+          <h2 className="text-[22px] font-semibold">{t("notes")}: {data.job.name}</h2>
           <button className="text-white text-xl cursor-pointer" onClick={onClose}>
             <svg width="24px" height="24px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
           </button>
         </div>
 
         <div>
-            <p className="text-[#789fd6] mb-4">{t("photographic_notes")}</p>
+
+            <div className="items-center flex gap-2 mb-4">
+              <p className="text-[#789fd6]">{t("photographic_notes")}</p>
+              <div
+                className={`
+                  flex items-center rounded-full px-3 py-1
+                  ${
+                    latestPhoto.status === "anomaly"
+                      ? "bg-red-600 text-white"
+                      : latestPhoto.status === "ok"
+                      ? "bg-green-600 text-white"
+                      : latestPhoto.status === "not_perfomed"
+                      ? "bg-yellow-400 text-black"
+                      : ""
+                  }
+                `}
+              >
+                <p className="text-[10px]">{t(latestPhoto.status)}</p>
+              </div>
+            </div>
+
             {latestPhoto && (
               <div className="flex items-center gap-4 cursor-pointer">
                         <Image 
@@ -86,7 +107,25 @@ export default function NotesModal({ isOpen, onClose, data }) {
         </div>
 
         <div className="mt-6">
-            <p className="text-[#789fd6] mb-4">{t("vocal_notes")}</p>
+          <div className="items-center flex gap-2 mb-4">
+            <p className="text-[#789fd6]">{t("vocal_notes")}</p>
+            <div
+              className={`
+                flex items-center rounded-full px-3 py-1
+                ${
+                  latestAudio.status === "anomaly"
+                    ? "bg-red-600 text-white"
+                    : latestAudio.status === "ok"
+                    ? "bg-green-600 text-white"
+                    : latestAudio.status === "not_perfomed"
+                    ? "bg-yellow-400 text-black"
+                    : ""
+                }
+              `}
+            >
+              <p className="text-[10px]">{t(latestAudio.status)}</p>
+            </div>
+          </div>
 
             {latestAudio && (
               <div className="flex items-center gap-4 cursor-pointer">
@@ -98,7 +137,26 @@ export default function NotesModal({ isOpen, onClose, data }) {
         </div>
 
         <div className="mt-6">
-            <p className="text-[#789fd6] mb-4">{t("text_notes")}</p>
+
+            <div className="items-center flex gap-2 mb-4">
+              <p className="text-[#789fd6]">{t("text_notes")}</p>
+              <div
+                className={`
+                  flex items-center rounded-full px-3 py-1
+                  ${
+                    latestText.status === "anomaly"
+                      ? "bg-red-600 text-white"
+                      : latestText.status === "ok"
+                      ? "bg-green-600 text-white"
+                      : latestText.status === "not_perfomed"
+                      ? "bg-yellow-400 text-black"
+                      : ""
+                  }
+                `}
+              >
+                <p className="text-[10px]">{t(latestText.status)}</p>
+              </div>
+            </div>
 
             {latestText && (
               <div className="flex items-center gap-4 cursor-pointer">

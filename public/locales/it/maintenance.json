@@ -122,6 +122,29 @@
     "add_other_products": "Aggiungi altri prodotti",
     "photographic_notes": "Note fotografiche",
     "vocal_notes": "Note vocali",
-     "text_notes": "Note testuali"
+    "text_notes": "Note testuali",
+    "forgot_password": "Hai dimenticato la password?",
+    "log_in": "Accedi",
+    "rapid_pin": "Accedi con Pin Rapido",
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "insert_pin": "Inserisci PIN",
+    "traditional_login": "Vai al login tradizionale",
+    "insert_spare": "Inserisci ricambio",
+    "product_image": "Immagine prodotto",
+    "starting_quality": "Quantità di partenza",
+    "original_name": "Denominazione originale",
+    "costructor": "Costruttore",
+    "price": "Prezzo",
+    "scan_new_location": "Scansiona Nuova ubicazione",
+    "manage": "Gestisci",
+    "orders": "Ordini",
+    "in_order": "In ordine",
+
+    "select_file": "Seleziona file",
+    "type": "Tipo"
+
+    
 
 }

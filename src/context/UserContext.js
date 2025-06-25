@@ -11,6 +11,39 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // ✅ Stato per le note temporanee associate ai guasti
+  // Struttura: { [failureId]: { text: [], photo: [], vocal: [] } }
+  const [failureNotes, setFailureNotes] = useState({});
+
+  // ✅ Aggiunge una nota (testo/foto/audio) a un guasto specifico
+  const addNote = (failureId, type, content) => {
+    setFailureNotes((prev) => {
+      const prevFailure = prev[failureId] || { text: [], photo: [], vocal: [] };
+      return {
+        ...prev,
+        [failureId]: {
+          ...prevFailure,
+          [type]: [...(prevFailure[type] || []), content],
+        },
+      };
+    });
+  };
+
+  // ✅ Recupera tutte le note associate a un guasto
+  const getNotes = (failureId) => {
+    return failureNotes[failureId] || { text: [], photo: [], vocal: [] };
+  };
+
+  // ✅ Elimina tutte le note associate a un guasto
+  const clearNotes = (failureId) => {
+    setFailureNotes((prev) => {
+      const updated = { ...prev };
+      delete updated[failureId];
+      return updated;
+    });
+  };
+
+  // ✅ Autenticazione e caricamento profilo utente
   useEffect(() => {
     const isAuthPage =
       typeof window !== "undefined" &&
@@ -25,7 +58,8 @@ export function UserProvider({ children }) {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
     if (!token || token === "undefined") {
-      router.replace("/login"); // redirect pulito, no reload
+      setLoading(false); 
+      router.replace("/login");
       return;
     }
 
@@ -33,8 +67,9 @@ export function UserProvider({ children }) {
       const result = await getProfileData();
 
       if (!result) {
-        localStorage.removeItem("token"); // cleanup
+        localStorage.removeItem("token");
         router.replace("/login");
+        setLoading(false);
         return;
       }
 
@@ -46,7 +81,16 @@ export function UserProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        addNote,
+        getNotes,
+        clearNotes,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

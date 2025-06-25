@@ -28,7 +28,6 @@ export default function Qrcode({ className, onScan }) {
 
       scanner.render(
         (decodedText) => {
-          console.log("QR Code scanned:", decodedText);
           if (onScan) onScan(decodedText);
           handleCloseScanner();
         },

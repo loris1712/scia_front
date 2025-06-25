@@ -44,12 +44,12 @@ const MaintenanceInfo = ({ details }) => {
           overflow: "hidden",
         }}
       >
-        {details.job_id}
+        {details.job.maintenance_list.maintenance_level.Description}
       </p>
 
       {!showFull && (
         <button
-          className="mt-2 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
+          className="mt-4 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
           onClick={() => setShowIstructions(true)}
         >
           {t("see_instructions")}
@@ -73,7 +73,7 @@ const MaintenanceInfo = ({ details }) => {
                   />
 
           <div>
-            <h2 className="text-md text-[#fff]">2.1.4 Motore centrale</h2>
+            <h2 className="text-md text-[#fff]">{details.Element.element_model.ESWBS_code} {details.Element.element_model.LCN_name}</h2>
 
           </div>
         
@@ -93,7 +93,7 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>1 settimana</p>
+        <p>{details.recurrencyType.name}</p>
   
         </div>
 
@@ -108,18 +108,17 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>1 settimana</p>
+        <p>{details.job.team.name}</p>
   
         </div>
 
       </div>
 
-      {showIstructions &&
-        <Istructions istructions={""} onClose={() => setShowIstructions(false)} />
+      {showIstructions && details && 
+        <Istructions istructions={details} onClose={() => setShowIstructions(false)} />
       }
 
-      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
-      
+      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} eswbs={details.Element.element_model.ESWBS_code}/>
       
     </div>
   );

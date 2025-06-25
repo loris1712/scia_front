@@ -15,30 +15,23 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
-  //const BASE_URL = "http://52.59.162.108:4000";
 
-const handleLogout = async () => {
-  try {
-    // Se hai una route backend che invalida token lato server, chiamala
-    await fetch(`${BASE_URL}/api/auth/logout`, {
-      method: "POST",
-      // Se usi token via header non serve "credentials: include"
-      headers: {
-        "Content-Type": "application/json",
-        // Manda il token per invalidarlo lato server, se vuoi
-        "Authorization": typeof window !== "undefined" ? `Bearer ${localStorage.getItem("token")}` : "",
-      },
-    });
+  const handleLogout = async () => {
+    try {
+      await fetch(`${BASE_URL}/api/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": typeof window !== "undefined" ? `Bearer ${localStorage.getItem("token")}` : "",
+        },
+      });
 
-    // Rimuovi il token dal localStorage per "logout" client-side
-    localStorage.removeItem("token");
-
-    // Reindirizza a login
-    router.push("/login");
-  } catch (error) {
-    console.error("Errore durante il logout:", error);
-  }
-};
+      localStorage.removeItem("token");
+      router.push("/login");
+    } catch (error) {
+      console.error("Errore durante il logout:", error);
+    }
+  };
 
   useEffect(() => {
       setMounted(true);
@@ -57,19 +50,19 @@ const handleLogout = async () => {
       <div className="flex items-center pt-2 pb-4">
       <h2 className="text-2xl font-bold">{t("profile")}</h2>
       <button
-  type="submit"
-  onClick={handleLogout}
-  className="flex items-center rounded-md ml-auto bg-[#D0021B] hover:bg-blue-500 text-white font-bold p-4 sm:px-4 sm:py-1 sm:p-0 transition duration-200 cursor-pointer"
->
-  <Image 
-    src="/icons/logout.svg"
-    alt="Logout"
-    width={15} 
-    height={15}
-    className="sm:mr-2"
-  />
-  <span className="hidden sm:inline">{t("logout")}</span>
-</button>
+        type="submit"
+        onClick={handleLogout}
+        className="flex items-center rounded-md ml-auto bg-[#D0021B] hover:bg-blue-500 text-white font-bold p-4 sm:px-4 sm:py-1 sm:p-0 transition duration-200 cursor-pointer"
+      >
+        <Image 
+          src="/icons/logout.svg"
+          alt="Logout"
+          width={15} 
+          height={15}
+          className="sm:mr-2"
+        />
+        <span className="hidden sm:inline">{t("logout")}</span>
+      </button>
  
 
     </div>

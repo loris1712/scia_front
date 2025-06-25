@@ -65,19 +65,19 @@ const InfoCard = ({ data }) => {
       <div className="sm:w-1/2 w-full">
         <div className="mb-4">
           <h2 className="text-lg text-[#789fd6] mb-2">{t("system")}/{t("component")}</h2>
-          <p className="text-white">{data.component}</p>
+          <p className="text-white">{data.model.LCN_name}</p>
         </div>
 
         <div className="mb-4">
           <h2 className="text-lg text-[#789fd6] mb-2">{t("builder")}</h2>
-          <p className="text-white">{data.manufacturer}</p>
+          <p className="text-white">{data.organization.Organization_name}</p>
         </div>
 
         <div className="mb-4">
           <h2 className="text-lg text-[#789fd6] mb-2">{t("image")}</h2>
           <Image 
             src="/motor.jpg"
-            alt={data.name} 
+            alt={"image"} 
             width={80} 
             height={80} 
             className="rounded-lg"
@@ -103,14 +103,14 @@ const InfoCard = ({ data }) => {
 
         <div className="mb-4">
           <h2 className="text-lg text-[#789fd6] mb-2">Serial Number</h2>
-          <p className="text-white">{data.manufacturer}</p>
+          <p className="text-white">{data.element.serial_number}</p>
         </div>
 
         <div className="mb-4">
           <h2 className="text-lg text-[#789fd6] mb-2">{t("3D_model")}</h2>
           <Image 
             src="/motor.jpg"
-            alt={data.name} 
+            alt={"image"} 
             width={80} 
             height={80} 
             className="rounded-lg"

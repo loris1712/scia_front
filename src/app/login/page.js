@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "@/app/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,14 +17,19 @@ export default function LoginPage() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    if(token){
+      router.push("/dashboard");
+    }
     
     setIsClient(true);
     setError(""); 
     setSuccess("");
   }, []);
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
-  // const BASE_URL = "http://52.59.162.108:4000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +60,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
     }
   };
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
   if (!isClient) {
     return null;
   }
@@ -61,14 +70,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#001c38]">
       <div className="w-full max-w-md p-8 rounded-lg">
-        <h2 className="text-2xl font-semibold text-white text-center mb-6">Login</h2>
+        <h2 className="text-2xl font-semibold text-white text-center mb-6">
+          {t("login")}
+        </h2>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
         {success && <p className="text-green-500 text-center">{success}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-[#789fd6] block mb-2">Email</label>
+            <label className="text-[#789fd6] block mb-2">{t("email")}</label>
             <input
               type="email"
               value={email}
@@ -79,7 +90,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
             />
           </div>
           <div>
-            <label className="text-[#789fd6] block mb-2">Password</label>
+            <label className="text-[#789fd6] block mb-2">{t("password")}</label>
             <input
               type="password"
               value={password}
@@ -92,7 +103,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
           <div className="w-full text-center">
             <Link href="/reset-password" className="text-white text-sm hover:underline">
-              Hai dimenticato la password?
+              {t("forgot_password")}
             </Link>
           </div>
 
@@ -103,12 +114,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
               loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           >
-            {loading ? "Caricamento..." : "Accedi"}
+            {loading ? "Caricamento..." : t("log_in")}
           </button>
 
           <div className="w-full text-center">
             <Link href="/login-pin" className="text-white text-sm hover:underline">
-              Accedi con Pin Rapido
+              {t("rapid_pin")}
             </Link>
           </div>
         </form>

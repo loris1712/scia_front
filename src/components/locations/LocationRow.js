@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import StatusBadge from "./StatusBadge";
-import Icons from "./Icons";
 import NotesModal from "./NotesModal";
-import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
 
@@ -40,7 +37,6 @@ const getStatusColor = (dueDays) => {
 
 const LocationRow = ({ data }) => {
 
-  console.log(data)
   const status = calculateStatus(data.data_recovery_expiration);
   const today = new Date();
   const dueDate = new Date(data.data_recovery_expiration);

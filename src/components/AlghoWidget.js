@@ -9,7 +9,6 @@ export default function AlghoWidget() {
   const pathname = usePathname();
   const [botId, setBotId] = useState(null);
 
-  // Pagine dove il bot NON deve comparire
   const hiddenPaths = [
     "/login",
     "/login-pin",
@@ -22,7 +21,7 @@ export default function AlghoWidget() {
   useEffect(() => {
     if (isHidden) return;
 
-    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : null;
+    const lang = typeof window !== "undefined" ? (localStorage.getItem("i18nextLng") || "it") : "it";
 
     if (user && lang) {
       const bot =
@@ -61,4 +60,3 @@ export default function AlghoWidget() {
 
   return null;
 }
-

@@ -6,6 +6,7 @@ import InfoCard from "@/components/profile/InfoCard";
 
 export default function ProfileCard() {
   const [data, setData] = useState(null);
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
     async function loadData() {
@@ -13,7 +14,7 @@ export default function ProfileCard() {
       setData(result);
     }
     loadData();
-  }, []);
+  }, [token]);
 
 
   return (

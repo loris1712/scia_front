@@ -4,17 +4,17 @@ import { useState, useEffect } from "react";
 import FacilitiesList from "@/components/facilities/FacilitiesList";
 import { useTranslation } from "@/app/i18n";
 
-export default function NotesModal({ isOpen, onClose2, data }) {
-    const [search, setSearch] = useState("");
+export default function NotesModal({ isOpen, onClose2, eswbs }) {
+  const [search, setSearch] = useState("");
 
-    const { t, i18n } = useTranslation("facilities");
-    const [mounted, setMounted] = useState(false);
+  const { t, i18n } = useTranslation("facilities");
+  const [mounted, setMounted] = useState(false);
       
-    useEffect(() => {
-      setMounted(true);
-    }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
       
-    if (!mounted || !i18n.isInitialized) return null;
+  if (!mounted || !i18n.isInitialized) return null;
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10 facilities-modal">
@@ -36,7 +36,7 @@ export default function NotesModal({ isOpen, onClose2, data }) {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-            <FacilitiesList search={search} modal={"yes"} />
+            <FacilitiesList search={search} modal={"yes"} eswbsCode={eswbs} />
 
         </div>
         <button

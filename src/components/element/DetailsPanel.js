@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from 'next/image';
 import AudioPlayer from "@/components/element/audioPlayer";
 import { useTranslation } from "@/app/i18n";
+import Link from "next/link";
 
 const DetailsPanel = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
@@ -34,7 +35,7 @@ const DetailsPanel = ({ details }) => {
           overflow: "hidden",
         }}
       >
-        {details.description}
+        {details.model.LCN_name}
       </p>
 
       {!showFull && (
@@ -46,33 +47,37 @@ const DetailsPanel = ({ details }) => {
         </button>
       )}
 
-      <div className="mb-6">
+      {details.model.Shipyard_arrangement_drawing_link &&
+        <Link href={details.model.Shipyard_arrangement_drawing_link}>
+          <div className="mb-6">
+          
+            <h2 className="text-lg text-[#789fd6] mb-2 mt-4">{t("exploded")}</h2>
+
+            <div className="flex items-center gap-4 cursor-pointer">
+              <Image 
+                        src="/motor.jpg"
+                        alt="Motore"
+                        width={80} 
+                        height={80} 
+                        className="rounded-lg"
+                      />
+
+              <h2 className="text-md text-[#fff]">{t("technical_diagram")}</h2>
+            
+              <div className="ml-auto mr-8">
+                    <svg fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                  </div>
+            </div>
+
+          </div>
+        </Link>
+      }
       
-        <h2 className="text-lg text-[#789fd6] mb-2 mt-4">{t("exploded")}</h2>
-
-        <div className="flex items-center gap-4 cursor-pointer">
-          <Image 
-                    src="/motor.jpg"
-                    alt="Motore"
-                    width={80} 
-                    height={80} 
-                    className="rounded-lg"
-                  />
-
-          <h2 className="text-md text-[#fff]">{t("technical_diagram")}</h2>
-        
-          <div className="ml-auto mr-8">
-                <svg fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-              </div>
-        </div>
-
-      </div>
-
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
           <h2 className="text-lg text-[#789fd6]">{t("photographic_notes")}</h2>
-          <h2 className="text-[14px] text-[#fff] ml-auto">{t("see_history")}</h2>
+          {/*<h2 className="text-[14px] text-[#fff] ml-auto">{t("see_history")}</h2>*/}
         </div>
       
 
@@ -86,14 +91,13 @@ const DetailsPanel = ({ details }) => {
                   />
 
           <div>
-            <h2 className="text-md text-[#fff]">Alessandro Coscarelli</h2>
-            <h2 className="text-[14px] text-[#ffffff94]">06/05/2024 - 10:23</h2>
-
+            <h2 className="text-md text-[#fff]">{details.notes.author.first_name} {details.notes.author.last_name}</h2>
+            <h2 className="text-[14px] text-[#ffffff94]">{new Date(details.notes.photos[0].created_at).toLocaleString()}</h2>
           </div>
         
-          <div className="ml-auto mr-8">
+          {/*<div className="ml-auto mr-8">
                 <svg fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-              </div>
+              </div>*/}
         </div>
 
       </div>
@@ -102,14 +106,18 @@ const DetailsPanel = ({ details }) => {
 
         <div className="flex items-center mb-2 mt-4">
           <h2 className="text-lg text-[#789fd6]">{t("vocal_notes")}</h2>
-          <h2 className="text-[14px] text-[#fff] ml-auto">{t("see_history")}</h2>
+          {/*<h2 className="text-[14px] text-[#fff] ml-auto">{t("see_history")}</h2>*/}
         </div>
       
 
         <div className="flex items-center gap-4 cursor-pointer">
 
           <div className="w-full">
-            <AudioPlayer audioSrc="/audiotest.mp3" />
+            <AudioPlayer
+                audioSrc={details.notes.vocal[0].audio_url}
+                username={details.notes.author.first_name[0] + details.notes.author.last_name[0]}
+                dateTime={details.notes.vocal[0].created_at}
+              />
           </div>
   
         </div>
@@ -120,23 +128,22 @@ const DetailsPanel = ({ details }) => {
 
         <div className="flex items-center mb-2 mt-4">
           <h2 className="text-lg text-[#789fd6]">{t("text_notes")}</h2>
-          <h2 className="text-[14px] text-[#fff] ml-auto">{t("see_history")}</h2>
+          {/*<h2 className="text-[14px] text-[#fff] ml-auto">{t("see_history")}</h2>*/}
         </div>
       
-
-        <div className="flex items-center gap-4 cursor-pointer">
+        <div className="flex items-center gap-4">
 
           <div className="w-full bg-[#00000038] p-4 rounded-md">
             <p className="text-white opacity-60">
-              Alessandro Coscarelli
+              {details.notes.author.first_name} {details.notes.author.last_name}
             </p>
 
             <p className="text-white mt-2 mb-2">
-            Erano presenti numerose foglie nella scatola elettrica, dovute probabilmente al vento forte della scorsa settimana. Sono state tutte rimosse
+              {details.notes.text[0].text_field}
             </p>
 
             <p className="text-white opacity-60 text-sm ml-auto w-[fit-content]">
-              06/05/2024 - 10:25
+              {details.notes.text[0].created_at}
             </p>
           </div>
   

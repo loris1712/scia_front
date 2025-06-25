@@ -25,7 +25,7 @@ export default function ElementPage({ params }) {
     const loadTasks = async () => {
       try {
         const fetchReading = await getReading(readingId, user?.id);
-        console.log(fetchReading)
+        //console.log(fetchReading)
         setTasksData(fetchReading);
       } catch (err) {
         console.error(err);

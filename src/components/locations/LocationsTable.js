@@ -25,8 +25,6 @@ const LocationsTable = () => {
       setLoading(true);
 
       const fetchedTasks = await fetchLocations(shipId, user?.id);
-
-      console.log(fetchedTasks)
       
       setTasksData(fetchedTasks);
     } catch (err) {

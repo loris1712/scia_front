@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import DashboardCard from "@/components/dashboard/DashboardCard";
-import Image from "next/image";
 
 import { useUser } from "@/context/UserContext";
 import { fetchTasks } from "@/api/checklist";
@@ -31,15 +30,14 @@ const fetchByCategory = {
 
 export default function DashboardGrid() {
   const [tasks, setTasks] = useState({});
-  const [checklist, setChecklist] = useState([]);
   const [mounted, setMounted] = useState(false);
 
   const { user, loading } = useUser();
   const { t, i18n } = useTranslation("dashboard");
-  const router = useRouter();
   const shipId = 1;
 
-  // Load data based on category
+  const router = useRouter();
+  
   const loadDataForCategory = async (categoryId) => {
     const fetchFunction = fetchByCategory[categoryId];
     if (!fetchFunction) return null;
@@ -65,42 +63,62 @@ export default function DashboardGrid() {
     }
   };
 
-  // Inizializza dopo il mount client-side
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Se user è null e non sta caricando, forziamo reload (caso raro)
   useEffect(() => {
-    if (!loading && user === null) {
-      console.warn("User null, forzo reload");
-      window.location.reload();
-    }
-  }, [user, loading]);
+    if (loading) return;
 
-  // Carica tutti i dati quando user è pronto
-  useEffect(() => {
-    const loadAllData = async () => {
-      const updatedTasks = {};
+    const timeoutId = setTimeout(() => {
+      if (!user) {
+        //console.warn("Utente non autenticato, ricarico la pagina tra 2 secondi...");
+        const alreadyReloaded = sessionStorage.getItem("dashboard_reloaded");
 
-      for (const category of categories) {
-        const data = await loadDataForCategory(category.id);
-        if (data) {
-          updatedTasks[category.id] = data;
+        if (!alreadyReloaded) {
+          sessionStorage.setItem("dashboard_reloaded", "true");
+          window.location.reload();
+        } else {
+          //console.warn("Reload già effettuato, evito loop infinito.");
         }
+
+        setTasks({});
+        return;
       }
 
-      setTasks(updatedTasks);
-    };
+      const loadAllData = async () => {
+        try {
+          const results = await Promise.all(
+            categories.map(async (category) => {
+              const data = await loadDataForCategory(category.id);
+              return { id: category.id, data };
+            })
+          );
 
-    if (!loading && user) {
+          const updatedTasks = {};
+          results.forEach(({ id, data }) => {
+            if (data) updatedTasks[id] = data;
+          });
+
+          setTasks(updatedTasks);
+          sessionStorage.removeItem("dashboard_reloaded");
+
+        } catch (error) {
+          console.error("Errore caricamento dati dashboard:", error);
+        }
+      };
+
       loadAllData();
-    }
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
   }, [user, loading]);
 
-  // Blocca il rendering fino a che i18n e il mount sono completati
+
   if (!mounted || !i18n?.isInitialized) return null;
 
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div className="w-full text-center">Loading</div>;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full sm:pb-0 pb-8">
@@ -109,9 +127,9 @@ export default function DashboardGrid() {
           key={category.id}
           id={category.id}
           title={t(category.titleKey)}
-          imageSrc={category.imageSrc} 
+          imageSrc={category.imageSrc}
           tasks={tasks[category.id] || []}
-          data={checklist}
+          data={[]}
         />
       ))}
     </div>

@@ -7,7 +7,7 @@ import SpareSelector from "./SpareSelector";
 import { useUser } from "@/context/UserContext";
 import { markAsOk } from "@/api/maintenance";
 
-export default function SpareModal({ onClose, maintenanceListId }) {
+export default function SpareModal({ onClose, maintenanceListId, onClick }) {
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
   const [userType, setUserType] = useState("");
@@ -28,13 +28,13 @@ export default function SpareModal({ onClose, maintenanceListId }) {
     spares: selectedSpare, 
   };
 
-  console.log(spareData)
+  //console.log(spareData)
 
   const result = await markAsOk(maintenanceListId, spareData, selectedSpare);
 
   if (result) {
-    //alert(t("spare_added"));
-    //onClose();
+    onClick("ok")
+    onClose();
   } else {
     alert(t("spare_not_added"));
   }

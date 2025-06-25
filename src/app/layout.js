@@ -1,3 +1,4 @@
+// layout.tsx o layout.js
 import { Geist, Geist_Mono, Barlow } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -14,22 +15,26 @@ const geistMono = Geist_Mono({
 
 const barlow = Barlow({ subsets: ["latin"], weight: "500" });
 
+// ✅ Titolo e descrizione restano qui
 export const metadata = {
   title: "Scia",
   description: "Scia App",
-  viewport: "width=device-width, initial-scale=1", // 👈 aggiunto qui
+};
+
+// ✅ Viewport spostato qui, come export a parte
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body
         style={{ background: "#001c38" }}
         className={barlow.className}
       >
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

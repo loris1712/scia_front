@@ -98,7 +98,7 @@ export default function InfoCard({ data }) {
           height={80}
           className="rounded-full object-cover w-[80px] h-[80px] cursor-pointer"
           onClick={() => setIsImagePopupOpen(true)}
-        />
+        /> 
 
       </div>
 

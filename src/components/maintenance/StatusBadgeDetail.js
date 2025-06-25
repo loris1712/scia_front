@@ -6,14 +6,14 @@ const StatusBadgeDetail = ({ dueDate }) => {
   const today = new Date();
   const dueDate2= new Date(dueDate);
   const dueDays = Math.ceil((dueDate2 - today) / (1000 * 60 * 60 * 24));
-  
+   
   if (dueDays < -15) {
     bgColor = "bg-[rgb(208,2,27)]";
     symbol = "+"
   } else if (dueDays < 0) {
     bgColor = "bg-[rgb(244,114,22)]";
     symbol = "+" 
-  } else if (dueDays <= 3) {
+  } else if (dueDays <= 15) {
     bgColor = "bg-[rgb(255,191,37)]";
     symbol = "-"
     textColor = "text-black";

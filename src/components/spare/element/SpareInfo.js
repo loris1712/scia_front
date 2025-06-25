@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import Istructions from "./Istructions";
+import { useTranslation } from "@/app/i18n";
 
 const MaintenanceInfo = ({ details }) => {
   const [showIstructions, setShowIstructions] = useState(false);
+
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
 
   return (
     <div className="p-2">
       {details && details[0].description > 0 &&
       <div className="mb-6">
-        <h2 className="text-lg text-[#789fd6] mb-2">Descrizione</h2>
+        <h2 className="text-lg text-[#789fd6] mb-2">{t("description")}</h2>
 
               <p
                 className={`text-white`}
@@ -28,7 +32,7 @@ const MaintenanceInfo = ({ details }) => {
                   className="text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-4"
                   onClick={() => setShowIstructions(true)}
                 >
-                  Dettagli
+                  {t("details")}
                 </button>
       </div>
 }
@@ -37,7 +41,7 @@ const MaintenanceInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">Prezzo</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("price")}</h2>
         </div>
         <p>{details && details.length > 0 ? details[0].Unitary_price : "Non disponibile"} euro</p>
       </div>
@@ -61,7 +65,7 @@ const MaintenanceInfo = ({ details }) => {
       <div className="mb-6">
 
         <div className="flex items-center mb-2 mt-4">
-          <h2 className="text-lg text-[#789fd6]">Fornitore</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("supplier")}</h2>
         </div>
       
 
@@ -79,7 +83,7 @@ const MaintenanceInfo = ({ details }) => {
           <div className="mb-6">
 
             <div className="flex items-center mb-2 mt-4">
-              <h2 className="text-lg text-[#789fd6]">NCAGE Fornitore</h2>
+              <h2 className="text-lg text-[#789fd6]">NCAGE {t("supplier")}</h2>
             </div>
           
 

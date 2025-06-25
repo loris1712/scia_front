@@ -20,8 +20,8 @@ export default function DashboardCard({ id, title, imageSrc, tasks }) {
         
         {tasks.length > 0 && (
           <div style={{height: 'fit-content'}} className="ml-auto bg-[#ff0000] rounded-full px-2 py-1 text-white text-[12px]">
-          {tasks.length}
-        </div>
+            {tasks.length}
+          </div>
         )}
       </div>
 

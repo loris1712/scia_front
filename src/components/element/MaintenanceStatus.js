@@ -20,7 +20,7 @@ const MaintenanceStatus = ({ status }) => {
       <h2 className="text-lg text-[#789fd6] mb-2">{t("maintenance_status")}</h2>
 
       <ul>
-        {status.map((item, index) => (
+        {/*{status.map((item, index) => (
           <li key={index} className="text-white flex items-center mb-2">
             {index <= 1 && (
               <div
@@ -58,7 +58,7 @@ const MaintenanceStatus = ({ status }) => {
                 </svg>
               </div>
           </li>
-        ))}
+        ))}*/}
       </ul>
     </div>
   );

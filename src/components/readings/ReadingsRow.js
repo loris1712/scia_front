@@ -66,7 +66,7 @@ const ReadingsRow = ({ data }) => {
     if (data?.tags) {
       setTags(data.tags.split(',').map(tag => tag.trim()));
     }
-    console.log(data?.tags)
+    //console.log(data?.tags)
   }, [data]);
 
   const tagColors = [
@@ -138,34 +138,40 @@ const ReadingsRow = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex sm:hidden pl-4 mb-4 rounded-md bg-[#022a52] cursor-pointer flex flex-col">
-        <div onClick={handleRowClick} className="px-3 pt-5 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
-          <div className="">
-            <div className="flex items-center gap-2 cursor-pointer flex-wrap mb-2">
+      <div className="flex sm:hidden flex-col pl-4 pr-4 mb-4 rounded-md bg-[#022a52] cursor-pointer">
+        <div onClick={handleRowClick} className="px-3 pt-5 flex flex-col justify-center min-h-[60px]">
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-2 cursor-pointer">
               {tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    style={{ backgroundColor: tagColors[index % tagColors.length] }}
-                    className="text-white px-3 py-1 rounded-full text-xs flex items-center"
-                  >
-                    {tag.trim()}
-                  </span>
-                ))}
+                <span
+                  key={index}
+                  style={{ backgroundColor: tagColors[index % tagColors.length] }}
+                  className="text-white px-3 py-1 rounded-full text-xs flex items-center"
+                >
+                  {tag.trim()}
+                </span>
+              ))}
             </div>
 
             <p className="text-white text-[18px] font-semibold truncate">{data.task_name}</p>
-            
           </div>
-          <p className="text-white/60 text-[16px] text-sm truncate">
+          <p className="text-white/60 text-[16px] truncate">
             <ElementIcon elementId={data.element.progressive_code} /> {data.element.name}
           </p>
         </div>
 
-        <div className="flex items-center pb-3">
-          <div onClick={handleRowClick} className="px-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
-            <p className="text-[18px] text-white">{data.recurrence}gg</p>
+        <div className="flex items-center pb-3 px-3">
+          <div
+            onClick={handleRowClick}
+            className="text-center text-white flex flex-col items-center gap-2"
+          >
+            <p className="text-[18px]">{data.recurrence}gg</p>
           </div>
-          <div className="px-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
+
+          <div
+            className="flex items-center justify-center cursor-pointer mx-4"
+            onClick={() => setIsOpen(true)}
+          >
             <div className="flex gap-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +179,7 @@ const ReadingsRow = ({ data }) => {
                 fill="currentColor"
                 className={`w-6 h-6 ${statusColors[cameraStatus]}`}
               >
-                <path d="M288 144a128 128 0 1 0 0 256 128 128 0 1 0 0-256zm0 208a80 80 0 1 1 0-160 80 80 0 1 1 0 160zm288-80c0 106-86 192-192 192H192C86 464 0 378 0 272V240c0-35 29-64 64-64h48l29-58c6-12 18-20 32-20h192c14 0 26 8 32 20l29 58h48c35 0 64 29 64 64v32z"/>
+                <path d="M288 144a128 128 0 1 0 0 256 128 128 0 1 0 0-256zm0 208a80 80 0 1 1 0-160 80 80 0 1 1 0 160zm288-80c0 106-86 192-192 192H192C86 464 0 378 0 272V240c0-35 29-64 64-64h48l29-58c6-12 18-20 32-20h192c14 0 26 8 32 20l29 58h48c35 0 64 29 64 64v32z" />
               </svg>
 
               <svg
@@ -182,17 +188,23 @@ const ReadingsRow = ({ data }) => {
                 fill="currentColor"
                 className={`w-6 h-6 ${statusColors[micStatus]}`}
               >
-                <path d="M192 352a80 80 0 0 0 80-80V80a80 80 0 1 0-160 0v192a80 80 0 0 0 80 80zm128-128a16 16 0 1 0-32 0v48a96 96 0 1 1-192 0v-48a16 16 0 1 0-32 0v48c0 64 40 118 96 138v50h-40a16 16 0 1 0 0 32h128a16 16 0 1 0 0-32h-40v-50c56-20 96-74 96-138v-48z"/>
+                <path d="M192 352a80 80 0 0 0 80-80V80a80 80 0 1 0-160 0v192a80 80 0 0 0 80 80zm128-128a16 16 0 1 0-32 0v48a96 96 0 1 1-192 0v-48a16 16 0 1 0-32 0v48c0 64 40 118 96 138v50h-40a16 16 0 1 0 0 32h128a16 16 0 1 0 0-32h-40v-50c56-20 96-74 96-138v-48z" />
               </svg>
 
-              <svg fill="currentColor" className={`w-6 h-6 ${statusColors[docStatus]}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
+              <svg
+                fill="currentColor"
+                className={`w-6 h-6 ${statusColors[docStatus]}`}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"
+              >
+                <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
+              </svg>
             </div>
           </div>
-          <div
-            className={`px-3 flex items-center ml-auto`}
-            style={{ height: "-webkit-fill-available" }}
-          >
-            <span className=" ml-auto text-[28px] text-white font-bold mr-auto">{data.value}</span>  <span className="text-[14px] text-white">&nbsp; h</span>
+
+          <div className="ml-auto text-white flex items-center gap-1">
+            <span className="text-[28px] font-bold">{data.value}</span>
+            <span className="text-[14px]">&nbsp;h</span>
           </div>
         </div>
       </div>

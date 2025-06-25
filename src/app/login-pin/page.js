@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 export default function PINLoginPage() {
   const [pin, setPin] = useState("");
@@ -19,6 +20,13 @@ export default function PINLoginPage() {
   };
 
   useEffect(() => {
+
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    if(token){
+      router.push("/dashboard");
+    }
+
     setError(null); 
   }, []);
 
@@ -28,8 +36,7 @@ export default function PINLoginPage() {
     }
   }, [pin]);
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
-  //const BASE_URL = "http://52.59.162.108:4000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
   
   const handleLogin = async () => {
     setIsLoggingIn(true);
@@ -59,11 +66,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
       setIsLoggingIn(false);
     }
   };
-  
 
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#001c38] text-white">
-      <h2 className="text-2xl font-semibold mb-6">Inserisci PIN</h2>
+      <h2 className="text-2xl font-semibold mb-6">{t("insert_pin")}</h2>
 
       <div className="flex gap-3 mb-12 mt-6">
         {Array.from({ length: PIN_LENGTH }).map((_, index) => (
@@ -94,7 +103,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
         onClick={() => router.push("/login")}
         disabled={isLoggingIn}
       >
-        Vai al login tradizionale
+        {t("traditional_login")}
       </button>
 
       {error && <p className="text-red-500 mt-4">{error}</p>}

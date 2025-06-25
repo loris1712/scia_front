@@ -14,8 +14,6 @@ export default function NotesModal({ isOpen, onClose, data }) {
     const [latestText, setLatestText] = useState(null);
 
     const { t, i18n } = useTranslation("maintenance");
-
-    console.log(data)
   
     useEffect(() => {
       if (!data?.id) return;
@@ -38,7 +36,6 @@ export default function NotesModal({ isOpen, onClose, data }) {
           }
   
           if (audios?.length) {
-            console.log(audios.notes[0])
             setLatestAudio(audios.notes[0]);
           }
   
@@ -114,7 +111,7 @@ export default function NotesModal({ isOpen, onClose, data }) {
         )}
         </div>
         <button
-          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6 rounded-md"
+          className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6 rounded-md cursor-pointer"
           onClick={onClose}
         >
           {t("close_button")}

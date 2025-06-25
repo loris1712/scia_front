@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
 
-export default function Istructions({ onClose }) {
+export default function Istructions({ istructions, onClose }) {
     const [selectedImage, setSelectedImage] = useState(null);
     
     const images = [
         '/motor.jpg', '/motor.jpg', '/motor.jpg', 
         '/motor.jpg', '/motor.jpg', '/motor.jpg'
     ];
+
+    console.log(istructions)
 
     const { t, i18n } = useTranslation("maintenance");
         const [mounted, setMounted] = useState(false);
@@ -24,7 +26,6 @@ export default function Istructions({ onClose }) {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-2">
             <div className="bg-[#022a52] w-[50%] p-5 rounded-md shadow-lg text-white relative">
-                {/* Titolo e Pulsante di chiusura */}
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-[26px] font-semibold">{t("assignment_team")}</h2>
                     <button className="text-white text-xl cursor-pointer" onClick={onClose}>
@@ -33,19 +34,23 @@ export default function Istructions({ onClose }) {
                         </svg>
                     </button>
                 </div>
-
-                {/* Galleria di immagini */}
-                <div className="flex overflow-x-auto gap-4 py-2">
-                    {images.map((src, index) => (
-                        <div key={index} className="w-20 h-20 relative cursor-pointer rounded-lg overflow-hidden" onClick={() => setSelectedImage(src)}>
-                            <Image src={src} alt={`Motor ${index + 1}`} layout="fill" objectFit="cover" />
+                
+                {istructions.attachment_link &&
+                    <div className="flex overflow-x-auto gap-4 py-2 mb-4">
+                        {/*{images.map((src, index) => (
+                            <div key={index} className="w-20 h-20 relative cursor-pointer rounded-lg overflow-hidden" onClick={() => setSelectedImage(src)}>
+                                <Image src={src} alt={`Motor ${index + 1}`} layout="fill" objectFit="cover" />
+                            </div>
+                        ))}*/}
+                        <div className="w-20 h-20 relative cursor-pointer rounded-lg overflow-hidden" onClick={() => setSelectedImage(src)}>
+                            <Image src={istructions.attachment_link} alt={`Image`} layout="fill" objectFit="cover" />
                         </div>
-                    ))}
-                </div>
+                    </div>
+                }        
 
-                <div className="mt-4 text-sm">
+                <div className="text-sm">
                     <p>
-                        Rimuovere periodicamente questi tipi di sporco e contaminanti dai quadri elettrici per garantire il corretto funzionamento delle apparecchiature elettriche...
+                        {istructions.job.long_description}
                     </p>
                 </div>
 
@@ -58,7 +63,6 @@ export default function Istructions({ onClose }) {
                 <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-75 z-3">
                     <div className="relative w-[100%] p-5 rounded-lg">
 
-                        {/* Immagine principale */}
                         <div className="w-full flex justify-center mb-4">
                             <Image src={selectedImage} alt="Selected" width={600} height={400} className="rounded-lg" style={{width: '70%'}} />
                         </div>

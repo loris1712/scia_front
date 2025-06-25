@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProfileData, getRanks } from "@/api/profile";
 import { useTranslation } from "@/app/i18n";
+import Image from "next/image";
 
 export default function UserInfo() {
   const router = useRouter();
@@ -56,7 +57,13 @@ export default function UserInfo() {
       className="flex items-center gap-4 p-3 rounded-lg cursor-pointer transition"
       onClick={() => router.push("/dashboard/profile")}
     >
-      <img src={profileImage} alt="User Avatar" className="w-14 h-14 rounded-full object-cover" />
+      <Image
+          src={profileImage || "/icons/profile-default.svg"}
+          alt="Profile Picture"
+          width={40}
+          height={40}
+          className="w-14 h-14 rounded-full object-cover"
+        /> 
 
       <div className="overflow-hidden hidden sm:block">
         {user ? (

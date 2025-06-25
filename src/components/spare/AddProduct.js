@@ -7,6 +7,7 @@ import Image from "next/image";
 import FacilitiesModal from "./FacilitiesModal";
 import { submitProduct, uploadProductImage } from "@/api/spare";
 import { useUser } from "@/context/UserContext";
+import { useTranslation } from "@/app/i18n";
 
 export default function AddProduct({ onClose }) {
   const [scanning, setScanning] = useState(false);
@@ -30,6 +31,9 @@ export default function AddProduct({ onClose }) {
 
   const shipId = 1;
   const { user } = useUser();
+
+  const { t, i18n } = useTranslation("maintenance");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     if (scanning) {
@@ -70,7 +74,6 @@ export default function AddProduct({ onClose }) {
       setImage(file); 
     }
 
-    console.log(file)
 
     setImagePreview(URL.createObjectURL(file));
   };
@@ -79,19 +82,15 @@ export default function AddProduct({ onClose }) {
     let imageUrl = null;
 
     if (image) {
-      console.log(image)
       const formData = new FormData();
-      formData.append("file", image); // passa direttamente l'immagine
+      formData.append("file", image); 
       formData.append("userId", user.id);
       formData.append("partNumber", partNumber);
       formData.append("originalName", originalName);
 
-      // Carica l'immagine
       const uploadRes = await uploadProductImage(formData, user.id);
-      imageUrl = uploadRes.url; // Ottieni l'URL dell'immagine
+      imageUrl = uploadRes.url; 
     }
-
-    console.log(imageUrl)
     
     const payload = {
       ean13,
@@ -115,11 +114,17 @@ export default function AddProduct({ onClose }) {
   
     await submitProduct(payload);
   };
+
+  useEffect(() => {
+      setMounted(true);
+    }, []);
+      
+   if (!mounted || !i18n.isInitialized) return null;
   
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-[22px] font-semibold">Inserisci ricambio</h2>
+        <h2 className="text-[22px] font-semibold">{t("insert_spare")}</h2>
         <button className="text-white text-xl cursor-pointer" onClick={onClose}>
           <svg width="24px" height="24px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
             <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -129,7 +134,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Immagine prodotto</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("product_image")}</label>
           <div
             onClick={() => document.getElementById('fileInput').click()}
             className="w-30 h-30 bg-[#ffffff10] rounded-md flex items-center justify-center cursor-pointer hover:bg-[#ffffff20] transition"
@@ -151,7 +156,7 @@ export default function AddProduct({ onClose }) {
 
 
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Quantità di partenza</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("starting_quality")}</label>
           <input
             type="text"
             value={stock}
@@ -187,7 +192,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Denominazione originale</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("original_name")}</label>
           <input
             type="text"
             value={originalName}
@@ -197,12 +202,12 @@ export default function AddProduct({ onClose }) {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Impianto/Componente</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("system")}/{t("component")}</label>
           <div
             onClick={() => setFacilitiesOpen(true)}
             className="w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md flex cursor-pointer"
           >
-            Scegli <span style={{marginLeft:'auto'}}>
+            {t("select")} <span style={{marginLeft:'auto'}}>
               <svg fill="white" width="18px" height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
             </span>
           </div>
@@ -211,7 +216,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Fornitore</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("supplier")}</label>
           <input
             type="text"
             value={supplier}
@@ -221,7 +226,7 @@ export default function AddProduct({ onClose }) {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">NCAGE Fornitore</label>
+          <label className="text-[#789FD6] text-sm mb-2">NCAGE {t("supplier")}</label>
           <input
             type="text"
             value={supplierNcage}
@@ -234,7 +239,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">NCAGE Costruttore</label>
+          <label className="text-[#789FD6] text-sm mb-2">NCAGE {t("supplier")}</label>
           <input
             type="text"
             value={manufacturerNcage}
@@ -244,7 +249,7 @@ export default function AddProduct({ onClose }) {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Part Number Costruttore</label>
+          <label className="text-[#789FD6] text-sm mb-2">Part Number {t("costructor")}</label>
           <input
             type="text"
             value={manufacturerPartNumber}
@@ -257,7 +262,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Prezzo</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("price")}</label>
           <input
             type="text"
             value={price}
@@ -280,7 +285,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-1 gap-4 mb-4">
         <div className="flex flex-col">
-          <label className="text-[#789FD6] text-sm mb-2">Descrizione</label>
+          <label className="text-[#789FD6] text-sm mb-2">{t("description")}</label>
           <textarea
             value={description}
             placeholder="Scrivi qui..."
@@ -295,7 +300,7 @@ export default function AddProduct({ onClose }) {
           <svg fill="#022a52" width="18px" height="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M32 32C14.3 32 0 46.3 0 64v96c0 17.7 14.3 32 32 32s32-14.3 32-32V96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zm32 320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H64v-64zm288-320c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32h-96zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64h-64c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32v-96z"/>
           </svg>
-          <h2 className="text-[#022a52] font-semibold">Scansiona Nuova ubicazione</h2>
+          <h2 className="text-[#022a52] font-semibold">{t("scan_new_location")}</h2>
         </div>
       </div>
 
@@ -303,7 +308,7 @@ export default function AddProduct({ onClose }) {
 
       <div className="grid grid-cols-3 gap-4 items-center">
         <div>
-          <label className="text-[14px] text-[#789fd6] block mb-2">Magazzino</label>
+          <label className="text-[14px] text-[#789fd6] block mb-2">{t("warehouse")}</label>
           <input
             value={warehouse}
             onChange={(e) => setWarehouse(e.target.value)}
@@ -311,7 +316,7 @@ export default function AddProduct({ onClose }) {
           />
         </div>
         <div>
-          <label className="text-[14px] text-[#789fd6] block mb-2">Nuova ubicazione</label>
+          <label className="text-[14px] text-[#789fd6] block mb-2">{t("new_location")}</label>
           <input
             type="text"
             value={location}
@@ -333,7 +338,7 @@ export default function AddProduct({ onClose }) {
         className="w-full bg-[#789fd6] p-3 text-white font-semibold mt-6 cursor-pointer rounded-md"
         onClick={handleConfirm}
       >
-        Conferma
+        {t("confirm")}
       </button>
 
     <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />

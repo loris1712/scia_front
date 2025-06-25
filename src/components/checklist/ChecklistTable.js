@@ -56,8 +56,6 @@ const ChecklistTable = () => {
     try {
       setLoading(true);
       const fetchedTasks = await fetchTasks(shipId, user?.id);
-
-      console.log(fetchedTasks)
       
       setTasksData(fetchedTasks);
     } catch (err) {
@@ -94,9 +92,10 @@ const ChecklistTable = () => {
     return <div>{error}</div>;
   }
 
-  const allTasks = selectedType ? selectedType.tasks : tasksData.flatMap(t => t.tasks);
+const allTasks = selectedType ? selectedType.tasks : tasksData;
 
   const tasksToShow = allTasks.filter(task => {
+   
   if (!filters) return true;
 
   const { task: taskFilters, squadraDiAssegnazione, macrogruppoESWBS } = filters;
@@ -105,7 +104,7 @@ const ChecklistTable = () => {
     return false;
   }
 
-  const macrogruppo = task.element?.macrogruppo;
+  const macrogruppo = task?.Element?.element_model?.ESWBS_code;
     if (macrogruppo && macrogruppoESWBS[macrogruppo] === true) {
       return true;
     }
@@ -113,7 +112,7 @@ const ChecklistTable = () => {
       return false;
     }
 
-    const assignedTeam = task.assigned_to?.team;
+    const assignedTeam = task?.assigned_to?.team;
     if (
       Object.values(squadraDiAssegnazione).some(v => v) &&
       (!assignedTeam || !squadraDiAssegnazione[assignedTeam])
@@ -131,7 +130,7 @@ const ChecklistTable = () => {
           className="text-white text-2xl font-semibold flex items-center gap-2 py-2 cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
-          {selectedType ? `${selectedType.title} (${selectedType.tasks.length})` : t("view_all")}
+          {selectedType ? `${selectedType.title} (${selectedType.tasks?.length})` : t("view_all")}
           <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
           </svg>
@@ -158,7 +157,7 @@ const ChecklistTable = () => {
       </div>
 
       {tasksToShow.map((task) => (
-        <CheckListRow key={task.id} data={task} />
+        <CheckListRow key={task?.id} data={task} />
       ))}
 
       <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} types={tasksData} />

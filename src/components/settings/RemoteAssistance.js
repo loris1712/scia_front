@@ -5,15 +5,24 @@ import InfoCard from "@/components/profile/InfoCard";
 import Link from "next/link";
 import Image from 'next/image';
 import { useTranslation } from "@/app/i18n";
+import { loginCareAr } from "@/api/assistance";
 
 export default function RemoteAssistance() {
 
     const { t, i18n } = useTranslation("remote_assistance");
-      const [mounted, setMounted] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
-    const handleButtonStartDevice = () => {
-    
-    };
+    const handleButtonStartDevice = async () => {
+      try {
+        const email = "tuo@email.it";
+        const password = "tuapassword";
+        const result = await loginCareAr({ email, password });
+        //console.log("Login riuscito:", result);
+        // Qui gestisci il risultato
+      } catch (error) {
+        console.error("Errore login:", error);
+      }
+    }; 
 
     const handleButtonStartViewer = () => {
     

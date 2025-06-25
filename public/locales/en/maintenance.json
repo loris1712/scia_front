@@ -38,7 +38,7 @@
   "anomaly": "Anomaly",
   "not_perfomed": "Non perfomed",
   "description": "Description",
-  "see_instructions": "See instructons",
+  "see_instructions": "See instructions",
   "instructions": "Instructions",
   "spare_parts": "Spare parts",
   "add": "Add",
@@ -121,10 +121,27 @@
   "go_to_cart": "Go to cart",
   "add_other_products": "Add other products",
   "photographic_notes": "Photographic notes",
-"vocal_notes": "Voice notes",
-"text_notes": "Text notes"
-
-
-
+  "vocal_notes": "Voice notes",
+  "text_notes": "Text notes",
+  "forgot_password": "Forgot your password?",
+  "log_in": "Log in",
+  "rapid_pin": "Log in with Quick Pin",
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "insert_pin": "Enter PIN",
+  "traditional_login": "Go to traditional login",
+  "insert_spare": "Insert spare part",
+  "product_image": "Product image",
+  "starting_quality": "Starting quantity",
+  "original_name": "Original name",
+  "costructor": "Manufacturer",
+  "price": "Price",
+  "scan_new_location": "Scan new location",
+  "manage": "Manage",
+  "orders": "Orders",
+  "in_order": "On order",
+  "select_file": "Select file",
+  "type": "Type"
 }
   

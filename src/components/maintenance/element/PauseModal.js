@@ -14,19 +14,27 @@ export default function PauseModal({ oldStatusId, jobId, onClose }) {
   const [allFacilities, setAllFacilities] = useState(false);
 
   const handleSaveStatus = async () => {
-    const commentData = {
-      maintenance_id: jobId,
-      date: reactivationDate ? new Date(reactivationDate) : null,
-      date_flag: reactivation ? "no_reactivation" : null,
-      reason,
-      only_this: oneReason ? "true" : null,
-      all_from_this_product: allFacilities ? "true" : null,
-      old_status_id: oldStatusId,
-      new_status_id: 2,
-    };
+    const newStatusId = oldStatusId === 1 ? 2 : 1;
 
-    await handleSaveStatusComment(jobId, commentData);
-    await updateMaintenanceJobStatus(jobId, 1);
+    try {
+      const commentData = {
+        maintenance_id: jobId,
+        date: reactivationDate ? new Date(reactivationDate) : null,
+        date_flag: reactivation ? "no_reactivation" : null,
+        reason,
+        only_this: oneReason ? "true" : null,
+        all_from_this_product: allFacilities ? "true" : null,
+        old_status_id: oldStatusId,
+        new_status_id: newStatusId,
+      };
+
+      await handleSaveStatusComment(jobId, commentData);
+      await updateMaintenanceJobStatus(jobId, newStatusId);
+
+      onClose();
+    } catch (error) {
+      console.error("Errore durante il salvataggio:", error);
+    }
   };
 
   if (!i18n.isInitialized) return null;

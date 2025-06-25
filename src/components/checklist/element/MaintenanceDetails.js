@@ -7,137 +7,228 @@ import NoteHistoryModal from "@/components/maintenance/element/NoteHistoryModal"
 import PhotoHistoryModal from "@/components/maintenance/element/PhotoHistoryModal";
 import TextHistoryModal from "@/components/maintenance/element/TextHistoryModal";
 import { useTranslation } from "@/app/i18n";
+import { markAs } from "@/api/maintenance";
+import { useRouter } from "next/navigation";
+import { getTextsGeneral, getPhotosGeneral, getAudiosGeneral } from "@/api/shipFiles";
+import { addPhotographicNoteGeneral, addVocalNoteGeneral, addTextNoteGeneral } from "@/api/failures";
+import { useUser } from "@/context/UserContext";
+import ConfirmMaintenance from "@/components/maintenance/element/ConfirmMaintenance";
 
 const MaintenanceDetails = ({ details }) => {
+
   const [showFull, setShowFull] = useState(false);
   const [noteHistoryModal, setNoteHistoryModal] = useState(false);
   const [textHistoryModal, setTextHistoryModal] = useState(false);
   const [photoHistoryModal, setPhotoHistoryModal] = useState(false);
-
+  const router = useRouter();
+  const [latestPhoto, setLatestPhoto] = useState(null);
+  const [latestAudio, setLatestAudio] = useState(null);
+  const [latestText, setLatestText] = useState(null);
+  const [markAsOk, setMarkAsOk] = useState(false);
   const { t, i18n } = useTranslation("maintenance");
-    const [mounted, setMounted] = useState(false);
-      
-    useEffect(() => {
-      setMounted(true);
-    }, []);
-      
-    if (!mounted || !i18n.isInitialized) return null;
+  const [mounted, setMounted] = useState(false);
+
+  const { getNotes, clearNotes, user } = useUser();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const uploadNotesToDb = async (status) => {
+    const failureId = details?.id;
+    const notes = getNotes(failureId);
+
+    try {
+      for (const photoFile of notes.photo || []) {
+        const formData = new FormData();
+        formData.append("file", photoFile);
+        formData.append("failureId", failureId);
+        formData.append("authorId", user.id);
+        formData.append("type", "maintenance");
+        formData.append("status", status);
+        
+        await addPhotographicNoteGeneral(formData);
+      }
+
+      for (const audioFile of notes.vocal || []) {
+        const formData = new FormData();
+        formData.append("file", audioFile);
+        formData.append("failureId", failureId);
+        formData.append("authorId", user.id);
+        formData.append("type", "maintenance");
+        formData.append("status", status);
+
+        await addVocalNoteGeneral(formData);
+      }
+
+      // Testo
+      for (const text of notes.text || []) {
+        await addTextNoteGeneral({
+          content: text,
+          failureId,
+          authorId: user.id,
+          type: "maintenance",
+          status: status
+        });
+      }
+
+      clearNotes(failureId);
+    } catch (error) {
+      console.error("Errore nel caricamento delle note:", error);
+    }
+  };
+
+  const handleOk = async (status) => {
+    setMarkAsOk(true); 
+    //await uploadNotesToDb(status);
+    // Conferma visiva gestita da <ConfirmMaintenance />
+  };
+
+  const handleAnomaly = async (status) => {
+    await uploadNotesToDb(status);
+    await markAs(details.id, 2);
+    window.location.reload();
+  };
+
+  const handleNotPerformed = async (status) => {
+    await uploadNotesToDb(status);
+    await markAs(details.id, 3);
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    if (!details.id) return;
+
+    const fetchLatestNotes = async () => {
+      try {
+        const [photos, audios, texts] = await Promise.all([
+          getPhotosGeneral(details.id, "maintenance"),
+          getAudiosGeneral(details.id, "maintenance"),
+          getTextsGeneral(details.id, "maintenance"),
+        ]);
+
+        if (photos?.notes?.length) {
+          const sortedPhotos = [...photos.notes].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setLatestPhoto(sortedPhotos[0]);
+        }
+
+        if (audios?.notes?.length) {
+          const sortedAudios = [...audios.notes].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setLatestAudio(sortedAudios[0]);
+        }
+
+        if (texts?.notes?.length) {
+          const sortedTexts = [...texts.notes].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setLatestText(sortedTexts[0]); // <- CORRETTA
+        }
+
+
+      } catch (error) {
+        console.error("Errore nel recupero delle note:", error);
+      }
+    };
+
+    fetchLatestNotes();
+  }, [details.id]);
+
+  if (!mounted || !i18n.isInitialized) return null;
+
   return (
     <div className="p-2 w-full">
 
-      <div className="mb-6">
-
+      <div className="mb-8">
         <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">{t("photographic_note")}</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("details")}</h2>
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setPhotoHistoryModal(true)}>{t("see_history")}</button>
         </div>
-      
-        <div className="flex items-center gap-4 cursor-pointer">
-          <Image 
-                    src="/motor.jpg"
-                    alt="Motore"
-                    width={80} 
-                    height={80} 
-                    className="rounded-lg"
-                  />
-
-          <div>
-            <h2 className="text-md text-[#fff]">Alessandro Coscarelli</h2>
-            <h2 className="text-[14px] text-[#ffffff94]">06/05/2024 - 10:23</h2>
-
+        {latestPhoto && (
+          <div className="flex items-center gap-4 cursor-pointer">
+            <Image 
+              src={latestPhoto.image_url}
+              alt="Foto nota"
+              width={80}
+              height={80}
+              className="rounded-lg"
+              style={{width: "80px", height: "80px", objectFit: "cover"}}
+            />
+            <div>
+              <h2 className="text-md text-[#fff]">{latestPhoto.authorDetails.first_name} {latestPhoto.authorDetails.last_name}</h2>
+              <h2 className="text-[14px] text-[#ffffff94]">{new Date(latestPhoto.created_at).toLocaleString()}</h2>
+            </div>
           </div>
-        
-          <div className="ml-auto">
-                <svg fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-              </div>
-        </div>
-
+        )}
       </div>
 
-      <div className="mb-6">
-
+      <div className="mb-8">
         <div className="flex items-center mb-2 mt-4">
           <h2 className="text-lg text-[#789fd6]">{t("vocal_note")}</h2>
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>{t("see_history")}</button>
         </div>
-      
-
-        <div className="flex items-center gap-4 cursor-pointer">
-
-          <div className="w-full">
-            <AudioPlayer audioSrc="/audiotest.mp3" />
+        {latestAudio && (
+          <div className="flex items-center gap-4 cursor-pointer">
+            <div className="w-full">
+              <AudioPlayer
+                audioSrc={latestAudio.audio_url}
+                username={latestAudio.authorDetails.first_name[0] + latestAudio.authorDetails.last_name[0]}
+                dateTime={latestAudio.created_at}
+              />
+            </div>
           </div>
-  
-        </div>
-
+        )}
       </div>
 
-      <div className="mb-6">
-
+      <div className="mb-8">
         <div className="flex items-center mb-2 mt-4">
           <h2 className="text-lg text-[#789fd6]">{t("text_note")}</h2>
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setTextHistoryModal(true)}>{t("see_history")}</button>
         </div>
-      
-
-        <div className="flex items-center gap-4 cursor-pointer">
-
-          <div className="w-full bg-[#00000038] p-4 rounded-md">
-            <p className="text-white opacity-60">
-              Alessandro Coscarelli
-            </p>
-
-            <p className="text-white mt-2 mb-2">
-            Erano presenti numerose foglie nella scatola elettrica, dovute probabilmente al vento forte della scorsa settimana. Sono state tutte rimosse
-            </p>
-
-            <p className="text-white opacity-60 text-sm ml-auto w-[fit-content]">
-              06/05/2024 - 10:25
-            </p>
+        {latestText && (
+          <div className="flex items-center gap-4 cursor-pointer">
+            <div className="w-full bg-[#00000038] p-4 rounded-md">
+              <p className="text-white text-[12px] opacity-60">{latestText.authorDetails.first_name} {latestText.authorDetails.last_name}</p>
+              <p className="text-white text-[16px] mt-2 mb-2">{latestText.text_field}</p>
+              <p className="text-white opacity-60 text-sm ml-auto w-fit">{new Date(latestText.created_at).toLocaleString()}</p>
+            </div>
           </div>
-  
-        </div>
-
+        )}
       </div>
 
+      {/* BOTTONI */}
       <div className="mb-6">
         <div className="flex gap-4">
-        <button className="cursor-pointer flex items-center justify-center w-full py-6 bg-[#2db647] text-white rounded-md hover:bg-blue-700 transition duration-300">
-            <Image 
-                src="/done.png"
-                alt="Done"
-                width={20} 
-                height={20} 
-                className="mr-2" 
-            />
-            <span className="sm:block hidden">{t("ok")}</span>
-            </button>
+          <button
+            onClick={() => handleOk("ok")}
+            className={`cursor-pointer flex items-center justify-center w-full py-6 text-white rounded-md hover:bg-blue-700 transition duration-300 ${
+              details.execution_state === "1" ? "bg-[#2db647]" : "bg-[#15375d]"
+            }`}
+          >
+            <Image src="/done.png" alt="Done" width={20} height={20} className="sm:mr-2" />
+            <span className="hidden sm:block">{t("ok")}</span>
+          </button>
 
-            <button className="cursor-pointer flex items-center justify-center w-full py-6 bg-[#ffffff10] text-white rounded-md hover:bg-blue-700 transition duration-300">
-            <Image 
-                src="/x.png"
-                alt="X"
-                width={20} 
-                height={20} 
-                className="mr-2" 
-            />
-            <span className="sm:block hidden">{t("anomaly")}</span>
-            </button>
+          <button
+            onClick={() => handleAnomaly("anomaly")}
+            className={`cursor-pointer flex items-center justify-center w-full py-6 text-white rounded-md hover:bg-blue-700 transition duration-300 ${
+              details.execution_state === "2" ? "bg-[#FFBF25]" : "bg-[#15375d]"
+            }`}
+          >
+            <Image src="/x.png" alt="X" width={20} height={20} className="sm:mr-2" />
+            <span className="hidden sm:block">{t("Anomaly")}</span>
+          </button>
         </div>
       </div>
 
-      {noteHistoryModal &&
-        <NoteHistoryModal onClose={() => setNoteHistoryModal(false)} />
-      }
-
-      {photoHistoryModal &&
-        <PhotoHistoryModal onClose={() => setPhotoHistoryModal(false)} />
-      }
+      {noteHistoryModal && <NoteHistoryModal onClose={() => setNoteHistoryModal(false)} failureId={details.id} />}
+      {photoHistoryModal && <PhotoHistoryModal onClose={() => setPhotoHistoryModal(false)} failureId={details.id} />}
+      {textHistoryModal && <TextHistoryModal onClose={() => setTextHistoryModal(false)} failureId={details.id} />}
+      {markAsOk && <ConfirmMaintenance onClose={() => setMarkAsOk(false)} onClick={() => uploadNotesToDb("ok")} maintenanceListId={details.id} />}
             
-      {textHistoryModal &&
-        <TextHistoryModal onClose={() => setTextHistoryModal(false)} />
-      }
-      
     </div>
   );
 };

@@ -70,7 +70,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
       if(response.length > 0){
 
         setResults(response[0]);
-        console.log(response[0])
+        //console.log(response[0])
         setShowResults(true)
       }else{
         setAddSpare(true);
@@ -109,7 +109,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
       };
   
       const response = await updateSpare(updatedData.ID, updatedData, shipId, user.id);
-      console.log(updatedData)
+      //console.log(updatedData)
       //handleClose();
     } catch (error) {
       console.error("Errore durante la conferma:", error);

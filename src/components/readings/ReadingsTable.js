@@ -57,7 +57,7 @@ const ReadingsTable = () => {
     try {
       setLoading(true);
       const fetchReadings = await getReadings(shipId, user?.id);
-      console.log(fetchReadings)
+      //console.log(fetchReadings)
       setTasksData(fetchReadings);
     } catch (err) {
       setError("Errore nel recupero dei task");

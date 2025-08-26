@@ -9,6 +9,8 @@ export default function NotesModal({ isOpen, onClose2, eswbs }) {
 
   const { t, i18n } = useTranslation("facilities");
   const [mounted, setMounted] = useState(false);
+
+  console.log(eswbs)
       
   useEffect(() => {
     setMounted(true);

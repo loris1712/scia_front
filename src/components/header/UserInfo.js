@@ -79,7 +79,7 @@ export default function UserInfo() {
             </p>
           </>
         ) : (
-          <p className="text-white text-sm">{t("loading")}</p>
+          <p className="text-white text-sm">{t("not_logged")}</p>
         )}
       </div>
     </div>

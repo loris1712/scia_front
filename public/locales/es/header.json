@@ -4,6 +4,12 @@
   "cart": "Carrito",
   "manage_warehouse": "Gestionar almacén",
   "remote_assistance": "Asistencia remota",
-  "settings": "Configuración"
+  "settings": "Configuración",
+  "not_logged": "No iniciado sesión",
+  "no_scan_available": "No hay escaneo disponible",
+  "close": "Cerrar",
+  "loading": "Cargando..."
+
+
 }
   

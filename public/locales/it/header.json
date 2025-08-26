@@ -4,6 +4,10 @@
   "cart": "Carrello",
   "manage_warehouse": "Gestisci magazzino",
   "remote_assistance": "Assistenza remota",
-  "settings": "Impostazioni"
+  "settings": "Impostazioni",
+  "not_logged": "Non effettuato l'accesso",
+  "no_scan_available": "Nessuna scansione disponibile",
+  "close": "Chiudi",
+  "loading": "Caricamento..."
 }
   

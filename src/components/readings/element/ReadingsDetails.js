@@ -10,6 +10,7 @@ import EditModal from "./EditModal";
 import { useRouter } from 'next/navigation';
 import { updateReading } from "@/api/readings";
 import { useTranslation } from "@/app/i18n";
+import { getTextsGeneral, getPhotosGeneral, getAudiosGeneral } from "@/api/shipFiles";
 
 const ReadingsDetails = ({ details }) => {
   const [showFull, setShowFull] = useState(false);
@@ -17,6 +18,10 @@ const ReadingsDetails = ({ details }) => {
   const [textHistoryModal, setTextHistoryModal] = useState(false);
   const [photoHistoryModal, setPhotoHistoryModal] = useState(false);
   const [value, setValue] = useState("");
+
+  const [latestPhoto, setLatestPhoto] = useState(null);
+  const [latestAudio, setLatestAudio] = useState(null);
+  const [latestText, setLatestText] = useState(null);
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -38,6 +43,47 @@ const ReadingsDetails = ({ details }) => {
 
     updateReading(readingId, { value: e });
   };
+
+    useEffect(() => {
+    if (!readingId) return;
+
+    const fetchLatestNotes = async () => {
+      try {
+        const [photos, audios, texts] = await Promise.all([
+          getPhotosGeneral(readingId, "reading"),
+          getAudiosGeneral(readingId, "reading"),
+          getTextsGeneral(readingId, "reading"),
+        ]);
+
+        if (photos?.notes?.length) {
+          const sortedPhotos = [...photos.notes].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setLatestPhoto(sortedPhotos[0]);
+        }
+
+        if (audios?.notes?.length) {
+          const sortedAudios = [...audios.notes].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setLatestAudio(sortedAudios[0]);
+        }
+
+        if (texts?.notes?.length) {
+          const sortedTexts = [...texts.notes].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setLatestText(sortedTexts[0]);
+        }
+
+
+      } catch (error) {
+        console.error("Errore nel recupero delle note:", error);
+      }
+    };
+
+    fetchLatestNotes();
+  }, [readingId]);
 
   const { t, i18n } = useTranslation("maintenance");
   if (!i18n.isInitialized) return null;
@@ -73,25 +119,22 @@ const ReadingsDetails = ({ details }) => {
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>{t("add")}</button>
         </div>
 
-        <div className="flex items-center gap-4 cursor-pointer">
-                  <Image 
-                            src="/motor.jpg"
-                            alt="Motore"
-                            width={80} 
-                            height={80} 
-                            className="rounded-lg"
-                          />
-        
-                  <div>
-                    <h2 className="text-md text-[#fff]">Alessandro Coscarelli</h2>
-                    <h2 className="text-[14px] text-[#ffffff94]">06/05/2024 - 10:23</h2>
-        
-                  </div>
-                
-                  <div className="ml-auto">
-                        <svg fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-                      </div>
-                </div>
+        {latestPhoto && (
+          <div className="flex items-center gap-4 cursor-pointer">
+            <Image 
+              src={latestPhoto.image_url}
+              alt="Foto nota"
+              width={80}
+              height={80}
+              className="rounded-lg"
+              style={{width: "80px", height: "80px", objectFit: "cover"}}
+            />
+            <div>
+              <h2 className="text-md text-[#fff]">{latestPhoto.authorDetails.first_name} {latestPhoto.authorDetails.last_name}</h2>
+              <h2 className="text-[14px] text-[#ffffff94]">{new Date(latestPhoto.created_at).toLocaleString()}</h2>
+            </div>
+          </div>
+        )}
 
       </div>
 
@@ -102,13 +145,17 @@ const ReadingsDetails = ({ details }) => {
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setNoteHistoryModal(true)}>{t("add")}</button>
         </div>
 
-        <div className="flex items-center gap-4 cursor-pointer">
-
-          <div className="w-full">
-            <AudioPlayer audioSrc="/audiotest.mp3" />
+        {latestAudio && (
+          <div className="flex items-center gap-4 cursor-pointer">
+            <div className="w-full">
+              <AudioPlayer
+                audioSrc={latestAudio.audio_url}
+                username={latestAudio.authorDetails.first_name[0] + latestAudio.authorDetails.last_name[0]}
+                dateTime={latestAudio.created_at}
+              />
+            </div>
           </div>
-  
-        </div>
+        )}
 
       </div>
 
@@ -119,24 +166,15 @@ const ReadingsDetails = ({ details }) => {
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setTextHistoryModal(true)}>{t("add")}</button>
         </div>
       
-
-        <div className="flex items-center gap-4 cursor-pointer">
-
-          <div className="w-full bg-[#00000038] p-4 rounded-md">
-            <p className="text-white opacity-60">
-              Alessandro Coscarelli
-            </p>
-
-            <p className="text-white mt-2 mb-2">
-            Erano presenti numerose foglie nella scatola elettrica, dovute probabilmente al vento forte della scorsa settimana. Sono state tutte rimosse
-            </p>
-
-            <p className="text-white opacity-60 text-sm ml-auto w-[fit-content]">
-              06/05/2024 - 10:25
-            </p>
+        {latestText && (
+          <div className="flex items-center gap-4 cursor-pointer">
+            <div className="w-full bg-[#00000038] p-4 rounded-md">
+              <p className="text-white text-[12px] opacity-60">{latestText.authorDetails.first_name} {latestText.authorDetails.last_name}</p>
+              <p className="text-white text-[16px] mt-2 mb-2">{latestText.text_field}</p>
+              <p className="text-white opacity-60 text-sm ml-auto w-fit">{new Date(latestText.created_at).toLocaleString()}</p>
+            </div>
           </div>
-  
-        </div>
+        )}
 
       </div>
 

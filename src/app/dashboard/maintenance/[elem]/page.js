@@ -23,14 +23,17 @@ export default function ElementPage({ params }) {
   const [maintenancedata, setMaintenanceData] = useState(false);
 
   const handleOptionClick = async (option) => {
-    await updateMaintenanceJobStatus(jobId, option);
+    const res = await updateMaintenanceJobStatus(jobId, option);
+    if (res) {
+      window.location.reload();
+    }
   };
 
   useEffect(() => {
-          fetchMaintenanceJob(jobId).then((data) => {
-            setMaintenanceData(data || []);
-          });
-      }, [jobId]);
+    fetchMaintenanceJob(jobId).then((data) => {
+      setMaintenanceData(data || []);
+    });
+  }, [jobId]);
 
   const { t, i18n } = useTranslation("maintenance");
   const [mounted, setMounted] = useState(false);
@@ -49,23 +52,11 @@ export default function ElementPage({ params }) {
         <Breadcrumbs />
       </div>
 
-      <div className="flex items-start sm:items-center pt-2 pb-4">
+      <div className="flex items-start sm:items-center pt-4 pb-4">
         <div className='block sm:flex items-center gap-4'>
           
-          <h2 className="text-2xl font-bold sm:mb-0 mb-2">{maintenancedata[0]?.job.name}</h2>
-          <StatusBadgeDetail dueDate={maintenancedata[0]?.ending_date} />
-
-          {maintenancedata[0]?.status.id === 1 && (
-            <div className={`w-[fit-content] sm:mt-0 mt-2 rounded-full py-1 px-4 bg-[#15375d] text-[12px] text-white`}>
-              {t("active")}
-            </div>
-          )}
-
-          {maintenancedata[0]?.status.id === 2 && (
-            <div className={`w-[fit-content] sm:mt-0 mt-2 rounded-full py-1 px-4 bg-[#15375d] text-[12px] text-white`}>
-            {t("inPause")}
-            </div>
-          )}
+        <h2 className="text-2xl font-bold sm:mb-0 mb-2">{maintenancedata[0]?.job.name}</h2>
+          <StatusBadgeDetail dueDate={maintenancedata[0]?.ending_date} pauseDate={maintenancedata[0]?.pauseDate} string={maintenancedata[0]?.status.name} />
         </div>
 
         <div className="ml-auto flex items-center gap-4">
@@ -82,7 +73,7 @@ export default function ElementPage({ params }) {
             </button>
           )}
 
-          {maintenancedata[0]?.status.id === 2 && (
+          {maintenancedata[0]?.status.id === 3 && (
             <button
               type="submit"
               onClick={() => handleOptionClick(1)}

@@ -142,6 +142,12 @@
   "orders": "Orders",
   "in_order": "On order",
   "select_file": "Select file",
-  "type": "Type"
+  "type": "Type",
+  "from": "from",
+  "paused": "Paused",
+    "expired": "Expired",
+    "recentlyExpired": "Recently Expired",
+    "expiring": "Expiring",
+    "scheduled": "Scheduled"
 }
   

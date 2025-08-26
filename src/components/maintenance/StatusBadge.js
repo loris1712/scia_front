@@ -3,18 +3,22 @@ const StatusBadge = ({ dueDate, dueDays }) => {
   let textColor = "text-white";
   let symbol = "+";
 
-  if (dueDays < -15) {
-    bgColor = "bg-[rgb(208,2,27)]";
+if (dueDays < 0) {
+    // SCADUTA → Rosso
+    bgColor = "bg-[rgb(208,2,27)]"; // Rosso
     symbol = "+";
-  } else if (dueDays < 0) {
-    bgColor = "bg-[rgb(244,114,22)]";
-    symbol = "+";
+  } else if (dueDays <= 5) {
+    // Scadenza urgente → Arancione
+    bgColor = "bg-[rgb(244,114,22)]"; // Arancione
+    symbol = "-";
   } else if (dueDays <= 15) {
-    bgColor = "bg-[rgb(255,191,37)]";
+    // Scadenza non urgente → Giallo
+    bgColor = "bg-[rgb(255,191,37)]"; // Giallo
     textColor = "text-black";
     symbol = "-";
-  } else if (dueDays > 15) {
-    bgColor = "bg-[rgb(45,182,71)]";
+  } else {
+    // Ancora tempo → Verde
+    bgColor = "bg-[rgb(45,182,71)]"; // Verde
     symbol = "-";
   }
 

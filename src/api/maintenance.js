@@ -36,7 +36,7 @@ export async function fetchMaintenanceJobs(typeId, shipId, userId) {
 export async function updateMaintenanceJobStatus(taskId, status_id) {
   try {
       const res = await fetch(`${BASE_URL}/api/maintenance/updateStatus/${taskId}`, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -58,7 +58,7 @@ export async function updateMaintenanceJobStatus(taskId, status_id) {
 export async function handleSaveStatusComment(taskId, commentData) {
   try {
       const res = await fetch(`${BASE_URL}/api/maintenance/saveStatusComment/${taskId}`, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },

@@ -17,9 +17,9 @@ const LocationsTable = () => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  const shipId = 1;
   const { user } = useUser();
-
+  const shipId = user?.ships[0].id;
+  
   const loadTasks = async () => {
     try {
       setLoading(true);

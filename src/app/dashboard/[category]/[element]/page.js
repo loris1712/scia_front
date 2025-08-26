@@ -44,8 +44,6 @@ export default function ElementPage() {
       <div className="flex items-center pt-2 pb-4">
         <h2 className="text-2xl font-bold">{data.element.name}</h2>
 
-
-        
       {data.model.ElementModel_installation_drawing_link &&
         <Link href={data.model.ElementModel_installation_drawing_link}>
         <button
@@ -67,7 +65,7 @@ export default function ElementPage() {
       </div>
 
       <div className="sm:flex block gap-4">
-        <div className="sm:w-2/4 w-full space-y-4 bg-[#022a52] p-6 rounded-md sm:mb-0 mb-4">
+        <div className="sm:w-3/5 w-full space-y-4 bg-[#022a52] p-6 rounded-md sm:mb-0 mb-4">
           <InfoCard data={data} />
           <div className="sm:flex block px-2">
             <div className="sm:w-1/2 w-full">
@@ -79,7 +77,7 @@ export default function ElementPage() {
           </div>
         </div>
 
-        <div className="sm:w-2/4 w-full bg-[#022a52] p-4 rounded-md">
+        <div className="sm:w-2/5 w-full bg-[#022a52] p-4 rounded-md">
           <DetailsPanel details={data} />
         </div>
       </div>

@@ -1,16 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchMaintenanceTypes } from "@/api/maintenance";
-import Image from 'next/image';
-import AudioPlayer from "@/components/element/audioPlayer";
-import FacilitiesList from "@/components/facilities/FacilitiesList";
+import FacilitiesList from "@/components/facilities/FacilitiesListxModal";
 import { useTranslation } from "@/app/i18n";
 
-export default function NotesModal({ isOpen, onClose2, data }) {
-    const [search, setSearch] = useState("");
-    const { t, i18n } = useTranslation("maintenance");
-    if (!i18n.isInitialized) return null;
+export default function NotesModal({ isOpen, onClose2, onSelectCode }) {
+  const [search, setSearch] = useState("");
+  const { t, i18n } = useTranslation("maintenance");
+  if (!i18n.isInitialized) return null;
+
+  const [selectedCode, setSelectedCode] = useState(null);
+
+  const handleConfirm = () => {
+    console.log("Selezionato:", selectedCode);
+    onSelectCode(selectedCode);
+    onClose2();
+  };
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
@@ -32,12 +37,12 @@ export default function NotesModal({ isOpen, onClose2, data }) {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-          <FacilitiesList search={search} modal={"yes"} />
+          <FacilitiesList search={search} modal={"yes"} onSelect={(code) => setSelectedCode(code)} />
 
         </div>
         <button
           className="w-full bg-[#789fd6] p-3 mt-4 text-white font-semibold mt-6 rounded-md"
-          onClick={onClose2}
+          onClick={handleConfirm}
         >
           {t("confirm")}
         </button>

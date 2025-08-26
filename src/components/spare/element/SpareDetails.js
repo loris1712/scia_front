@@ -142,6 +142,9 @@ const SpareDetails = ({ details }) => {
           <h2 className="text-lg text-[#789fd6]">EAN13</h2>
         </div>
 
+        <p className="text-md text-[#fff]">{details && details[0].ean13 > 0 ? details[0].ean13 : ""}</p>
+
+
         {/*<Image 
                             src={details && details[0].ean13 > 0 ? details[0].ean13 : "Non disponibile"}
 
@@ -179,7 +182,7 @@ const SpareDetails = ({ details }) => {
         <div className="flex items-center cursor-pointer" onClick={() => setFacilitiesOpen(true)}>
 
           <p className="text-white text-[16px] text-sm truncate">
-            <ElementIcon elementId={"201"} /> {details && details.length > 0 ? details[0].eswbs : "Non disponibile"} {details && details.length > 0 ? details[0].system_description : "Non disponibile"}
+            <ElementIcon elementId={"201"} /> {details && details.length > 0 ? details[0].elementModel.ESWBS_code : ""} {details && details.length > 0 ? details[0].elementModel.LCN_name : ""}
           </p>
             <svg className="ml-auto" fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
         </div>
@@ -199,7 +202,7 @@ const SpareDetails = ({ details }) => {
 
       </div> 
 
-      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
+      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} eswbs={details[0]?.elementModel?.ESWBS_code} />
                     
     </div>
     

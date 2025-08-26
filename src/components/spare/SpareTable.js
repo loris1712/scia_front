@@ -19,11 +19,12 @@ const SpareTable = () => {
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
   const router = useRouter();
   const [isOpen2, setIsOpen2] = useState(false);
+  const [selectedCode, setSelectedCode] = useState(null);
 
-  const shipId = 1;
   const { user } = useUser();
+  const shipId = user?.ships[0].id;
 
-        const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState({
           task: {
             inGiacenza: false,
             nonDisponibile: false,
@@ -40,8 +41,7 @@ const SpareTable = () => {
             inBacino: false,
             fornitoreEsterno: false,
           },
-        });
-
+  });
 
   const loadTasks = async () => {
     try {
@@ -57,6 +57,8 @@ const SpareTable = () => {
   };
 
   useEffect(() => {
+    if (!shipId) return;
+
     loadTasks();
   }, [shipId, user]);
 
@@ -74,10 +76,11 @@ const SpareTable = () => {
   const totalQuantity = tasksData.reduce((total, spare) => {
     if (!spare.quantity) return total;
 
-    const quantities = spare.quantity
+    const quantities = (spare.quantity || "")
       .split(",")
       .map(q => parseFloat(q))
       .filter(q => !isNaN(q));
+
 
     const sum = quantities.reduce((acc, q) => acc + q, 0);
 
@@ -85,41 +88,44 @@ const SpareTable = () => {
   }, 0);
 
   const filteredTasks = tasksData.filter((task) => {
-  const matchesSearch = task.Part_name.toLowerCase().includes(searchTerm.toLowerCase());
+  const matchesSearch = task.Part_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false;
 
-const parseQuantity = (q) => {
+  const parseQuantity = (q) => {
   if (!q) return 0;
-  return parseFloat(q.replace(',', '.'));
+  return parseFloat(q.replace(',', '.').replace(/[^0-9.-]/g, ''));
 };
 
-const quantity = parseQuantity(task.quantity);
+  const quantity = parseQuantity(task.quantity);
 
-const matchTaskFilters = (
-  (filters.task.inGiacenza ? quantity > 0 : true) &&
-  (filters.task.nonDisponibile ? quantity <= 0 : true)
-);
+  const matchTaskFilters = (
+    (filters.task.inGiacenza ? quantity > 0 : true) &&
+    (filters.task.nonDisponibile ? quantity <= 0 : true)
+  );
 
-const matchWarehouseFilters = (() => {
-  if (
-    !filters.magazzino.aBordo &&
-    !filters.magazzino.inBanchina &&
-    !filters.magazzino.inBacino &&
-    !filters.magazzino.fornitoreEsterno
-  ) {
-    return true;
-  }
+  const matchWarehouseFilters = (() => {
+    if (
+      !filters.magazzino.aBordo &&
+      !filters.magazzino.inBanchina &&
+      !filters.magazzino.inBacino &&
+      !filters.magazzino.fornitoreEsterno
+    ) {
+      return true;
+    }
 
-  return task.warehouses.some(loc => {
-    if (filters.magazzino.aBordo && loc.name.toLowerCase().includes("a bordo")) return true;
-    if (filters.magazzino.inBanchina && loc.name.toLowerCase().includes("banchina")) return true;
-    if (filters.magazzino.inBacino && loc.name.toLowerCase().includes("bacino")) return true;
-    if (filters.magazzino.fornitoreEsterno && loc.name.toLowerCase().includes("fornitore")) return true;
-    return false;
-  });
-})();
+    return (task.warehouses || []).some(loc => {
+      if (filters.magazzino.aBordo && loc.name.toLowerCase().includes("a bordo")) return true;
+      if (filters.magazzino.inBanchina && loc.name.toLowerCase().includes("banchina")) return true;
+      if (filters.magazzino.inBacino && loc.name.toLowerCase().includes("bacino")) return true;
+      if (filters.magazzino.fornitoreEsterno && loc.name.toLowerCase().includes("fornitore")) return true;
+      return false;
+    });
+  })();
 
+  const matchSelectedCode = selectedCode
+  ? task.elementModel?.ESWBS_code?.startsWith(selectedCode)
+  : true;
 
-  return matchesSearch && matchTaskFilters && matchWarehouseFilters;
+  return matchesSearch && matchTaskFilters && matchWarehouseFilters && matchSelectedCode;
 });
 
 const toggleFilter = (category, key) => {
@@ -131,6 +137,12 @@ const toggleFilter = (category, key) => {
     },
   }));
 };
+
+const numFiltriAttivi = [
+  ...Object.values(filters.task),
+  ...Object.values(filters.fornitore),
+  ...Object.values(filters.magazzino),
+].filter(Boolean).length;
 
 
   return (
@@ -182,7 +194,14 @@ const toggleFilter = (category, key) => {
             <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
               <path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z" />
             </svg>
-              <span className="hidden sm:block">&nbsp; {t("filters")}</span>
+              <span className="hidden sm:block">&nbsp; {t("filters")}
+
+                {numFiltriAttivi > 0 && (
+                  <span className="bg-white text-black ml-2 text-xs px-2 py-0.5 rounded-full">
+                    {numFiltriAttivi}
+                  </span>
+                )}
+              </span>
           </button>
         </div>
       </div>
@@ -219,7 +238,11 @@ const toggleFilter = (category, key) => {
         toggleFilter={toggleFilter}
       />  
             
-      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
+      <FacilitiesModal 
+        isOpen={facilitiesOpen} 
+        onClose2={() => setFacilitiesOpen(false)} 
+        onSelectCode={(code) => setSelectedCode(code)}
+      />
 
       <MoveProduct isOpen={isOpen2} onClose={() => setIsOpen2(false)} />
 

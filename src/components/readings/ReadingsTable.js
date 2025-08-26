@@ -49,9 +49,8 @@ const ReadingsTable = () => {
       }));
     };
 
-
-  const shipId = 1;
   const { user } = useUser();
+const shipId = user?.ships[0].id;
 
   const loadTasks = async () => {
     try {
@@ -120,26 +119,35 @@ const ReadingsTable = () => {
   }
 
   const macroFilters = filters.macrogruppoESWBS;
-  if (Object.values(macroFilters).some(Boolean)) {
-    
-    const eswbsToMacro = {
-      "1": "100 - Scafo",
-      "2": "200 - Propulsioni/Motori",
-      "3": "300 - Impianto elettrico",
-      "4": "400 - Comando, controllo e sorveglianza",
-      "5": "500 - Impianti ausiliari",
-      "6": "600 - Allestimento e arredamento",
-      "7": "700 - Armamenti",
-      "8": "800 - Integration / Engineering",
-      "9": "900 - Ship assembly / Support services",
-    };
 
-    const macroOfTask = eswbsToMacro[task.eswbs_id];
-    if (!macroOfTask || !macroFilters[macroOfTask]) return false;
+  if (Object.values(macroFilters).some(Boolean)) {
+    const macrogruppo = task?.element?.element_model?.ESWBS_code?.trim();
+    if (!macrogruppo) return false;
+
+    const matches = Object.entries(macroFilters).some(([macroKey, isActive]) => {
+      if (!isActive) return false;
+
+      const codePrefix = macroKey.split(" - ")[0].trim();
+
+      return macrogruppo.startsWith(codePrefix[0]);
+    });
+
+    if (!matches) return false;
   }
 
   return true;
 });
+
+  const countActiveFilters = () => {
+    let count = 0;
+    count += Object.values(filters.squadraDiAssegnazione).filter(Boolean).length;
+    count += Object.values(filters.macrogruppoESWBS).filter(Boolean).length;
+    if (filters.task.nascondiTaskEseguiti) count += 1;
+
+    return count;
+  };
+
+  const activeFiltersCount = countActiveFilters();
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
@@ -160,7 +168,11 @@ const ReadingsTable = () => {
           className={'rounded-md flex items-center ml-auto bg-[#022a52] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer'}
         >
           <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z"/></svg>
-            &nbsp; {t("filters")}
+            &nbsp; {t("filters")} {activeFiltersCount > 0 && (
+            <span className="ml-2 bg-white text-black rounded-full px-2 py-0.5 text-xs">
+              {activeFiltersCount}
+            </span>
+          )}
         </button>
       </div>
 

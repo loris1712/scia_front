@@ -29,9 +29,13 @@ export default function PauseModal({ oldStatusId, jobId, onClose }) {
       };
 
       await handleSaveStatusComment(jobId, commentData);
-      await updateMaintenanceJobStatus(jobId, newStatusId);
+      
+      const res = await updateMaintenanceJobStatus(jobId, newStatusId);
 
-      onClose();
+      if (res) {
+        onClose();
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Errore durante il salvataggio:", error);
     }

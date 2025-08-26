@@ -34,18 +34,6 @@ const calculateStatus = (expirationDate) => {
   return "ok";
 };
 
-const getStatusColor = (dueDays) => {
-  if (dueDays < -15) {
-    return "#d0021b";
-  } else if (dueDays < 0) {
-    return "rgb(244,114,22)"; 
-  } else if (dueDays <= 15) {
-    return "#ffbf25";
-  } else if (dueDays > 15) {
-    return "rgb(45,182,71)";
-  }
-  return "#CCCCCC";
-};
 
 const MaintenanceRow = ({ data }) => {
   const status = calculateStatus(data.ending_date);
@@ -65,10 +53,29 @@ const MaintenanceRow = ({ data }) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleOptionClick = async (option) => {
-    
+  const getStatusColor = (dueDays) => {
+    if(data.status_id == 3){
+      return "rgba(255,255,255,0.2)"
+    }else if (dueDays < 0) {
+      // Scaduta → Rosso
+      return "#d0021b";
+    } else if (dueDays <= 5) {
+      // Urgente → Arancione
+      return "rgb(244,114,22)";
+    } else if (dueDays <= 15) {
+      // Non urgente → Giallo
+      return "#ffbf25";
+    } else if (dueDays > 15) {
+      // Ancora tempo → Verde
+      return "rgb(45,182,71)";
+    }
+    return "#CCCCCC"; // Default
+  };
+
+  const handleOptionClick = async (option) => { 
     await updateMaintenanceJobStatus(data.id, option);
     setIsDropdownOpen(false);
+    router.refresh();
   };
 
   /*useEffect(() => {
@@ -173,7 +180,7 @@ const MaintenanceRow = ({ data }) => {
             <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg z-20">
               <button
                 className="block px-4 py-2 text-black hover:bg-gray-200 w-full text-left"
-                onClick={() => handleOptionClick(2)}
+                onClick={() => handleOptionClick(3)}
               >
                 {t("pause")}
               </button>

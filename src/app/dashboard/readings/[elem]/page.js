@@ -25,7 +25,6 @@ export default function ElementPage({ params }) {
     const loadTasks = async () => {
       try {
         const fetchReading = await getReading(readingId, user?.id);
-        //console.log(fetchReading)
         setTasksData(fetchReading);
       } catch (err) {
         console.error(err);
@@ -76,7 +75,7 @@ export default function ElementPage({ params }) {
       )}
 
       {noteModal && (
-        <NoteModal onClose={() => setNoteModal(false)} />
+        <NoteModal onClose={() => setNoteModal(false)} id={readingId} />
       )}
 
       <div className="sm:flex gap-4">

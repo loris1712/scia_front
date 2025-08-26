@@ -34,7 +34,7 @@ export default function DashboardGrid() {
 
   const { user, loading } = useUser();
   const { t, i18n } = useTranslation("dashboard");
-  const shipId = 1;
+  const shipId = user?.ships[0].id;
 
   const router = useRouter();
   

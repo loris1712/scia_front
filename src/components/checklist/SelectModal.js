@@ -8,6 +8,8 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
   const [maintenanceTypes, setMaintenanceTypes] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
 
+  console.log(types)
+
   useEffect(() => {
     if (defaultType) {
       setSelectedType(defaultType);
@@ -20,6 +22,22 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
       onClose();
     }
   };
+
+  const groupedTypes = Object.values(
+    types.reduce((acc, type) => {
+      const name = type.recurrencyType.name;
+      if (!acc[name]) {
+        acc[name] = {
+          ...type,
+          count: 1,
+        };
+      } else {
+        acc[name].count += 1;
+      }
+      return acc;
+    }, {})
+  );
+
   const { t, i18n } = useTranslation("maintenance");
   const [mounted, setMounted] = useState(false);
 
@@ -51,8 +69,8 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
               </tr>
             </thead>
             <tbody> 
-              {types.length > 0 ? (
-                types.map((type) => (
+              {groupedTypes.length > 0 ? (
+                groupedTypes.map((type) => (
                   <tr
                     key={type.id}
                   >
@@ -65,10 +83,10 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
                         checked={selectedType?.id === type.id}
                       />
                     </td>
-                    <td className="p-3 border border-[#022a52]" style={{borderRight: '1px solid black', borderBottom: '1px solid black'}}>{type.title}</td>
-                    <td className="p-3 border border-[#022a52]" style={{borderRight: '1px solid black', borderBottom: '1px solid black'}}>{type.title}</td>
-                    <td className="p-3 border border-[#022a52]" style={{borderRight: '1px solid black', borderBottom: '1px solid black'}}>{type.tasks[0].start_date || "N/A"}</td>
-                    <td className="p-3 border border-[#022a52]" style={{borderBottom: '1px solid black'}}>{type.tasks[0].end_date || "N/A"}</td>
+                    <td className="p-3 border border-[#022a52]" style={{borderRight: '1px solid black', borderBottom: '1px solid black'}}>{type.recurrencyType.name}</td>
+                    <td className="p-3 border border-[#022a52]" style={{borderRight: '1px solid black', borderBottom: '1px solid black'}}>{types.length}</td>
+                    <td className="p-3 border border-[#022a52]" style={{borderRight: '1px solid black', borderBottom: '1px solid black'}}>{type.ending_date !== "N/A" ? new Date(type.ending_date).toLocaleDateString("it-IT") : "N/A"}</td>
+                    <td className="p-3 border border-[#022a52]" style={{borderBottom: '1px solid black'}}>{type.execution_date !== "N/A" ? new Date(type.execution_date).toLocaleDateString("it-IT") : "N/A"}</td>
                   </tr>
                 ))
               ) : (
@@ -98,9 +116,9 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
                         checked={selectedType?.id === type.id}
                       />
                   <div className="flex flex-col flex-grow gap-2">
-                    <span className={`rounded-full py-1 px-3 w-[fit-content] bg-[#395575] text-[10px]`}>{type.tasks[0].start_date !== "N/A" ? new Date(type.tasks[0].start_date).toLocaleDateString("it-IT") : "N/A"}</span>
+                    <span className={`rounded-full py-1 px-3 w-[fit-content] bg-[#395575] text-[10px]`}>{type.ending_date !== "N/A" ? new Date(type.ending_date).toLocaleDateString("it-IT") : "N/A"}</span>
                     <span className="font-semibold text-2xl text-white">{type.title}</span>
-                    <span className="text-[#9ba7b9]">Task: 12 - Ultima esec: {type.tasks[0].end_date}</span>
+                    <span className="text-[#9ba7b9]">Task: 12 - Ultima esec: {type.execution_date !== "N/A" ? new Date(type.execution_date).toLocaleDateString("it-IT") : "N/A"}</span>
                   </div>
                 </label>
                 ))

@@ -149,7 +149,7 @@ const ReadingsInfo = ({ details }) => {
                   />
 
           <div>
-            <h2 className="text-md text-[#fff]">2.1.4 Motore centrale</h2>
+            <h2 className="text-md text-[#fff]">{details?.[0]?.element?.element_model?.ESWBS_code} {details?.[0]?.element?.element_model?.LCN_name}</h2>
 
           </div>
         
@@ -194,8 +194,7 @@ const ReadingsInfo = ({ details }) => {
         <Istructions istructions={""} onClose={() => setShowIstructions(false)} />
       }
 
-      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} />
-      
+      <FacilitiesModal isOpen={facilitiesOpen} onClose2={() => setFacilitiesOpen(false)} eswbs={details?.[0]?.element?.element_model?.ESWBS_code} />
       
     </div>
   );

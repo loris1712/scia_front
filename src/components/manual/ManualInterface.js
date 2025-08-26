@@ -20,8 +20,8 @@ const ManualInterface = () => {
     setIsOpen(false);
   };
 
-  const shipId = 1;
   const { user } = useUser();
+const shipId = user?.ships[0].id;
 
   const loadTasks = async () => {
       try {

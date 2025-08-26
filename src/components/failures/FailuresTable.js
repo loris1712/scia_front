@@ -28,8 +28,8 @@ const FailuresTable = () => {
     },
   });
 
-  const shipId = 1;
   const { user } = useUser();
+  const shipId = user?.ships[0].id;
 
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +44,7 @@ const FailuresTable = () => {
         const data = await getFailures("", shipId);
         setFailures(data);
         setFilteredFailures(data);
+        console.log(data)
         
       } catch (error) {
         console.error("Errore fetch avarie:", error);
@@ -86,6 +87,11 @@ const FailuresTable = () => {
     return <div className="text-white p-4">{t("loading")}</div>;
   }
 
+  const numFiltriAttivi = [
+  ...Object.values(filters.gravitá),
+  ...Object.values(filters.squadra),
+].filter(Boolean).length;
+
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
       <div className="sm:flex items-center mb-2">
@@ -125,7 +131,14 @@ const FailuresTable = () => {
             >
               <path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z" />
             </svg>
-            <span className="hidden sm:block">&nbsp; {t("filters")}</span>
+            <span className="hidden sm:block">&nbsp; {t("filters")}
+
+              {numFiltriAttivi > 0 && (
+                <span className="ml-2 bg-white text-black rounded-full px-2 py-0.5 text-xs">
+                  {numFiltriAttivi}
+                </span>
+              )}
+            </span>
           </button>
 
           <button
@@ -148,7 +161,7 @@ const FailuresTable = () => {
       </div>
 
       <div className="hidden sm:grid grid-cols-[3fr_1fr_1fr_1fr] bg-white rounded-t-lg font-semibold text-black/70">
-        <p className="border p-3">{t("title")} / ESWBS</p>
+        <p className="border p-3">{t("titolo")} / ESWBS</p>
         <p className="border p-3 text-center">{t("notes")}</p>
         <p className="border p-3 text-center">{t("user")}</p>
         <p className="border p-3 text-center">{t("date_of_insertion")}</p>

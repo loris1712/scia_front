@@ -9,7 +9,6 @@ export async function getSettings(userId) {
 
     const response = await fetch(`${API_URL}/api/settings/getSettings/${userId}`, {
       method: "GET",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

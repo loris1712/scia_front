@@ -18,8 +18,8 @@ const MaintenanceTable = () => {
 
   const [filters, setFilters] = useState(null);
 
-  const shipId = 1;
   const { user } = useUser();
+  const shipId = user?.ships[0].id;
 
   const handleSelectType = (type) => {
     setSelectedType(type);
@@ -43,11 +43,9 @@ const MaintenanceTable = () => {
         const today = new Date();
         const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
-        // Filtro status
         if (filters.stato?.attiva && item.status.id !== 1) return false;
         if (filters.stato?.inPausa && item.status.id !== 2) return false;
 
-        // Filtro scadenze
         const filterScaduta        = filters.stato?.scaduta;
         const filterScadutaDaPoco  = filters.stato?.scadutaDaPoco;
         const filterInScadenza     = filters.stato?.inScadenza;
@@ -89,6 +87,22 @@ const MaintenanceTable = () => {
       });
     };
 
+    const countActiveFilters = () => {
+      if (!filters) return 0;
+
+      let count = 0;
+
+      for (const categoryKey in filters) {
+        const category = filters[categoryKey];
+        if (typeof category === "object" && category !== null) {
+          count += Object.values(category).filter(Boolean).length;
+        }
+      }
+
+      return count;
+    };
+
+    const activeFilterCount = countActiveFilters();
 
   const { t, i18n } = useTranslation("maintenance");
   const [mounted, setMounted] = useState(false);
@@ -139,7 +153,15 @@ const MaintenanceTable = () => {
           >
             <path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z"/>
           </svg>
-          <span className="hidden sm:inline">&nbsp; {t("filters")}</span>
+          <span className="hidden sm:inline">&nbsp; {t("filters")}
+
+            {activeFilterCount > 0 && (
+              <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-black bg-white rounded-full">
+                {activeFilterCount}
+              </span>
+            )}
+
+          </span>
         </button>
 
       </div>

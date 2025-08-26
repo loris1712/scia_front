@@ -49,8 +49,8 @@ const ChecklistTable = () => {
       }));
     };
 
-  const shipId = 1;
   const { user } = useUser();
+  const shipId = user?.ships[0].id;
 
   const loadTasks = async () => {
     try {
@@ -92,36 +92,41 @@ const ChecklistTable = () => {
     return <div>{error}</div>;
   }
 
-const allTasks = selectedType ? selectedType.tasks : tasksData;
+  const allTasks = selectedType ? selectedType.tasks : tasksData;
 
-  const tasksToShow = allTasks.filter(task => {
-   
-  if (!filters) return true;
+  const tasksToShow = allTasks.filter((task) => {
+    const { task: taskFilters, squadraDiAssegnazione, macrogruppoESWBS } = filters;
 
-  const { task: taskFilters, squadraDiAssegnazione, macrogruppoESWBS } = filters;
-
-  if (taskFilters.nascondiTaskEseguiti && task.status_id === 3) {
-    return false;
-  }
-
-  const macrogruppo = task?.Element?.element_model?.ESWBS_code;
-    if (macrogruppo && macrogruppoESWBS[macrogruppo] === true) {
-      return true;
-    }
-    if (Object.values(macrogruppoESWBS).some(v => v) && (!macrogruppo || !macrogruppoESWBS[macrogruppo])) {
+    if (taskFilters.nascondiTaskEseguiti && task.status_id === 3) {
       return false;
+    }
+
+    const macrogruppo = task?.Element?.element_model?.ESWBS_code?.trim();
+    if (Object.values(macrogruppoESWBS).some(Boolean)) {
+      const matches = Object.entries(macrogruppoESWBS).some(([key, isActive]) => {
+        if (!isActive) return false;
+        const codePrefix = key.split(" - ")[0].trim();
+        return macrogruppo?.startsWith(codePrefix[0]);
+      });
+      if (!matches) return false;
     }
 
     const assignedTeam = task?.assigned_to?.team;
-    if (
-      Object.values(squadraDiAssegnazione).some(v => v) &&
-      (!assignedTeam || !squadraDiAssegnazione[assignedTeam])
-    ) {
-      return false;
+    if (Object.values(squadraDiAssegnazione).some(Boolean)) {
+      if (!assignedTeam || !squadraDiAssegnazione[assignedTeam] === true) {
+        return false;
+      }
     }
 
     return true;
   });
+
+  const numMacrogruppiAttivi = Object.values(filters.macrogruppoESWBS).filter(Boolean).length;
+  const numSquadreAttive = Object.values(filters.squadraDiAssegnazione).filter(Boolean).length;
+  const numFiltriBase = filters.task.nascondiTaskEseguiti ? 1 : 0;
+
+
+  const numFiltriAttivi = numFiltriBase + (numMacrogruppiAttivi > 0 ? 1 : 0) + (numSquadreAttive > 0 ? 1 : 0);
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">
@@ -142,7 +147,11 @@ const allTasks = selectedType ? selectedType.tasks : tasksData;
           className={'rounded-md flex items-center ml-auto bg-[#022a52] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer'}
         >
           <svg width="18px" height="18px" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7 36.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L454.6 368l36.7-36.7z"/></svg>
-            &nbsp; {t("filters")}
+            &nbsp; {t("filters")} {numFiltriAttivi > 0 && (
+            <span className="ml-2 bg-white text-black rounded-full px-2 py-0.5 text-xs">
+              {numFiltriAttivi}
+            </span>
+          )}
         </button>
       </div>
 

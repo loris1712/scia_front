@@ -141,10 +141,12 @@
     "manage": "Gestisci",
     "orders": "Ordini",
     "in_order": "In ordine",
-
     "select_file": "Seleziona file",
-    "type": "Tipo"
-
-    
-
+    "type": "Tipo",
+    "from": "da",
+    "paused": "In pausa",
+    "expired": "Scaduta",
+    "recentlyExpired": "Scaduta da poco",
+    "expiring": "In scadenza",
+    "scheduled": "Programmata"
 }

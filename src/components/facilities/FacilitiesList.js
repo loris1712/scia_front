@@ -25,9 +25,8 @@ export default function ImpiantiList({ search, modal, eswbsCode }) {
   const { user } = useUser();
   const router = useRouter();
 
-  const ship_id = 1;
+  const ship_id = user?.ships[0].id;
 
-  // Fetch dei dati al caricamento
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.id) return;
@@ -146,9 +145,16 @@ export default function ImpiantiList({ search, modal, eswbsCode }) {
               <input
                 type="checkbox"
                 checked={node.code === selectedCode}
-                readOnly
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedCode(node.code);
+                  } else {
+                    setSelectedCode(null);
+                  }
+                }}
                 className="mr-2 cursor-pointer w-[20px] h-[20px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 checked:bg-[#789fd6] checked:border-[#789fd6] hover:opacity-80 focus:outline-none"
               />
+
               <svg
                 onClick={(e) => {
                   e.stopPropagation();

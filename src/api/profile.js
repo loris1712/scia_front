@@ -6,7 +6,7 @@ export async function getProfileData() {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
     if (!token) {
-      throw new Error("Utente non autenticato");
+      console.log("Utente non autenticato");
     }
 
     const response = await fetch(`${BASE_URL}/api/profile/getProfile`, {
@@ -104,7 +104,6 @@ export const getRanks = async () => {
   try {
     const response = await fetch(`${BASE_URL}/api/profile/getRanks`, {
       method: "GET",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -160,4 +159,45 @@ export async function getLogs(logType) {
     console.error("Errore API getProfileData:", error);
     return null;
   }
+}
+
+export async function getTeamUsers(teamId) {
+  try {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    if (!token) {
+      throw new Error("Token mancante. Utente non autenticato.");
+    }
+
+    const response = await fetch(`${BASE_URL}/api/profile/getUsers/${teamId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Errore nel recupero degli utenti del team");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Errore API getTeamUsers(${teamId}):`, error);
+    return null;
+  }
+}
+
+export async function updateUserElements(userId, elements) {
+  const res = await fetch(`${BASE_URL}/api/profile/${userId}/elements`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ elements }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Errore nel salvataggio degli Impianti");
+  }
+
+  return res.json();
 }

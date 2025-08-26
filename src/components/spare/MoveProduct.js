@@ -19,8 +19,8 @@ export default function MoveProduct({ isOpen, onClose, data }) {
   const [selectedEswbs, setSelectedEswbs] = useState('');
   const [scanning, setScanning] = useState(false);
 
-  const shipId = 1;
   const { user } = useUser();
+const shipId = user?.ships[0].id;
 
   useEffect(() => {
     if (scanning) {

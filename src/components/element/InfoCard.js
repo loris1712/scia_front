@@ -8,34 +8,23 @@ import { useTranslation } from "@/app/i18n";
 const InfoCard = ({ data }) => {
   
   const [isPopupOpen, setIsOpen] = useState(false);
-  const [usageHours, setUsageHours] = useState(data.usageHours);
+  const [usageHours, setUsageHours] = useState(data.element.time_to_work);
 
   const handleEditClick = () => {
     setIsOpen(true);
   };
 
-  //const BASE_URL = "http://localhost:4000/api/maintenance";
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
-  //const BASE_URL = "http://52.59.162.108:4000/api/maintenance";
+  const elementData = data;
 
   const handleSave = async (newUsage) => {
-
-    const newElement = {
-      element_model_id: 1,
-      ship_id: 10,
-      name: "Motore Centrale",
-      serial_number: "SN12345",
-      installation_date: "2024-03-14",
-      new_usage: newUsage,
-      progressive_code: 1001,
-    };
 
     try {
       const res = await fetch(`${BASE_URL}/api/element/addTimeWork`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newElement }),
+        body: JSON.stringify({ id: elementData.element.id, time: newUsage }),
       });
 
       const data = await res.json();
@@ -45,9 +34,9 @@ const InfoCard = ({ data }) => {
       setUsageHours(newUsage);
       setIsOpen(false);
     } catch (err) {
-      setError(err.message);
+      console.log(err.message);
     } finally {
-      setLoading(false);
+      //setLoading(false);
     }
   };
 
@@ -89,8 +78,8 @@ const InfoCard = ({ data }) => {
         <div className="flex items-center mb-4">
             <div>
               <h2 className="text-lg text-[#789fd6] mb-2">{t("motorcycles_hours")}</h2>
-              <p className="text-white">{data.usageHours}</p>
-              <p className="text-[#ffffffa6]">06/05/2024 - 10:23</p>
+              <p className="text-white">{usageHours}</p>
+              <p className="text-[#ffffffa6]">{new Date(data.element.updated_at).toLocaleString()}</p>
             </div>
 
             <button

@@ -10,8 +10,8 @@ const CartTable = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const shipId = 1;
   const { user } = useUser();
+  const shipId = user?.ships[0].id;
 
   const { t, i18n } = useTranslation("cart");
   const [mounted, setMounted] = useState(false);

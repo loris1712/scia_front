@@ -43,42 +43,47 @@ export function UserProvider({ children }) {
     });
   };
 
-  // ✅ Autenticazione e caricamento profilo utente
   useEffect(() => {
-    const isAuthPage =
-      typeof window !== "undefined" &&
-      (window.location.pathname.startsWith("/login") ||
-        window.location.pathname.startsWith("/login-pin"));
+  if (typeof window === "undefined") return;
 
-    if (isAuthPage) {
-      setLoading(false);
-      return;
-    }
+  const pathname = window.location.pathname;
 
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const isAuthPage =
+    pathname.startsWith("/login") || pathname.startsWith("/login-pin");
 
-    if (!token || token === "undefined") {
-      setLoading(false); 
+  const isAllowedDashboardPage =
+    /^\/dashboard\/spare\/[^\/]+$/.test(pathname) ||
+    /^\/dashboard\/impianti\/[^\/]+$/.test(pathname);
+
+  if (isAuthPage || isAllowedDashboardPage) {
+    setLoading(false);
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token || token === "undefined") {
+    setLoading(false);
+    router.replace("/login");
+    return;
+  }
+
+  async function loadData() {
+    const result = await getProfileData();
+
+    if (!result) {
+      localStorage.removeItem("token");
       router.replace("/login");
+      setLoading(false);
       return;
     }
 
-    async function loadData() {
-      const result = await getProfileData();
-
-      if (!result) {
-        localStorage.removeItem("token");
-        router.replace("/login");
-        setLoading(false);
-        return;
-      }
-
-      setUser(result);
-      setLoading(false);
-    }
+    setUser(result);
+    setLoading(false);
+  }
 
     loadData();
-  }, []);
+  }, [router]);
 
   return (
     <UserContext.Provider

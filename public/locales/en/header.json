@@ -3,7 +3,11 @@
     "facilities": "Facilities",
     "cart": "Cart",
     "manage_warehouse": "Manage warehouse",
-    "remote_assistance": "Remote assistance",
-    "settings": "Settings"
-  }
+  "remote_assistance": "Remote assistance",
+  "settings": "Settings",
+  "not_logged": "Not logged in",
+  "no_scan_available": "No scan available",
+  "close": "Close",
+  "loading": "Loading..."
+}
   

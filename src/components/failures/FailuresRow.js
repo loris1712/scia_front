@@ -44,6 +44,7 @@ const getStatusColor = (gravity) => {
 };
 
 const MaintenanceRow = ({ data }) => {
+  console.log(data)
   const status = calculateStatus(data.data_recovery_expiration);
   const today = new Date();
   const dueDate = new Date(data.data_recovery_expiration);
@@ -120,9 +121,13 @@ const MaintenanceRow = ({ data }) => {
           <svg fill="currentColor" className={`w-6 h-6 ${statusColors[docStatus]}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
         </div>
       </div>
-      <div className="border border-[#001c38] p-3 flex items-center justify-center" style={{ height: "-webkit-fill-available" }}>
-        {data.userExecution}
-      </div>
+        <div className="border border-[#001c38] p-3 flex items-center justify-center" style={{ height: "-webkit-fill-available" }}>
+          {data.userExecutionData?.first_name && 
+            <span>{data.userExecutionData.first_name} {data.userExecutionData.last_name}</span>
+          }
+
+        </div>
+      
       <div className="border border-[#001c38]" style={{ height: "-webkit-fill-available" }}>
         <StatusBadge date={data.date} gravity={data.gravity} />
       </div>
@@ -176,14 +181,16 @@ const MaintenanceRow = ({ data }) => {
       </div>
     </div>
 
-    <div className="text-[#ffffff60] px-2">|</div>
-
-    <div className="p-3 flex items-center justify-center text-white">
-      {data.userExecution}
+      <div className="text-[#ffffff60] px-2">|</div>
+      
+        <div className="p-3 flex items-center justify-center text-white">
+          {data.userExecutionData?.first_name && 
+            <span>{data.userExecutionData.first_name} {data.userExecutionData.last_name}</span>
+          }
+        </div>
+      
+      </div>
     </div>
-  </div>
-    </div>
-
 
     <NotesModal isOpen={isOpen} onClose={() => setIsOpen(false)} data={data} />
 

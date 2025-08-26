@@ -142,5 +142,11 @@
   "orders": "Pedidos",
   "in_order": "En pedido",
    "select_file": "Seleccionar archivo",
-  "type": "Tipo"
+  "type": "Tipo",
+  "from": "de",
+  "paused": "En pausa",
+  "expired": "Caducada",
+  "recentlyExpired": "Recién caducada",
+  "expiring": "Por caducar",
+  "scheduled": "Programada"
 }

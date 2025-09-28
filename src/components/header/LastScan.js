@@ -22,10 +22,11 @@ export default function LastScan() {
           onClick={() => setIsOpen(true)}> 
         <div>
           <p className="text-[11px] text-[#ffffff60]">{t("last_scan")}</p>
-          <p className="text-xl font-semibold">Motore centrale</p>
+          <p className="text-xl font-semibold">Central engine</p>
           <p className="text-[11px] text-[#ffffff60]">
-            2.1.4 Propulsione Diesel - S/N 19028393028A - Ore moto: 1200h
+            2.1.4 Diesel propulsion - S/N 19028393028A - Engine hours: 1200h
           </p>
+
         </div>
         <svg
           width="18px"

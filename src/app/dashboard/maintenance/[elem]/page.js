@@ -55,7 +55,15 @@ export default function ElementPage({ params }) {
       <div className="flex items-start sm:items-center pt-4 pb-4">
         <div className='block sm:flex items-center gap-4'>
           
-        <h2 className="text-2xl font-bold sm:mb-0 mb-2">{maintenancedata[0]?.job.name}</h2>
+        <p className="text-2xl font-bold sm:mb-0 mb-2">
+          {(() => {
+            if (!maintenancedata[0]?.job.name) return "";
+            const text = maintenancedata[0]?.job.name.toLowerCase();
+            const formatted =
+              text.charAt(0).toUpperCase() + text.slice(1);
+            return formatted;
+          })()}
+        </p>
           <StatusBadgeDetail dueDate={maintenancedata[0]?.ending_date} pauseDate={maintenancedata[0]?.pauseDate} string={maintenancedata[0]?.status.name} />
         </div>
 

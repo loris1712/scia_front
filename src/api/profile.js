@@ -7,7 +7,7 @@ export async function getProfileData() {
 
     if (!token) {
       console.log("Utente non autenticato");
-    }
+    } 
 
     const response = await fetch(`${BASE_URL}/api/profile/getProfile`, {
       method: "GET",

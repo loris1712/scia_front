@@ -16,26 +16,26 @@ const MaintenanceInfo = ({ details }) => {
       <div className="mb-6">
         <h2 className="text-lg text-[#789fd6] mb-2">{t("description")}</h2>
 
-              <p
-                className={`text-white`}
-                style={{
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: 2,
-                  overflow: "hidden",
-                }}
-              >
-                {details && details.length > 0 ? details[0].description : "Non disponibile"}
-              </p>
+                      <p
+                        className={`text-white`}
+                        style={{
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 2,
+                          overflow: "hidden",
+                        }}
+                      >
+                        {details && details.length > 0 ? details[0].description : "Non disponibile"}
+                      </p>
 
-                <button
-                  className="text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-4"
-                  onClick={() => setShowIstructions(true)}
-                >
-                  {t("details")}
-                </button>
-      </div>
-}
+                        <button
+                          className="text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-4"
+                          onClick={() => setShowIstructions(true)}
+                        >
+                          {t("details")}
+                        </button>
+              </div>
+        }
       
 
       <div className="mb-6">

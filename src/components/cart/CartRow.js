@@ -10,7 +10,7 @@ const SpareRow = ({ data, onRemove }) => {
   const { user } = useUser();
 
   const handleRowClick = () => {
-    router.push(`/dashboard/spare/${data.Spare.Serial_number}`);
+    router.push(`/dashboard/spare/${data.Spare.ID}`);
   };
 
   const handleRemoveProduct = async () => {
@@ -37,11 +37,17 @@ const SpareRow = ({ data, onRemove }) => {
           <p className="text-white text-[18px] font-semibold truncate">{data?.Spare?.Part_name ?? "Nome non disponibile"}</p>
         </div>
         <div className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
-          <p className="text-[18px] text-white">{data?.Spare?.Serial_number ?? "Nome non disponibile"}</p>
+          <p className="text-[18px] text-white">
+            
+            {data?.Spare?.part?.Part_Number.length > 15
+                ? data?.Spare?.part?.Part_Number.slice(0, 15) + "..."
+                : data?.Spare?.part?.Part_Number}
+            
+            </p>
         </div>
         <div className="border border-[#001c38] p-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
           <div className="flex gap-4">
-          {data?.Spare?.company ?? "Nome non disponibile"}
+          {data?.Spare?.part?.organizationCompanyNCAGE?.NCAGE_Code ?? "Nome non disponibile"}
           </div>
         </div>
         <div

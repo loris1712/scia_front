@@ -1,11 +1,11 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 //const BASE_URL = "http://52.59.162.108:4000";
 
-export async function fetchSpare(serial_number, name) {
+export async function fetchSpare(id, name) {
   try {
     const params = new URLSearchParams();
     if (name) params.append("name", name);
-    if (serial_number) params.append("serial_number", serial_number);
+    if (id) params.append("id", id);
 
     const res = await fetch(`${BASE_URL}/api/spare/getSpare?${params.toString()}`);
 

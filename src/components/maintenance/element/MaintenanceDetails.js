@@ -146,7 +146,7 @@ const MaintenanceDetails = ({ details }) => {
 
       <div className="mb-8">
         <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">{t("details")}</h2>
+          <h2 className="text-lg text-[#789fd6]">{t("photographic_notes")}</h2>
           <button className="text-[14px] text-[#fff] ml-auto cursor-pointer" onClick={() => setPhotoHistoryModal(true)}>{t("see_history")}</button>
         </div>
         {latestPhoto && (

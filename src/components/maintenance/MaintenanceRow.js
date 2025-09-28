@@ -34,7 +34,6 @@ const calculateStatus = (expirationDate) => {
   return "ok";
 };
 
-
 const MaintenanceRow = ({ data }) => {
   const status = calculateStatus(data.ending_date);
   const today = new Date();
@@ -78,19 +77,6 @@ const MaintenanceRow = ({ data }) => {
     router.refresh();
   };
 
-  /*useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);*/
-
   const router = useRouter();
 
   const handleRowClick = () => {
@@ -113,19 +99,38 @@ const MaintenanceRow = ({ data }) => {
       style={{ borderLeft: `8px solid ${getStatusColor(dueDays)}` }}
     >
       <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}>
-        <p className="text-white text-[18px] font-semibold truncate">{data.job.name}</p>
-        <p className="text-white/60 text-[16px] text-sm truncate">
-          {data.Element.element_model.LCN_name}
+
+        <p className="text-white text-[18px] font-semibold">
+          {(() => {
+            if (!data.job?.name) return "";
+            const text = data.job.name.toLowerCase();
+            const formatted =
+              text.charAt(0).toUpperCase() + text.slice(1);
+            return formatted.length > 45
+              ? formatted.substring(0, 45) + "..."
+              : formatted;
+          })()}
         </p>
+
+        <p className="text-white/60 text-[16px] text-sm truncate">
+          {(() => {
+            if (!data.Element?.element_model?.LCN_name) return "";
+            const text = data.Element.element_model.LCN_name.toLowerCase();
+            return text.charAt(0).toUpperCase() + text.slice(1);
+          })()}
+        </p>
+
       </div>
+
       <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
         <p className="text-[18px] text-white">{data.recurrencyType.name}</p>
         <div className="flex items-center gap-2">
-          {areaIcons[data.job.maintenance_list.maintenance_level.Level_MMI] 
-          && <img src={areaIcons[data.job.maintenance_list.maintenance_level.Level_MMI]} alt={data.job.maintenance_list.maintenance_level.Level_MMI} className="w-4 h-4" />}
-          <p className="text-[16px] text-[#67c2ae]">{data.job.maintenance_list.maintenance_level.Level_MMI}</p>
+          {areaIcons[data.job.maintenance_list.maintenance_level?.Level_MMI] 
+          && <img src={areaIcons[data.job.maintenance_list.maintenance_level?.Level_MMI]} alt={data.job.maintenance_list.maintenance_level?.Level_MMI} className="w-4 h-4" />}
+          <p className="text-[16px] text-[#67c2ae]">{data.job.maintenance_list.maintenance_level?.Level_MMI} {t("level")}</p>
         </div>
       </div>
+
       <div className="border border-[#001c38] p-3 flex items-center justify-center cursor-pointer" onClick={
           data.photographicNotes.length > 0 || data.vocalNotes.length > 0 || data.textNotes.length > 0
             ? () => setIsOpen(true)
@@ -155,6 +160,7 @@ const MaintenanceRow = ({ data }) => {
           </svg>
         </div>
       </div>
+
       <div className="border border-[#001c38] p-3 flex items-center justify-center gap-4" style={{ height: "-webkit-fill-available" }}>
        {data.ending_date &&
           <LegendItem icon="/icons/Shape-2.png" label={t("items.time_deadline")} />
@@ -168,9 +174,11 @@ const MaintenanceRow = ({ data }) => {
           <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
        }
       </div>
+
       <div className="border border-[#001c38]" style={{ height: "-webkit-fill-available" }}>
         <StatusBadge dueDate={data.ending_date} dueDays={dueDays} />
       </div>
+
       <div className="p-3 flex items-center justify-center w-8 relative" ref={dropdownRef}>
         <svg onClick={toggleDropdown} className="cursor-pointer" fill="white" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
           <path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z" />
@@ -199,6 +207,7 @@ const MaintenanceRow = ({ data }) => {
             </div>
           )}
       </div>
+
     </div>
 
     <div
@@ -239,75 +248,74 @@ const MaintenanceRow = ({ data }) => {
         </div>
       </div>
 
-  {/* Job name + element info */}
-  <div className="mt-4" onClick={handleRowClick}>
-    <p className="text-white text-base font-semibold truncate">
-      {data.job.name}
-    </p>
-    <p className="text-white/60 text-sm truncate">
-      {data.Element.element_model.LCN_name}
-    </p>
-  </div>
-
-  {/* Legend Items */}
-  <div className="mt-3 flex flex-wrap gap-3 items-center">
-    {data.ending_date && (
-      <LegendItem icon="/icons/Shape-2.png" label={t("items.time_deadline")} />
-    )}
-    {(data.status.id === 2 || data.execution_state === 2) && (
-      <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
-    )}
-  </div>
-
-  {/* Footer: icons and labels */}
-  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-    <div className="flex items-center gap-2">
-      {areaIcons[data.job.maintenance_list.maintenance_level.Level_MMI] && (
-        <img
-          src={areaIcons[data.job.maintenance_list.maintenance_level.Level_MMI]}
-          alt={data.job.maintenance_list.maintenance_level.Level_MMI}
-          className="w-4 h-4"
-        />
-      )}
-      <p className="text-white text-sm">{data.recurrencyType.name}</p>
+    {/* Job name + element info */}
+    <div className="mt-4" onClick={handleRowClick}>
+      <p className="text-white text-base font-semibold truncate">
+        {data.job.name}
+      </p>
+      <p className="text-white/60 text-sm truncate">
+        {data.Element?.element_model.LCN_name}
+      </p>
     </div>
 
-    <div className="text-[#ffffff60] hidden sm:inline">|</div>
+    {/* Legend Items */}
+    <div className="mt-3 flex flex-wrap gap-3 items-center">
+      {data.ending_date && (
+        <LegendItem icon="/icons/Shape-2.png" label={t("items.time_deadline")} />
+      )}
+      {(data.status.id === 2 || data.execution_state === 2) && (
+        <LegendItem icon="/icons/Path.png" label={t("items.planned_stop")} />
+      )}
+    </div>
 
-    {/* Note Icons */}
-    {(data.photographicNotes.length > 0 ||
-      data.vocalNotes.length > 0 ||
-      data.textNotes.length > 0) && (
-      <div className="flex items-center gap-4" onClick={() => setIsOpen(true)}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 576 512"
-          fill="currentColor"
-          className={`w-5 h-5 ${statusColors[cameraStatus]}`}
-        >
-            <path d="M288 144a128 128 0 1 0 0 256 128 128 0 1 0 0-256zm0 208a80 80 0 1 1 0-160 80 80 0 1 1 0 160zm288-80c0 106-86 192-192 192H192C86 464 0 378 0 272V240c0-35 29-64 64-64h48l29-58c6-12 18-20 32-20h192c14 0 26 8 32 20l29 58h48c35 0 64 29 64 64v32z"/>
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 384 512"
-          fill="currentColor"
-          className={`w-5 h-5 ${statusColors[micStatus]}`}
-        >
-            <path d="M192 352a80 80 0 0 0 80-80V80a80 80 0 1 0-160 0v192a80 80 0 0 0 80 80zm128-128a16 16 0 1 0-32 0v48a96 96 0 1 1-192 0v-48a16 16 0 1 0-32 0v48c0 64 40 118 96 138v50h-40a16 16 0 1 0 0 32h128a16 16 0 1 0 0-32h-40v-50c56-20 96-74 96-138v-48z"/>
-        </svg>
-        <svg
-          fill="currentColor"
-          className={`w-5 h-5 ${statusColors[docStatus]}`}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 384 512"
-        >
-          <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/>
-        </svg>
+    {/* Footer: icons and labels */}
+    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center gap-2">
+        {areaIcons[data.job.maintenance_list.maintenance_level?.Level_MMI] && (
+          <img
+            src={areaIcons[data.job.maintenance_list.maintenance_level?.Level_MMI]}
+            alt={data.job.maintenance_list.maintenance_level?.Level_MMI}
+            className="w-4 h-4"
+          />
+        )}
+        <p className="text-white text-sm">{data.recurrencyType.name}</p>
       </div>
-    )}
-  </div>
-</div>
 
+      <div className="text-[#ffffff60] hidden sm:inline">|</div>
+
+      {/* Note Icons */}
+      {(data.photographicNotes.length > 0 ||
+        data.vocalNotes.length > 0 ||
+        data.textNotes.length > 0) && (
+        <div className="flex items-center gap-4" onClick={() => setIsOpen(true)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 576 512"
+            fill="currentColor"
+            className={`w-5 h-5 ${statusColors[cameraStatus]}`}
+          >
+              <path d="M288 144a128 128 0 1 0 0 256 128 128 0 1 0 0-256zm0 208a80 80 0 1 1 0-160 80 80 0 1 1 0 160zm288-80c0 106-86 192-192 192H192C86 464 0 378 0 272V240c0-35 29-64 64-64h48l29-58c6-12 18-20 32-20h192c14 0 26 8 32 20l29 58h48c35 0 64 29 64 64v32z"/>
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
+            fill="currentColor"
+            className={`w-5 h-5 ${statusColors[micStatus]}`}
+          >
+              <path d="M192 352a80 80 0 0 0 80-80V80a80 80 0 1 0-160 0v192a80 80 0 0 0 80 80zm128-128a16 16 0 1 0-32 0v48a96 96 0 1 1-192 0v-48a16 16 0 1 0-32 0v48c0 64 40 118 96 138v50h-40a16 16 0 1 0 0 32h128a16 16 0 1 0 0-32h-40v-50c56-20 96-74 96-138v-48z"/>
+          </svg>
+          <svg
+            fill="currentColor"
+            className={`w-5 h-5 ${statusColors[docStatus]}`}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
+          >
+            <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/>
+          </svg>
+        </div>
+      )}
+    </div>
+  </div>
 
     <NotesModal isOpen={isOpen} onClose={() => setIsOpen(false)} data={data} />
 

@@ -148,6 +148,13 @@
     "expired": "Expired",
     "recentlyExpired": "Recently Expired",
     "expiring": "Expiring",
-    "scheduled": "Scheduled"
+    "scheduled": "Scheduled",
+    "days_short": "days",
+    "filters2": {
+      "in_stock": "In stock",
+      "out_of_stock": "Out of stock"
+    }
+
+
 }
   

@@ -19,6 +19,7 @@ export default function InfoCard({ data }) {
   const [selectedRank, setSelectedRank] = useState(null);
 
   const { t, i18n } = useTranslation("profile");
+  
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -81,6 +82,13 @@ export default function InfoCard({ data }) {
   const onImageUploadSuccess = (newImageUrl) => {
     setProfileImage(newImageUrl);
   };
+
+  const translateRank = (rank) => {
+      const key = `${rank}`; 
+      const translated = t(key);
+
+      return translated === key ? rank : translated;
+};
 
   useEffect(() => {
     setMounted(true);
@@ -213,7 +221,7 @@ export default function InfoCard({ data }) {
               alt={rank.grado}
               className="w-6 h-12 mr-2"
             />
-            {rank.grado}
+            {translateRank(rank.grado)} 
           </li>
         ))}
       </ul>

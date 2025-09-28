@@ -148,5 +148,6 @@
   "expired": "Caducada",
   "recentlyExpired": "Recién caducada",
   "expiring": "Por caducar",
-  "scheduled": "Programada"
+  "scheduled": "Programada",
+  "days_short": "dias"
 }

@@ -23,13 +23,10 @@ const SpareDetails = ({ details }) => {
       <div className="p-2 w-full">
 
       <div className="mb-6">
-
         <div className="flex items-center mb-2">
           <h2 className="text-lg text-[#789fd6]">Part Number</h2>
         </div>
-
-        <p className="text-md text-[#fff]">{details && details.length > 0 ? details[0].Serial_number : "Non disponibile"}</p>
-
+        <p className="text-md text-[#fff]">{details && details?.length > 0 ? details[0]?.part?.Part_Number : "Non disponibile"}</p>
       </div>
 
       <div className="mb-6">
@@ -38,13 +35,21 @@ const SpareDetails = ({ details }) => {
           <h2 className="text-lg text-[#789fd6]">{t("image")}</h2>
         </div>
 
-        <Image 
-                            src="/motor.jpg"
-                            alt="Motore"
-                            width={80} 
-                            height={80} 
-                            className="rounded-lg"
-                          />
+       <Image
+          src="/spareexample.png"
+          alt="Motore"
+          width={80}
+          height={80}
+          className="rounded-lg cursor-pointer"
+          onClick={() => {
+            if (details[0].documentFileUrl) {
+              const pdfUrl = `${details[0].documentFileUrl}#page=${details[0].part.Position_on_Document_file}`;
+              window.open(pdfUrl, "_blank");
+            } else {
+              alert("Nessun documento trovato per questo ricambio");
+            }
+          }}
+        />
 
       </div>
 
@@ -68,17 +73,17 @@ const SpareDetails = ({ details }) => {
 
       </div>
 
-{details && details[0].NCAGE > 0 &&
-  <div className="mb-6">
+      {details && details[0].NCAGE > 0 &&
+        <div className="mb-6">
 
-        <div className="flex items-center mb-2">
-          <h2 className="text-lg text-[#789fd6]">NCAGE {t("costructor")}</h2>
-        </div>
+              <div className="flex items-center mb-2">
+                <h2 className="text-lg text-[#789fd6]">NCAGE {t("costructor")}</h2>
+              </div>
 
-        <p className="text-md text-[#fff]">{details && details[0].NCAGE > 0 ? details[0].NCAGE : "Non disponibile"}</p>
+              <p className="text-md text-[#fff]">{details && details[0].NCAGE > 0 ? details[0].NCAGE : "Non disponibile"}</p>
 
-      </div>
-}
+            </div>
+      }
 
       </div>
       <div className="p-2 w-full">
@@ -89,13 +94,12 @@ const SpareDetails = ({ details }) => {
           <h2 className="text-lg text-[#789fd6]">{t("warehouse")} ({t("locations")})</h2>
         </div>
 
-          {details && details[0].location.length > 0 ? (
+          {details && details[0].location?.length > 0 ? (
             details[0].locations.map((loc, index) => {
               const warehouse = details[0].warehouses.find(
                 (w) => w.id.toString() === loc.warehouse.toString()
               );
 
-              // Splitta le quantità in array
               const quantities = details[0].quantity.split(",");
 
               return (
@@ -138,8 +142,28 @@ const SpareDetails = ({ details }) => {
 
       <div className="mb-6">
 
-        <div className="flex items-center mb-2 mt-4">
+        <div className="mb-2 mt-4">
           <h2 className="text-lg text-[#789fd6]">EAN13</h2>
+          
+          <div className="mt-2">
+            <Image
+              src="/barcodeexample.webp"
+              alt="Motore"
+              width={80}
+              height={80}
+              className="rounded-lg cursor-pointer"
+              onClick={() => {
+                if (details[0].documentFileUrl) {
+                  const pdfUrl = `${details[0].documentFileUrl}#page=${details[0].part.Position_on_Document_file}`;
+                  window.open(pdfUrl, "_blank");
+                } else {
+                  alert("Nessun documento trovato per questo ricambio");
+                }
+              }}
+            />
+          </div>
+          
+        
         </div>
 
         <p className="text-md text-[#fff]">{details && details[0].ean13 > 0 ? details[0].ean13 : ""}</p>
@@ -182,7 +206,7 @@ const SpareDetails = ({ details }) => {
         <div className="flex items-center cursor-pointer" onClick={() => setFacilitiesOpen(true)}>
 
           <p className="text-white text-[16px] text-sm truncate">
-            <ElementIcon elementId={"201"} /> {details && details.length > 0 ? details[0].elementModel.ESWBS_code : ""} {details && details.length > 0 ? details[0].elementModel.LCN_name : ""}
+            <ElementIcon elementId={"201"} /> {details && details.length > 0 ? details[0]?.elementModel?.ESWBS_code : ""} {details && details.length > 0 ? details[0]?.part?.Part_name : ""}
           </p>
             <svg className="ml-auto" fill="white" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
         </div>

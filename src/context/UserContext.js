@@ -49,7 +49,7 @@ export function UserProvider({ children }) {
   const pathname = window.location.pathname;
 
   const isAuthPage =
-    pathname.startsWith("/login") || pathname.startsWith("/login-pin");
+    pathname.startsWith("/login") || pathname.startsWith("/login-pin") || pathname.startsWith("/adminLogin");
 
   const isAllowedDashboardPage =
     /^\/dashboard\/spare\/[^\/]+$/.test(pathname) ||

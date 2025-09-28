@@ -36,10 +36,10 @@ const SpareTable = () => {
             myCompany4: false,
           },
           magazzino: {
-            aBordo: false,
-            inBanchina: false,
-            inBacino: false,
-            fornitoreEsterno: false,
+            onboard: false,
+            dockside: false,
+            drydock: false,
+            external: false,
           },
   });
 
@@ -104,19 +104,19 @@ const SpareTable = () => {
 
   const matchWarehouseFilters = (() => {
     if (
-      !filters.magazzino.aBordo &&
-      !filters.magazzino.inBanchina &&
-      !filters.magazzino.inBacino &&
-      !filters.magazzino.fornitoreEsterno
+      !filters.magazzino.onboard &&
+      !filters.magazzino.dockside &&
+      !filters.magazzino.drydock &&
+      !filters.magazzino.external
     ) {
       return true;
     }
 
     return (task.warehouses || []).some(loc => {
-      if (filters.magazzino.aBordo && loc.name.toLowerCase().includes("a bordo")) return true;
-      if (filters.magazzino.inBanchina && loc.name.toLowerCase().includes("banchina")) return true;
-      if (filters.magazzino.inBacino && loc.name.toLowerCase().includes("bacino")) return true;
-      if (filters.magazzino.fornitoreEsterno && loc.name.toLowerCase().includes("fornitore")) return true;
+      if (filters.magazzino.onboard && loc.name.toLowerCase().includes("a bordo")) return true;
+      if (filters.magazzino.dockside && loc.name.toLowerCase().includes("banchina")) return true;
+      if (filters.magazzino.drydock && loc.name.toLowerCase().includes("bacino")) return true;
+      if (filters.magazzino.external && loc.name.toLowerCase().includes("fornitore")) return true;
       return false;
     });
   })();
@@ -143,7 +143,6 @@ const numFiltriAttivi = [
   ...Object.values(filters.fornitore),
   ...Object.values(filters.magazzino),
 ].filter(Boolean).length;
-
 
   return (
     <div className="w-full mx-auto rounded-lg shadow-md">

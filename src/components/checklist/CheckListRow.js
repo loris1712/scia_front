@@ -83,7 +83,11 @@ const CheckListRow = ({ data }) => {
       bg-[#022a52] cursor-pointer"
       >
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
-          <p className="text-white text-[18px] font-semibold truncate">{data.job.name}</p>
+          <p className="text-white text-[18px] font-semibold">
+            {data.job.name.length > 45 
+              ? data.job.name.substring(0, 45) + "..." 
+              : data.job.name}
+          </p>
           <p className="text-white/60 text-[16px] text-sm truncate">
             <ElementIcon elementId={data.Element.progressive_code} /> {data.Element.name}
           </p>

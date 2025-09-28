@@ -31,6 +31,7 @@ export default function UserInfo() {
 
     useEffect(() => {
       if (user?.profileImage) {
+        console.log(user.profileImage)
         setProfileImage(user.profileImage);
       }
     }, [user]);
@@ -50,6 +51,14 @@ export default function UserInfo() {
       }
     }, [user, militaryRanks]);
 
+    const translateRank = (rank) => {
+      const key = `${rank}`; 
+      const translated = t(key);
+
+      // se i18n non trova la traduzione, fallback al testo originale
+      return translated === key ? rank : translated;
+    };
+
   if (!mounted || !i18n.isInitialized) return null;
 
   return (
@@ -67,16 +76,24 @@ export default function UserInfo() {
 
       <div className="overflow-hidden hidden sm:block">
         {user ? (
-          <>
+          <> 
            <p className="text-sm text-[#789fd6]">
-            {userRank ? (userRank.grado.length > 25 ? userRank.grado.substring(0, 25) + '...' : userRank.grado) : t("rankNotFound")}
+
+            {userRank ? (
+              translateRank(userRank.grado).length > 25
+                ? translateRank(userRank.grado).substring(0, 25) + "..."
+                : translateRank(userRank.grado)
+            ) : (
+              t("rankNotFound")
+            )}
           </p>
             <p className="text-lg font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[150px] sm:max-w-[200px]">
               {user.firstName} {user.lastName}
             </p>
-            <p className="text-sm text-[#ffffffa6] whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[150px] sm:max-w-[200px]">
-              {user.type}
+            <p className="text-sm text-[#ffffffa6] whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[150px] sm:max-w-[200px] capitalize">
+              {t(`${user.type}`)}
             </p>
+
           </>
         ) : (
           <p className="text-white text-sm">{t("not_logged")}</p>

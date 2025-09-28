@@ -18,13 +18,13 @@ export default function SparePage({ params }) {
   const [loading, setLoading] = useState(true);
 
   const params2 = useParams();
-  const serial_number = params2.elem;
+  const ID = params2.elem;
   const { user } = useUser();
 
     const loadTasks = async () => {
       try {
         setLoading(true);
-        const fetchedSpare = await fetchSpare(serial_number);
+        const fetchedSpare = await fetchSpare(ID);
         
         setData(fetchedSpare);
       } catch (err) {
@@ -37,7 +37,7 @@ export default function SparePage({ params }) {
   
     useEffect(() => {
       loadTasks();
-    }, [serial_number]);
+    }, [ID]);
 
     const handleAddToCart = async () => {
       if (!data) return;
@@ -50,7 +50,9 @@ export default function SparePage({ params }) {
       }
     };
 
-    const { t, i18n } = useTranslation("maintenance");
+    console.log(data)
+    
+  const { t, i18n } = useTranslation("maintenance");
   if (!i18n.isInitialized) return null;
 
   return (
@@ -95,7 +97,7 @@ export default function SparePage({ params }) {
       )}
 
         <div className="sm:flex gap-4">
-          <div className="w-full sm:w-3/4 space-y-4 bg-[#022a52] p-4 rounded-mdd sm:mb-0 mb-4">
+          <div className="w-full sm:w-3/4 space-y-4 bg-[#022a52] p-4 rounded-md sm:mb-0 mb-4">
             <div className="grid grid-cols-1 gap-4 px-2">
               <SpareDetails details={data} />
             </div>

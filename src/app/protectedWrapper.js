@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const publicRoutes = [
-  "/login",
+  "/login-pin",
   "/login-pin",
   "/forgot-password",
   "/reset-password",
+  "/adminLogin",
 ];
 
 export default function ProtectedWrapper({ children }) {

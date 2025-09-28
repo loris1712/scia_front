@@ -39,7 +39,7 @@ const MaintenanceInfo = ({ details }) => {
           overflow: "hidden",
         }}
       >
-        {details[0]?.job.long_description}
+        {details[0]?.job.maintenance_list.Maintenance_under_condition_description}
       </p>
 
       {!showFull && (
@@ -107,7 +107,7 @@ const MaintenanceInfo = ({ details }) => {
                   />
 
           <div>
-            <h2 className="text-md text-[#fff]">{details[0]?.Element?.element_model?.ESWBS_code} {details[0]?.Element?.element_model?.LCN_name}</h2>
+            <h2 className="text-md text-[#fff]">{details[0]?.Element?.element_model?.ESWBS_code} {details[0]?.Element?.element_model?.LCN_name.substring(0, 15) + "..."}</h2>
 
           </div>
         
@@ -127,7 +127,7 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>{details[0]?.job.recurrency_days} gg</p>
+        <p>{details[0]?.recurrencyType.to_days} gg</p>
   
         </div>
 

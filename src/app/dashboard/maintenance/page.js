@@ -19,7 +19,7 @@ export default function CategoryPage() {
         <Breadcrumbs />
       </div>
 
-      <div className="flex-1 rounded-lg">
+      <div className="flex-1 rounded-lg pb-8">
         <MaintenanceTable />
       </div>
     </div>

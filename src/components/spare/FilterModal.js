@@ -55,8 +55,8 @@ export default function FilterSidebar({ isOpen, onClose, filters, toggleFilter }
         <div className="mb-5">
           <h3 className="text-[16px] text-[#789fd6] mb-3">Task</h3>
           {renderCheckboxes("task", [
-            { key: "inGiacenza", label: "In giacenza" },
-            { key: "nonDisponibile", label: "Non disponibile" },
+            { key: "inStock", label: t("filters2.in_stock") },
+            { key: "nonDisponibile", label: t("filters2.out_of_stock")  },
           ])}
         </div>
         

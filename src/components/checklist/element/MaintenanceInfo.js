@@ -108,7 +108,7 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>{details.job.team.name}</p>
+        <p>{details?.job?.team?.name}</p>
   
         </div>
 

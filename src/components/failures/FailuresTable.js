@@ -41,12 +41,10 @@ const FailuresTable = () => {
   useEffect(() => {
     async function fetchFailures() {
       try {
-        console.log(user.id)
         const data = await getFailures("", shipId, user.id);
         
         setFailures(data);
         setFilteredFailures(data);
-        console.log(data)
         
       } catch (error) {
         console.error("Errore fetch avarie:", error);

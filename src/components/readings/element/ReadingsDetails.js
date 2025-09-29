@@ -99,7 +99,7 @@ const ReadingsDetails = ({ details }) => {
       
         <div className="relative flex ">
           <div className={`w-[70%] flex items-center justify-left pl-4 rounded-bl-md rounded-tl-md ${value ? 'bg-[rgb(45,182,71)]' : 'bg-[#ffffff10]'}`}>
-            {details[0].unit}
+            {details[0]?.unit}
           </div>
 
           <div

@@ -63,12 +63,7 @@ const shipId = user?.ships[0].id;
             type="submit"
             onClick={() => {
               if (selectedType?.file_link) {
-                const link = document.createElement('a');
-                link.href = selectedType.file_link;
-                link.download = selectedType.file_name || 'file.pdf';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                window.open(selectedType.file_link, "_blank");
               }
             }}
             className={'rounded-md flex items-center ml-auto bg-[#789fd6] text-white font-bold py-2 px-6 transition duration-200 cursor-pointer'}

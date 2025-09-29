@@ -175,7 +175,7 @@ const MaintenanceRow = ({ data }) => {
        }
       </div>
 
-      <div className="border border-[#001c38]" style={{ height: "-webkit-fill-available" }}>
+      <div className="border border-[#001c38]" style={{ height: "-webkit-fill-available", background: `${getStatusColor(dueDays)}` }}>
         <StatusBadge dueDate={data.ending_date} dueDays={dueDays} />
       </div>
 

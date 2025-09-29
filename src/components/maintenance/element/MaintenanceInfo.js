@@ -42,14 +42,19 @@ const MaintenanceInfo = ({ details }) => {
         {details[0]?.job.maintenance_list.Maintenance_under_condition_description}
       </p>
 
-      {!showFull && (
-        <button
+      <button
           className="mt-2 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
-          onClick={() => setShowFull(true)}
+          onClick={() => {
+                if (details[0].documentFileUrl) {
+                  const pdfUrl = `${details[0].documentFileUrl}#page=${details[0].part.Position_on_Document_file}`;
+                  window.open(pdfUrl, "_blank");
+                } else {
+                  alert("Nessun documento trovato per questo ricambio");
+                }
+              }}
         >
           {t("see_instructions")}
-        </button>
-      )}
+      </button>
 
       <div className="mb-6">
       

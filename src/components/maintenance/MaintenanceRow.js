@@ -114,8 +114,8 @@ const MaintenanceRow = ({ data }) => {
 
         <p className="text-white/60 text-[16px] text-sm truncate">
           {(() => {
-            if (!data.Element?.element_model?.LCN_name) return "";
-            const text = data.Element.element_model.LCN_name.toLowerCase();
+            if (!data.Element?.name) return "";
+            const text = data.Element.name.toLowerCase();
             return text.charAt(0).toUpperCase() + text.slice(1);
           })()}
         </p>
@@ -123,7 +123,7 @@ const MaintenanceRow = ({ data }) => {
       </div>
 
       <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
-        <p className="text-[18px] text-white">{data.recurrencyType.name}</p>
+        <p className="text-[18px] text-white">{data?.job?.maintenance_list?.recurrencyType?.name}</p>
         <div className="flex items-center gap-2">
           {areaIcons[data.job.maintenance_list.maintenance_level?.Level_MMI] 
           && <img src={areaIcons[data.job.maintenance_list.maintenance_level?.Level_MMI]} alt={data.job.maintenance_list.maintenance_level?.Level_MMI} className="w-4 h-4" />}

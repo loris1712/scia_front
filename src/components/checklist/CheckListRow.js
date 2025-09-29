@@ -93,7 +93,7 @@ const CheckListRow = ({ data }) => {
           </p>
         </div>
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
-          <p className="text-[18px] text-white">{data.recurrencyType.name}</p>
+          <p className="text-[18px] text-white">{data?.job?.maintenance_list?.recurrencyType?.name}</p>
         </div>
         <div className="border border-[#001c38] p-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
           <div className="flex gap-4">

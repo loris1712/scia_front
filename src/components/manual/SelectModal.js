@@ -30,7 +30,7 @@ export default function SelectModal({ isOpen, onClose, onSelect, files }) {
         </div>
 
         {/* Table View (Desktop) */}
-        <div className="bg-transparent rounded-md overflow-hidden">
+        <div className="bg-transparent rounded-md overflow-hidden h-[50vh]" style={{ overflowY: 'scroll'}}>
           <table className="w-full text-white border-collapse sm:table hidden">
             <thead className="bg-white text-black">
               <tr>

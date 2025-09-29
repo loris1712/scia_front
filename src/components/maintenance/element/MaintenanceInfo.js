@@ -46,7 +46,7 @@ const MaintenanceInfo = ({ details }) => {
           className="mt-2 text-sm text-[#fff] w-fit cursor-pointer bg-[#ffffff1a] py-1 px-4 rounded mt-2"
           onClick={() => {
                 if (details[0].documentFileUrl) {
-                  const pdfUrl = `${details[0].documentFileUrl}#page=${details[0].part.Position_on_Document_file}`;
+                  const pdfUrl = `${details[0].documentFileUrl}#page=${details[0]?.job?.maintenance_list?.page}`;
                   window.open(pdfUrl, "_blank");
                 } else {
                   alert("Nessun documento trovato per questo ricambio");

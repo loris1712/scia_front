@@ -41,7 +41,9 @@ const FailuresTable = () => {
   useEffect(() => {
     async function fetchFailures() {
       try {
-        const data = await getFailures("", shipId);
+        console.log(user.id)
+        const data = await getFailures("", shipId, user.id);
+        
         setFailures(data);
         setFilteredFailures(data);
         console.log(data)
@@ -53,7 +55,7 @@ const FailuresTable = () => {
       }
     }
     fetchFailures();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (!filters) return;

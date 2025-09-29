@@ -134,7 +134,7 @@ const ReadingsRow = ({ data }) => {
           className={`border border-[#001c38] p-3 flex items-center`}
           style={{ height: "-webkit-fill-available" }}
         >
-          <span className="text-[14px] text-white">Lt</span>  <span className=" ml-auto text-[28px] text-white font-bold mr-auto">{data.value}</span> 
+          <span className="text-[14px] text-white">{data.unit}</span>  <span className=" ml-auto text-[28px] text-white font-bold mr-auto">{data.value}</span> 
         </div>
       </div>
 

@@ -23,11 +23,12 @@ export async function addFailure(payload) {
   }
 }
 
-export async function getFailures(filters = {}, ship_id) {
+export async function getFailures(filters = {}, ship_id, userId) {
   try {
     const query = {
       ...filters,
-      ...(ship_id && { ship_id })
+      ...(ship_id && { ship_id }),
+      ...(userId && { userId })
     };
 
     const queryParams = new URLSearchParams(query).toString();
@@ -47,7 +48,7 @@ export async function getFailures(filters = {}, ship_id) {
     }
 
     const data = await res.json();
-    return data.failures;
+    return data;
   } catch (error) {
     console.error("Errore nel recupero delle avarie:", error.message);
     throw error;

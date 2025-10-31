@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getShips, updateShipSettings } from "@/api/admin/ships";
+import { getShipModels, updateShipSettings } from "@/api/admin/ships";
 
 export default function ShipSettingsPage() {
   const [ships, setShips] = useState([]);
@@ -19,7 +19,7 @@ export default function ShipSettingsPage() {
   useEffect(() => {
     const fetchShips = async () => {
       try {
-        const data = await getShips();
+        const data = await getShipModels();
         setShips(data);
       } catch (err) {
         console.error("Errore fetch navi:", err);

@@ -1,8 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getProfileData } from "../api/profile";
+import { jwtDecode } from "jwt-decode";
 
 const UserContext = createContext(null);
 
@@ -10,12 +11,9 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
-  // ✅ Stato per le note temporanee associate ai guasti
-  // Struttura: { [failureId]: { text: [], photo: [], vocal: [] } }
   const [failureNotes, setFailureNotes] = useState({});
-
-  // ✅ Aggiunge una nota (testo/foto/audio) a un guasto specifico
   const addNote = (failureId, type, content) => {
     setFailureNotes((prev) => {
       const prevFailure = prev[failureId] || { text: [], photo: [], vocal: [] };
@@ -28,13 +26,7 @@ export function UserProvider({ children }) {
       };
     });
   };
-
-  // ✅ Recupera tutte le note associate a un guasto
-  const getNotes = (failureId) => {
-    return failureNotes[failureId] || { text: [], photo: [], vocal: [] };
-  };
-
-  // ✅ Elimina tutte le note associate a un guasto
+  const getNotes = (failureId) => failureNotes[failureId] || { text: [], photo: [], vocal: [] };
   const clearNotes = (failureId) => {
     setFailureNotes((prev) => {
       const updated = { ...prev };
@@ -44,46 +36,82 @@ export function UserProvider({ children }) {
   };
 
   useEffect(() => {
-  if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
 
-  const pathname = window.location.pathname;
-
-  const isAuthPage =
-    pathname.startsWith("/login") || pathname.startsWith("/login-pin") || pathname.startsWith("/adminLogin");
-
-  const isAllowedDashboardPage =
-    /^\/dashboard\/spare\/[^\/]+$/.test(pathname) ||
-    /^\/dashboard\/impianti\/[^\/]+$/.test(pathname);
-
-  if (isAuthPage || isAllowedDashboardPage) {
-    setLoading(false);
-    return;
-  }
-
-  const token = localStorage.getItem("token");
-
-  if (!token || token === "undefined") {
-    setLoading(false);
-    router.replace("/login");
-    return;
-  }
-
-  async function loadData() {
-    const result = await getProfileData();
-
-    if (!result) {
-      localStorage.removeItem("token");
-      router.replace("/login");
-      setLoading(false);
-      return;
+    const authInProgress = localStorage.getItem("auth_in_progress");
+    if (authInProgress) {
+      setLoading(true);
+      const wait = setTimeout(() => setLoading(false), 1000);
+      return () => clearTimeout(wait);
     }
 
-    setUser(result);
-    setLoading(false);
-  }
+    const token = localStorage.getItem("token");
+    const isAuthPage =
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/login-pin") ||
+      pathname.startsWith("/adminLogin");
 
-    loadData();
-  }, [router]);
+    if (isAuthPage && token) {
+      try {
+        const decoded = jwtDecode(token);
+        const now = Date.now() / 1000;
+        if (decoded.exp && decoded.exp > now) {
+          router.replace("/dashboard");
+          return;
+        }
+      } catch {
+        localStorage.removeItem("token");
+      }
+    }
+
+    if (!isAuthPage) {
+      if (!token || token === "undefined") {
+        setLoading(false);
+        router.replace("/login");
+        return;
+      }
+
+      try {
+        const decoded = jwtDecode(token);
+        const now = Date.now() / 1000;
+        if (decoded.exp && decoded.exp < now) {
+          localStorage.removeItem("token");
+          setLoading(false);
+          router.replace("/login");
+          return;
+        }
+      } catch {
+        localStorage.removeItem("token");
+        setLoading(false);
+        router.replace("/login");
+        return;
+      }
+
+      const loadUser = async () => {
+        const result = await getProfileData();
+        if (result) {
+          setUser(result);
+          setLoading(false);
+        } else {
+          setTimeout(async () => {
+            const retry = await getProfileData();
+            if (retry) {
+              setUser(retry);
+              setLoading(false);
+            } else {
+              localStorage.removeItem("token");
+              setLoading(false);
+             router.replace("/login");
+            }
+          }, 500);
+        }
+      };
+
+      loadUser();
+    } else {
+      setLoading(false);
+    }
+  }, [pathname, router]);
 
   return (
     <UserContext.Provider
@@ -96,7 +124,13 @@ export function UserProvider({ children }) {
         clearNotes,
       }}
     >
-      {children}
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen text-white">
+          Caricamento...
+        </div>
+      ) : (
+        children
+      )}
     </UserContext.Provider>
   );
 }

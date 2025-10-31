@@ -2,7 +2,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
 export async function getOwners() {
   try {
-    const res = await fetch(`${BASE_URL}/api/admin/ships/getOwners`, {
+    const res = await fetch(`${BASE_URL}/api/admin/owners/getOwners`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

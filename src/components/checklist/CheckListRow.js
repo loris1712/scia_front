@@ -46,6 +46,8 @@ const CheckListRow = ({ data }) => {
   const dueDate = new Date(data.data_recovery_expiration);
   const dueDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
+  console.log(data)
+
   const [isOpen, setIsOpen] = useState(false);
 
   const cameraStatus = data.photographicNotes.length > 0 ? "good" : "default";
@@ -84,16 +86,16 @@ const CheckListRow = ({ data }) => {
       >
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 flex flex-col justify-center min-h-[60px]" style={{ height: "-webkit-fill-available" }}> 
           <p className="text-white text-[18px] font-semibold">
-            {data.job.name.length > 45 
-              ? data.job.name.substring(0, 45) + "..." 
-              : data.job.name}
+            {data.maintenance_list.name.length > 45 
+              ? data.maintenance_list.name.substring(0, 45) + "..." 
+              : data.maintenance_list.name}
           </p>
           <p className="text-white/60 text-[16px] text-sm truncate">
             <ElementIcon elementId={data.Element.progressive_code} /> {data.Element.name}
           </p>
         </div>
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
-          <p className="text-[18px] text-white">{data?.job?.maintenance_list?.recurrencyType?.name}</p>
+          <p className="text-[18px] text-white">{data?.maintenance_list?.recurrencyType?.name}</p>
         </div>
         <div className="border border-[#001c38] p-3 flex items-center justify-center cursor-pointer" onClick={() => setIsOpen(true)} style={{ height: "-webkit-fill-available" }}>
           <div className="flex gap-4">
@@ -151,7 +153,7 @@ const CheckListRow = ({ data }) => {
     onClick={handleRowClick}
     className="p-3 flex flex-col justify-center min-h-[60px] h-full"
   > 
-    <p className="text-white text-[18px] font-semibold truncate">{data.job.name}</p>
+    <p className="text-white text-[18px] font-semibold truncate">{data.maintenance_list.name}</p>
     <p className="text-white/60 text-[16px] truncate">
       <ElementIcon elementId={data.Element.progressive_code} /> {data.Element.name}
     </p>
@@ -162,7 +164,7 @@ const CheckListRow = ({ data }) => {
       onClick={handleRowClick}
       className="p-3 text-center text-white flex flex-col items-center gap-2 h-full"
     >
-      <p className="text-[18px] text-white">{data.recurrencyType.name}</p>
+      <p className="text-[18px] text-white">{data?.maintenance_list?.recurrencyType?.name}</p>
     </div>
 
     <div

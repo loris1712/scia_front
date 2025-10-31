@@ -45,7 +45,7 @@ export default function ElementPage({ params }) {
 
       <div className="flex items-center pt-2 pb-4">
         <div className='flex items-center gap-4'>
-          <h2 className="text-2xl font-bold">{maintenancedata[0]?.job.name}</h2>
+          <h2 className="text-2xl font-bold">{maintenancedata[0]?.maintenance_list.name}</h2>
         </div>
 
         <div className='ml-auto flex items-center gap-4'>

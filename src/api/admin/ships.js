@@ -22,9 +22,9 @@ export async function getShipModels() {
   }
 }
 
-export async function getShips() {
+export async function getShipsByModel(userId, modelId) {
   try {
-    const res = await fetch(`${BASE_URL}/api/admin/ships/getShips`, {
+    const res = await fetch(`${BASE_URL}/api/admin/ships/getByModel/${userId}/${modelId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export async function getShips() {
       throw new Error(data.error || "Errore login");
     }
 
-    return data; // contiene token e eventuali info dell'admin
+    return data;
   } catch (error) {
     console.error("Errore nel login admin:", error.message);
     throw error;
@@ -48,28 +48,6 @@ export async function updateShipSettings() {
   try {
     const res = await fetch(`${BASE_URL}/api/admin/ships/updateShipSettings`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || "Errore login");
-    }
-
-    return data; // contiene token e eventuali info dell'admin
-  } catch (error) {
-    console.error("Errore nel login admin:", error.message);
-    throw error;
-  }
-}
-
-export async function getShipsByModel() {
-  try {
-    const res = await fetch(`${BASE_URL}/api/admin/ships/getShipsByModel`, {
-      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },

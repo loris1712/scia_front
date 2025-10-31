@@ -1,28 +1,34 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 
 export default function AdminLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const pathname = usePathname();
+
+  // Estrai parametri dall’URL
+  const projectMatch = pathname.match(/\/admin\/projects\/(\d+)/);
+  const modelMatch = pathname.match(/\/admin\/projects\/\d+\/ship\/(\d+)/);
+
+  const isProjectPage = !!projectMatch;
+  const projectId = projectMatch ? projectMatch[1] : null;
+  const shipModelId = modelMatch ? modelMatch[1] : null;
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? "w-64" : "w-16"} transition-all duration-300`}>
-        <AdminSidebar />
-      </div>
+    <div className="flex flex-col h-screen bg-gray-50">
+      <AdminNavbar />
 
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col">
-        {/* Navbar */}
-        <AdminNavbar />
+      <div className="flex flex-1 overflow-hidden">
+        {isProjectPage && (
+          <div className="bg-gray-900">
+            {/* ✅ Passiamo shipModelId alla sidebar */}
+            <AdminSidebar activeModelId={shipModelId} />
+          </div>
+        )}
 
-        {/* Content */}
-        <main className="flex-1 overflow-auto p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto p-6 bg-gray-100">{children}</main>
       </div>
     </div>
   );

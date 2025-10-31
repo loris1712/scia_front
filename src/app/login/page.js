@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "@/app/i18n";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,23 +14,29 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
-    if(token){
-      router.push("/dashboard");
-    }
-    
-    setIsClient(true);
-    setError(""); 
-    setSuccess("");
-  }, []);
-
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
+
+  // Esegui solo lato client
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsClient(true);
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          const now = Date.now() / 1000;
+          if (decoded.exp && decoded.exp > now) {
+            router.replace("/dashboard");
+          }
+        } catch {
+          localStorage.removeItem("token");
+        }
+      }
+    }
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +45,8 @@ export default function LoginPage() {
     setSuccess("");
 
     try {
+      localStorage.setItem("auth_in_progress", "true");
+
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -45,27 +54,36 @@ export default function LoginPage() {
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Errore login");
-      }
+      if (!response.ok) throw new Error(data.error || "Errore login");
 
       localStorage.setItem("token", data.token);
 
-      router.push("/dashboard");
+      try {
+        const decoded = jwtDecode(data.token);
+        const now = Date.now() / 1000;
+        if (decoded.exp && decoded.exp < now) {
+          throw new Error("Token scaduto, effettua di nuovo il login.");
+        }
+      } catch {
+        localStorage.removeItem("token");
+        throw new Error("Token non valido.");
+      }
+
+      setSuccess("Login effettuato con successo! Reindirizzamento in corso...");
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      router.replace("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Errore di connessione al server");
     } finally {
+      localStorage.removeItem("auth_in_progress");
       setLoading(false);
     }
   };
 
   const { t, i18n } = useTranslation("maintenance");
-  if (!i18n.isInitialized) return null;
-
-  if (!isClient) {
-    return null;
-  }
+  if (!i18n.isInitialized || !isClient) return null;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#001c38]">
@@ -102,7 +120,10 @@ export default function LoginPage() {
           </div>
 
           <div className="w-full text-center">
-            <Link href="/reset-password" className="text-white text-sm hover:underline">
+            <Link
+              href="/reset-password"
+              className="text-white text-sm hover:underline"
+            >
               {t("forgot_password")}
             </Link>
           </div>
@@ -114,11 +135,14 @@ export default function LoginPage() {
               loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           >
-            {loading ? "Caricamento..." : t("log_in")}
+            {loading ? "Accesso in corso..." : t("log_in")}
           </button>
 
           <div className="w-full text-center">
-            <Link href="/login-pin" className="text-white text-sm hover:underline">
+            <Link
+              href="/login-pin"
+              className="text-white text-sm hover:underline"
+            >
               {t("rapid_pin")}
             </Link>
           </div>

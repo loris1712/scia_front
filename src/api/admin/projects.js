@@ -33,3 +33,38 @@ export async function createProject(projectData) {
   return res.json();
 };
 
+export async function getProjectById(id) {
+  const res = await fetch(`${BASE_URL}/api/admin/projects/getProjectById/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) throw new Error("Errore creando la commessa");
+  return res.json();
+};
+
+export async function getShipModels(id) {
+  const res = await fetch(`${BASE_URL}/api/admin/projects/getShipModelsByProject/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) throw new Error("Errore creando la commessa");
+  return res.json();
+};
+
+export async function updateProjectById(id, payload) {
+  const response = await fetch(`${BASE_URL}/api/admin/projects/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("Errore durante l'aggiornamento del progetto");
+  }
+
+  return await response.json();
+}
+
+

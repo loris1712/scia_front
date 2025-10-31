@@ -138,7 +138,7 @@ export default function MaintenanceRow({ data }) {
         className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center border-b border-[#001c38] bg-[#022a52] cursor-pointer"
         style={{ borderLeft: `8px solid ${barColor}` }}
       >
-        <TitleCell jobName={data.job?.name} elementName={data.Element?.name} onClick={handleRowClick} />
+        <TitleCell jobName={data.maintenance_list?.name} elementName={data.Element?.name} onClick={handleRowClick} />
 
         <RecurrencyCell
           recurrencyLabel={recurrency?.name || t("unknown")}

@@ -100,12 +100,6 @@ export default function AdminLogin() {
           >
             {loading ? "Caricamento..." : t("log_in")}
           </button>
-
-          <div className="w-full text-center">
-            <Link href="/adminLoginPin" className="text-white text-sm hover:underline">
-              {t("rapid_pin")}
-            </Link>
-          </div>
         </form>
       </div>
     </div>

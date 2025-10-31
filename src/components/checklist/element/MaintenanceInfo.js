@@ -44,7 +44,7 @@ const MaintenanceInfo = ({ details }) => {
           overflow: "hidden",
         }}
       >
-        {details.job.maintenance_list.maintenance_level.Description}
+        {details.maintenance_list.maintenance_level.Description}
       </p>
 
       {!showFull && (
@@ -108,7 +108,7 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>{details?.job?.team?.name}</p>
+        <p>{details?.team?.name}</p>
   
         </div>
 

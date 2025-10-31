@@ -8,8 +8,6 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
   const [maintenanceTypes, setMaintenanceTypes] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
 
-  console.log(types)
-
   useEffect(() => {
     if (defaultType) {
       setSelectedType(defaultType);
@@ -25,7 +23,8 @@ export default function SelectModal({ isOpen, onClose, onSelect, types, defaultT
 
   const groupedTypes = Object.values(
     types.reduce((acc, type) => {
-      const name = type.recurrencyType.name;
+
+      const name = type?.recurrencyType?.name;
       if (!acc[name]) {
         acc[name] = {
           ...type,

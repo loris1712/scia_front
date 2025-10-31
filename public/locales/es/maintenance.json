@@ -149,5 +149,7 @@
   "recentlyExpired": "Recién caducada",
   "expiring": "Por caducar",
   "scheduled": "Programada",
-  "days_short": "dias"
+  "days_short": "dias",
+  "login_pin_error": "PIN no válido o deshabilitado."
+
 }

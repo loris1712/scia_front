@@ -70,7 +70,6 @@ const shipId = user?.ships[0].id;
       if(response.length > 0){
 
         setResults(response[0]);
-        //console.log(response[0])
         setShowResults(true)
       }else{
         setAddSpare(true);
@@ -109,8 +108,7 @@ const shipId = user?.ships[0].id;
       };
   
       const response = await updateSpare(updatedData.ID, updatedData, shipId, user.id);
-      //console.log(updatedData)
-      //handleClose();
+      
     } catch (error) {
       console.error("Errore durante la conferma:", error);
     }

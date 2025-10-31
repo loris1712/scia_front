@@ -181,10 +181,15 @@ const MaintenanceTable = () => {
       </div>
 
       {applyFilters(maintenancedata)
-        .filter((item) => !selectedType || item.recurrency_type_id === selectedType.id)
+        .filter(
+          (item) =>
+            (!selectedType || item.recurrency_type_id === selectedType.id) &&
+            item.maintenance_list?.name
+        )
         .map((item) => (
           <MaintenanceRow key={item.id} data={item} />
       ))}
+
 
       <SelectModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSelect={handleSelectType} shipId={shipId} userId={user?.id} />
 

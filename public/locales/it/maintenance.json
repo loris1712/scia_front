@@ -149,5 +149,6 @@
     "recentlyExpired": "Scaduta da poco",
     "expiring": "In scadenza",
     "scheduled": "Programmata",
-    "days_short": "gg"
+    "days_short": "gg",
+    "login_pin_error": "PIN non valido o disabilitato."
 }

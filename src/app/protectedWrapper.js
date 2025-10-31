@@ -20,7 +20,7 @@ export default function ProtectedWrapper({ children }) {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
     if (!token && !publicRoutes.includes(pathname)) {
-      router.replace("/login");
+      //router.replace("/login");
     } else {
       setMounted(true);
     }

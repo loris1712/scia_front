@@ -57,8 +57,8 @@ export default function ElementPage({ params }) {
           
         <p className="text-2xl font-bold sm:mb-0 mb-2">
           {(() => {
-            if (!maintenancedata[0]?.job.name) return "";
-            const text = maintenancedata[0]?.job.name.toLowerCase();
+            if (!maintenancedata[0]?.maintenance_list.name) return "";
+            const text = maintenancedata[0]?.maintenance_list.name.toLowerCase();
             const formatted =
               text.charAt(0).toUpperCase() + text.slice(1);
             return formatted;

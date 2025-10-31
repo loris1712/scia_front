@@ -3,44 +3,66 @@
 import { usePathname } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import { useState, useRef, useEffect } from "react";
-import { LogOut, Settings as SettingsIcon, User as UserIcon } from "lucide-react";
+import {
+  ChevronDown,
+  LogOut,
+  Settings as SettingsIcon,
+  User as UserIcon,
+  Building2,
+  Users,
+  Wrench,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getProjects } from "@/api/admin/projects";
 
 export default function AdminNavbar() {
   const pathname = usePathname();
   const { user } = useUser();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const [projectsOpen, setProjectsOpen] = useState(false);
+  const [companiesOpen, setCompaniesOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
   const router = useRouter();
+  const dropdownRef = useRef(null);
+  const projectsRef = useRef(null);
+  const companiesRef = useRef(null);
 
-  const pageTitles = {
-    "/admin": "Dashboard",
-    "/admin/users": "Utenti",
-    "/admin/teams": "Squadre",
-    "/admin/projects": "Commesse",
-    "/admin/sites": "Cantieri",
-    "/admin/owners": "Owners",
-    "/admin/maintenance/overview": "Panoramica Manutenzioni",
-    "/admin/maintenance/settings": "Impostazioni Manutenzioni",
-    "/admin/settings": "Impostazioni",
-  };
+  // --- Fetch delle commesse ---
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        setProjects(data || []);
+      } catch (err) {
+        console.error("Errore nel fetch progetti:", err);
+      } finally {
+        setLoadingProjects(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
-  const title = pageTitles[pathname] || "Pannello di Controllo";
-
-  // Chiudi dropdown cliccando fuori
+  // --- Chiudi dropdown cliccando fuori ---
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        projectsRef.current &&
+        !projectsRef.current.contains(event.target) &&
+        companiesRef.current &&
+        !companiesRef.current.contains(event.target)
+      ) {
         setDropdownOpen(false);
+        setProjectsOpen(false);
+        setCompaniesOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const menuItemStyle =
-    "flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-200";
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
@@ -50,21 +72,153 @@ export default function AdminNavbar() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": typeof window !== "undefined" ? `Bearer ${localStorage.getItem("token")}` : "",
+          Authorization:
+            typeof window !== "undefined"
+              ? `Bearer ${localStorage.getItem("token")}`
+              : "",
         },
       });
-
-      localStorage.removeItem("token");
-      router.push("/adminLogin");
     } catch (error) {
       console.error("Errore durante il logout:", error);
+    } finally {
+      localStorage.removeItem("token");
+      router.push("/adminLogin");
     }
   };
 
-  return (
-    <header className="h-20 bg-gray-900 shadow-md flex items-center justify-between px-6">
-      <h1 className="text-2xl font-semibold text-gray-50">{title}</h1>
+  const navItemStyle =
+    "text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors";
+  const menuItemStyle =
+    "flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-200";
 
+  return (
+    <header className="h-20 bg-gray-900 shadow-md flex items-center justify-between px-6 relative">
+      {/* --- LOGO + NAV MENU --- */}
+      <div className="flex items-center gap-8 ml-6">
+        <Link href="/admin">
+          <img
+            src="https://www.sciaservices.com/wp-content/uploads/logo-chiaro.svg"
+            alt="Logo"
+            className="h-10 w-auto hover:opacity-80 transition-opacity"
+          />
+        </Link>
+
+        {/* --- NAVIGATION MENU --- */}
+        <nav className="flex items-center gap-4 ml-12">
+          {/* --- Dashboard --- */}
+          <Link href="/admin" className={navItemStyle}>
+            Dashboard
+          </Link>
+
+          {/* --- Aziende Dropdown --- */}
+          <div className="relative" ref={companiesRef}>
+            <button
+              onClick={() => setCompaniesOpen(!companiesOpen)}
+              className={`${navItemStyle} flex items-center gap-1`}
+            >
+              Aziende
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${
+                  companiesOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {companiesOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50 py-2">
+                <Link
+                  href="/admin/sites"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setCompaniesOpen(false)}
+                >
+                  Cantieri
+                </Link>
+                <Link
+                  href="/admin/owners"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setCompaniesOpen(false)}
+                >
+                  Owners
+                </Link>
+                <Link
+                  href="/admin/producers"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setCompaniesOpen(false)}
+                >
+                  Produttori
+                </Link>
+
+                 <Link
+                  href="/admin/suppliers"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setCompaniesOpen(false)}
+                >
+                  Distributori
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* --- Gestione utenti --- */}
+          <Link href="/admin/users" className={navItemStyle}>
+            Gestione utenti
+          </Link>
+
+          {/* --- Squadre --- */}
+          <Link href="/admin/teams" className={navItemStyle}>
+            Squadre
+          </Link>
+
+          {/* --- Commesse --- */}
+          <Link href="/admin/projects" className={navItemStyle}>
+            Commesse
+          </Link>
+
+          {/* --- Dropdown Seleziona commessa --- */}
+          <div className="relative" ref={projectsRef}>
+            <button
+              onClick={() => setProjectsOpen(!projectsOpen)}
+              className={`${navItemStyle} flex items-center gap-1`}
+            >
+              Seleziona commessa
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${
+                  projectsOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {projectsOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50 py-2">
+                {loadingProjects ? (
+                  <p className="text-center text-gray-400 text-sm py-2">
+                    Caricamento...
+                  </p>
+                ) : projects.length === 0 ? (
+                  <p className="text-center text-gray-400 text-sm py-2">
+                    Nessuna commessa
+                  </p>
+                ) : (
+                  projects.map((proj) => (
+                    <Link
+                      key={proj.id}
+                      href={`/admin/projects/${proj.id}`}
+                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                      onClick={() => setProjectsOpen(false)}
+                    >
+                      {proj.name || `Commessa ${proj.id}`}
+                    </Link>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        </nav>
+      </div>
+
+      {/* --- BLOCCO UTENTE --- */}
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -91,9 +245,14 @@ export default function AdminNavbar() {
             <Link href="/admin/settings" className={menuItemStyle}>
               <SettingsIcon size={18} /> Impostazioni
             </Link>
-            <Link href="#" onClick={() => handleLogout()} className={menuItemStyle}>
+            <button onClick={handleLogout} className={menuItemStyle}>
               <LogOut size={18} /> Logout
-            </Link>
+            </button>
+
+            <div className="mt-4 text-left pl-4 pb-2 text-xs opacity-70">
+              &copy; {new Date().getFullYear()} Scia Services <br />
+              Versione 1.0.0
+            </div>
           </div>
         )}
       </div>

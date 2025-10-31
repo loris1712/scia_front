@@ -9,11 +9,7 @@ export default function withAuth(Component) {
     const [user, setUser] = useState(null);
     const router = useRouter();
 
-    //const BASE_URL = "http://localhost:4000/api/maintenance";
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
-
-    //const BASE_URL = "http://52.59.162.108:4000/api/maintenance";
-
     useEffect(() => {
       const checkAuth = async () => {
         try {
@@ -30,7 +26,7 @@ export default function withAuth(Component) {
           setUser(data.user);
         } catch (error) {
           console.error("Errore autenticazione:", error);
-          router.push("/login");
+          //router.push("/login");
         } finally {
           setIsLoading(false);
         }

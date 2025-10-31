@@ -38,7 +38,8 @@ export default function DashboardCard({ id, title, imageSrc, tasks }) {
             <p className="text-md text-[#ffffff60] mt-2">
               {tasks
                 .map((task) => {
-                  const text = task.title || task.task_name || task.Part_name || task.job.name;
+                
+                  const text = task.title || task.task_name || task.Part_name || task.maintenance_list?.name;
                   if (!text) return null;
                   const lower = text.toLowerCase();
                   return lower.charAt(0).toUpperCase() + lower.slice(1);

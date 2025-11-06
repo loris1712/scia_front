@@ -14,6 +14,7 @@ export default function ProjectDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("generali");
+  const [selectedElementId, setSelectedElementId] = useState(null);
 
   const match = pathname.match(/\/admin\/projects\/(\d+)/);
   const projectId = match ? match[1] : null;
@@ -33,6 +34,20 @@ export default function ProjectDetailsPage() {
     };
     fetchProject();
   }, [projectId]);
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data?.type === "openMaintenanceTab") {
+        setActiveTab("manutenzioni");
+        if (event.data.elementModelId) {
+          setSelectedElementId(event.data.elementModelId);
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   const handleTabChange = (tab) => setActiveTab(tab);
   const tabClass = (tab) =>
@@ -73,8 +88,13 @@ export default function ProjectDetailsPage() {
         />
       )}
 
-      {activeTab === "eswbs" && <ProjectESWBSTab />}
-      {activeTab === "manutenzioni" && <ProjectMaintenanceTab />}
+      {activeTab === "eswbs" && <ProjectESWBSTab projectId={projectId} />}
+      {activeTab === "manutenzioni" && (
+        <ProjectMaintenanceTab
+          projectId={projectId}
+          elementModelId={selectedElementId}
+        />
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getProjectById } from "@/api/admin/projects";
+import Link from "next/link";
 
 export default function ProjectDetailsPage() {
   const pathname = usePathname();
@@ -47,7 +48,7 @@ export default function ProjectDetailsPage() {
 
   // ✅ Stile per tab
   const tabClass = (tab) =>
-    `px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors duration-200 ${
+    `px-4 py-2 cursor-pointer text-sm font-medium rounded-t-lg border-b-2 transition-colors duration-200 ${
       activeTab === tab
         ? "border-blue-500 text-blue-600 bg-gray-50"
         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -55,8 +56,11 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
-      {/* 🔹 Tabs */}
-      <div className="border-b border-gray-200 mb-6 flex gap-4">
+      <Link href={`/admin/projects/${projectId}`} className="text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="black" width={"18px"} height={"18px"} viewBox="0 0 640 640"><path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/></svg>
+        Torna al modello nave      
+      </Link>
+      <div className="border-b border-gray-200 mb-6 flex gap-4 mt-4">
         <button onClick={() => handleTabChange("generali")} className={tabClass("generali")}>
           Generali
         </button>

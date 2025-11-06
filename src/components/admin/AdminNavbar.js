@@ -22,12 +22,16 @@ export default function AdminNavbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [companiesOpen, setCompaniesOpen] = useState(false);
+  const [usersOpen, setUsersOpen] = useState(false);
+  const [configOpen, setConfigOpen] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const router = useRouter();
   const dropdownRef = useRef(null);
   const projectsRef = useRef(null);
   const companiesRef = useRef(null);
+  const usersRef = useRef(null);
+  const configRef = useRef(null);
 
   // --- Fetch delle commesse ---
   useEffect(() => {
@@ -53,11 +57,17 @@ export default function AdminNavbar() {
         projectsRef.current &&
         !projectsRef.current.contains(event.target) &&
         companiesRef.current &&
-        !companiesRef.current.contains(event.target)
+        !companiesRef.current.contains(event.target) &&
+        usersRef.current &&
+        !usersRef.current.contains(event.target) &&
+        configRef.current &&
+        !configRef.current.contains(event.target)
       ) {
         setDropdownOpen(false);
         setProjectsOpen(false);
         setCompaniesOpen(false);
+        setUsersOpen(false);
+        setConfigOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -87,7 +97,7 @@ export default function AdminNavbar() {
   };
 
   const navItemStyle =
-    "text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors";
+    "text-gray-300 cursor-pointer hover:text-white px-3 py-2 text-sm font-medium transition-colors";
   const menuItemStyle =
     "flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-200";
 
@@ -105,10 +115,6 @@ export default function AdminNavbar() {
 
         {/* --- NAVIGATION MENU --- */}
         <nav className="flex items-center gap-4 ml-12">
-          {/* --- Dashboard --- */}
-          <Link href="/admin" className={navItemStyle}>
-            Dashboard
-          </Link>
 
           {/* --- Aziende Dropdown --- */}
           <div className="relative" ref={companiesRef}>
@@ -160,15 +166,74 @@ export default function AdminNavbar() {
             )}
           </div>
 
-          {/* --- Gestione utenti --- */}
-          <Link href="/admin/users" className={navItemStyle}>
-            Gestione utenti
-          </Link>
+          {/* --- Utenti Dropdown --- */}
+          <div className="relative" ref={usersRef}>
+            <button
+              onClick={() => setUsersOpen(!usersOpen)}
+              className={`${navItemStyle} flex items-center gap-1`}
+            >
+              Utenti
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${
+                  usersOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-          {/* --- Squadre --- */}
-          <Link href="/admin/teams" className={navItemStyle}>
-            Squadre
-          </Link>
+            {usersOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50 py-2">
+                <Link
+                  href="/admin/users"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Gestisci Utenti
+                </Link>
+                <Link
+                  href="/admin/teams"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Gestisci Squadre
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <div className="relative" ref={configRef}>
+            <button
+              onClick={() => setConfigOpen(!configOpen)}
+              className={`${navItemStyle} flex items-center gap-1`}
+            >
+              Configurazione
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${
+                  configOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {configOpen && (
+              <div className="absolute left-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50 py-2">
+                <Link
+                  href="/admin/users"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Gestisci Utenti
+                </Link>
+                <Link
+                  href="/admin/teams"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Gestisci Squadre
+                </Link>
+              </div>
+            )}
+          </div>
 
           {/* --- Commesse --- */}
           <Link href="/admin/projects" className={navItemStyle}>

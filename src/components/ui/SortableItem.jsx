@@ -23,6 +23,7 @@ export default function SortableItem({ id, name, dragging }) {
     alignItems: "center",
     justifyContent: "space-between",
     transition: "background-color 0.2s, box-shadow 0.2s",
+    width: "auto"
   };
 
   return (

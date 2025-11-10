@@ -7,7 +7,7 @@ import OwnersFilters from "@/components/admin/owners/OwnersFilters";
 import AddOwnerButton from "@/components/admin/owners/AddOwnerButton";
 import AddOwnerModal from "@/components/admin/owners/AddOwnerModal";
 
-export default function OwnersPage() {
+export default function ProducersPage() {
   const [owners, setOwners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ name: "", email: "", status: "" });
@@ -45,7 +45,7 @@ export default function OwnersPage() {
 
   return (
     <div>
-      <h2 className="text-3xl font-semibold mb-6 text-gray-900">Gestione Owners</h2>
+      <h2 className="text-3xl font-semibold mb-6 text-gray-900">Gestione Producers</h2>
 
       {/* Tabella */}
       {loading ? (

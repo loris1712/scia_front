@@ -49,7 +49,7 @@ export default function MaintenanceModal({ maintenance, projectId, onClose, onSa
 
       {/* Contenitore principale del modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl w-[700px] shadow-2xl p-6 relative">
+        <div className="bg-white rounded-xl w-[90vw] h-[90vh] shadow-2xl p-6 relative">
           {/* Pulsante chiusura */}
           <div
             onClick={onClose}

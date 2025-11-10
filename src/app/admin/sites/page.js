@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSites } from "@/api/admin/sites";
 import SitesTable from "@/components/admin/sites/SitesTable";
 import SitesFilters from "@/components/admin/sites/SitesFilters";
 import AddSiteButton from "@/components/admin/sites/AddSitesButton";
 import AddSiteModal from "@/components/admin/sites/AddSitesModal";
+import { getShipyards } from "@/api/admin/shipyards";
 
 export default function SitesPage() {
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ name: "", manager: "", status: "" });
+  const [filters, setFilters] = useState({ companyName: "" });
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const data = await getSites();
+        const data = await getShipyards();
         setSites(data);
       } catch (err) {
         console.error("Errore nel fetch cantieri:", err);
@@ -27,31 +27,35 @@ export default function SitesPage() {
     fetchSites();
   }, []);
 
-  // Applica filtri
+  // Aggiorna localmente il cantiere modificato
+  const handleUpdateSite = (updatedSite) => {
+    setSites((prevSites) =>
+      prevSites.map((s) => (s.ID === updatedSite.ID ? updatedSite : s))
+    );
+  };
+
+  // Filtri
   const filteredSites = sites.filter((s) =>
-    s.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-    (filters.manager === "" || s.manager === filters.manager) &&
-    (filters.status === "" || (filters.status === "attivo" ? s.active : !s.active))
+    s.companyName.toLowerCase().includes(filters.companyName.toLowerCase())
   );
 
   return (
     <div>
       <h2 className="text-3xl font-semibold mb-6 text-gray-900">Gestione Cantieri</h2>
 
-      {/* Filtri */}
-      <SitesFilters filters={filters} setFilters={setFilters} />
-
-      {/* Tabella */}
       {loading ? (
         <p className="text-gray-500">Caricamento cantieri...</p>
       ) : (
-        <SitesTable sites={filteredSites} />
+        <SitesTable sites={filteredSites} onUpdate={handleUpdateSite} />
       )}
 
-      {/* Pulsante aggiungi */}
       <AddSiteButton onClick={() => setModalOpen(true)} />
-
-      {modalOpen && <AddSiteModal onClose={() => setModalOpen(false)} />}
+      {modalOpen && (
+        <AddSiteModal
+          onClose={() => setModalOpen(false)}
+          onAdded={(newData) => setSites((prev) => [...prev, ...newData])}
+        />
+      )}
     </div>
   );
 }

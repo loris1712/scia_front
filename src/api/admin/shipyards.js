@@ -12,12 +12,58 @@ export async function getShipyards() {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || "Errore login");
+      throw new Error(data.error || "Errore nel recupero cantieri");
     }
 
-    return data; // contiene token e eventuali info dell'admin
+    return data;
   } catch (error) {
-    console.error("Errore nel login admin:", error.message);
+    console.error("Errore nel recupero cantieri:", error.message);
+    throw error;
+  }
+}
+
+export async function createShipyards(newShipyards) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/shipyards/createShipyards`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newShipyards),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Errore durante la creazione dei cantieri");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Errore creazione cantieri:", error.message);
+    throw error;
+  }
+}
+
+export async function updateShipyard(id, updatedData) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/shipyards/updateShipyard/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Errore durante l'aggiornamento del cantiere");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Errore aggiornamento cantiere:", error.message);
     throw error;
   }
 }

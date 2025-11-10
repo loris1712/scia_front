@@ -222,14 +222,35 @@ export default function AdminNavbar() {
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >
-                  Gestisci Utenti
+                  Gruppo Manutenzioni
                 </Link>
                 <Link
                   href="/admin/teams"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >
-                  Gestisci Squadre
+                  Tipi di frequenze
+                </Link>
+                <Link
+                  href="/admin/users"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Livelli manutenzioni
+                </Link>
+                <Link
+                  href="/admin/teams"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Ranghi
+                </Link>
+                <Link
+                  href="/admin/teams"
+                  className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
+                  onClick={() => setUsersOpen(false)}
+                >
+                  Soglie
                 </Link>
               </div>
             )}

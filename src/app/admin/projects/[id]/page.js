@@ -6,6 +6,7 @@ import { getProjectById } from "@/api/admin/projects";
 import ProjectGeneralTab from "@/components/admin/projects/ProjectGeneralTab";
 import ProjectESWBSTab from "@/components/admin/projects/ProjectESWBSTab";
 import ProjectMaintenanceTab from "@/components/admin/projects/ProjectMaintenanceTab";
+import ProjectSparesTab from "@/components/admin/projects/ProjectSparesTab";
 
 export default function ProjectDetailsPage() {
   const pathname = usePathname();
@@ -63,7 +64,7 @@ export default function ProjectDetailsPage() {
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-        Dettagli Commessa
+        Dettagli Modello Nave
       </h1>
 
       <div className="border-b border-gray-200 mb-6 flex gap-4">
@@ -75,6 +76,9 @@ export default function ProjectDetailsPage() {
         </button>
         <button onClick={() => handleTabChange("manutenzioni")} className={tabClass("manutenzioni")}>
           Manutenzioni
+        </button>
+        <button onClick={() => handleTabChange("spares")} className={tabClass("spares")}>
+          Spares
         </button>
       </div>
 
@@ -91,6 +95,12 @@ export default function ProjectDetailsPage() {
       {activeTab === "eswbs" && <ProjectESWBSTab projectId={projectId} />}
       {activeTab === "manutenzioni" && (
         <ProjectMaintenanceTab
+          projectId={projectId}
+          elementModelId={selectedElementId}
+        />
+      )}
+      {activeTab === "spares" && (
+        <ProjectSparesTab
           projectId={projectId}
           elementModelId={selectedElementId}
         />

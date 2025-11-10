@@ -1,12 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Plus, Save } from "lucide-react";
+import { createShipyards } from "@/api/admin/shipyards";
+import { getOrganizations } from "@/api/admin/organizations"; // ✅ import API org
 
-export default function AddSitesModal({ onClose }) {
+export default function AddSitesModal({ onClose, onAdded }) {
   const [newSites, setNewSites] = useState([
-    { name: "", manager: "", location: "", email: "", active: true },
+    { companyName: "", address: "", country: "Italia", OrganizationCompanyNCAGE_ID: "" },
   ]);
   const [activeTab, setActiveTab] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [organizations, setOrganizations] = useState([]); // ✅ elenco org
+
+  // 🔹 Recupera la lista organizzazioni al caricamento
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        const data = await getOrganizations();
+        setOrganizations(data);
+      } catch (err) {
+        console.error("Errore nel caricamento delle organizzazioni:", err);
+      }
+    };
+    fetchOrganizations();
+  }, []);
 
   const handleSiteChange = (index, field, value) => {
     const updated = [...newSites];
@@ -15,14 +32,26 @@ export default function AddSitesModal({ onClose }) {
   };
 
   const addSiteRow = () =>
-    setNewSites([...newSites, { name: "", manager: "", location: "", email: "", active: true }]);
+    setNewSites([
+      ...newSites,
+      { companyName: "", address: "", country: "Italia", OrganizationCompanyNCAGE_ID: "" },
+    ]);
 
   const removeSiteRow = (index) =>
     setNewSites(newSites.filter((_, i) => i !== index));
 
-  const submitSites = () => {
-    console.log("Submit sites", newSites);
-    onClose();
+  const submitSites = async () => {
+    try {
+      setLoading(true);
+      const created = await createShipyards(newSites);
+      if (onAdded) onAdded(created);
+      onClose();
+    } catch (err) {
+      console.error("Errore creazione cantieri:", err);
+      alert("Errore durante il salvataggio dei cantieri");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass =
@@ -39,7 +68,9 @@ export default function AddSitesModal({ onClose }) {
           <X size={24} />
         </button>
 
-        <h3 className="text-2xl font-semibold mb-6 text-gray-900">Aggiungi Nuovi Cantieri</h3>
+        <h3 className="text-2xl font-semibold mb-6 text-gray-900">
+          Aggiungi Nuovi Cantieri
+        </h3>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-4 overflow-x-auto">
@@ -65,33 +96,55 @@ export default function AddSitesModal({ onClose }) {
               <div className="grid grid-cols-2 gap-4">
                 <input
                   type="text"
-                  placeholder="Nome Cantiere"
+                  placeholder="Nome Azienda"
                   className={inputClass}
-                  value={site.name}
-                  onChange={(e) => handleSiteChange(idx, "name", e.target.value)}
+                  value={site.companyName}
+                  onChange={(e) =>
+                    handleSiteChange(idx, "companyName", e.target.value)
+                  }
                 />
                 <input
                   type="text"
-                  placeholder="Responsabile"
+                  placeholder="Indirizzo"
                   className={inputClass}
-                  value={site.manager}
-                  onChange={(e) => handleSiteChange(idx, "manager", e.target.value)}
+                  value={site.address}
+                  onChange={(e) =>
+                    handleSiteChange(idx, "address", e.target.value)
+                  }
                 />
                 <input
                   type="text"
-                  placeholder="Località"
+                  placeholder="Paese"
                   className={inputClass}
-                  value={site.location}
-                  onChange={(e) => handleSiteChange(idx, "location", e.target.value)}
+                  value={site.country}
+                  onChange={(e) =>
+                    handleSiteChange(idx, "country", e.target.value)
+                  }
                 />
-                <input
-                  type="email"
-                  placeholder="Email"
+
+                {/* 🔽 Dropdown Organization */}
+                <select
                   className={inputClass}
-                  value={site.email}
-                  onChange={(e) => handleSiteChange(idx, "email", e.target.value)}
-                />
+                  value={site.OrganizationCompanyNCAGE_ID}
+                  onChange={(e) =>
+                    handleSiteChange(
+                      idx,
+                      "OrganizationCompanyNCAGE_ID",
+                      e.target.value
+                    )
+                  }
+                >
+                  <option value="">Seleziona organizzazione NCAGE</option>
+                  {organizations
+                  .filter((org) => org.Organization_name && org.Organization_name.length > 0)
+                  .map((org) => (
+                    <option key={org.ID} value={org.ID}>
+                      {org.Organization_name} ({org.NCAGE_Code})
+                    </option>
+                  ))}
+                </select>
               </div>
+
               <button
                 onClick={() => removeSiteRow(idx)}
                 className="mt-3 text-red-500 hover:text-red-600 font-medium transition flex items-center gap-1 cursor-pointer"
@@ -112,9 +165,14 @@ export default function AddSitesModal({ onClose }) {
           </button>
           <button
             onClick={submitSites}
-            className="flex items-center gap-2 px-6 py-3 bg-green-200/30 hover:bg-green-200 text-green-600 font-semibold rounded-2xl cursor-pointer transition"
+            disabled={loading}
+            className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold cursor-pointer transition ${
+              loading
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-green-200/30 hover:bg-green-200 text-green-600"
+            }`}
           >
-            <Save size={18} /> Salva Tutti
+            <Save size={18} /> {loading ? "Salvataggio..." : "Salva Tutti"}
           </button>
         </div>
       </div>

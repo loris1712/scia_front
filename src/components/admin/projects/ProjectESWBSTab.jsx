@@ -27,11 +27,16 @@ export default function ProjectESWBSTab({ projectId }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // Popup per nuovo elemento
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupTarget, setPopupTarget] = useState(null);
+  const [newElementName, setNewElementName] = useState("");
+  const [newElementType, setNewElementType] = useState(null); // "sibling" o "child"
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
-  // Calcola livello gerarchico da codice
   const getLevelFromCode = (code) => {
     if (!code) return 0;
     const clean = code.toString().trim();
@@ -66,7 +71,7 @@ export default function ProjectESWBSTab({ projectId }) {
     fetchGlossary();
   }, []);
 
-  // 🔹 Carica elementi già salvati (colonna sinistra)
+  // 🔹 Carica elementi salvati
   useEffect(() => {
     const fetchSelected = async () => {
       try {
@@ -96,13 +101,13 @@ export default function ProjectESWBSTab({ projectId }) {
     if (projectId) fetchSelected();
   }, [projectId]);
 
+  // 🔹 Carica manutenzioni
   useEffect(() => {
     const fetchLinkedMaintenances = async () => {
       try {
         const data = await getMaintenancesModel(projectId);
         setMaintenances(data);
 
-        // aggiorna gli elementi selezionati marcando quelli con manutenzioni
         setSelectedItems((prev) =>
           prev.map((item) => ({
             ...item,
@@ -173,13 +178,70 @@ export default function ProjectESWBSTab({ projectId }) {
     window.dispatchEvent(
       new CustomEvent("filterMaintenanceByElement", { detail: elementModelId })
     );
-
-    window.postMessage(
-      { type: "openMaintenanceTab", elementModelId },
-      "*"
-    );
+    window.postMessage({ type: "openMaintenanceTab", elementModelId }, "*");
   };
 
+  // 🔹 Aggiunta nuovo elemento
+  const openPopup = (targetId, type) => {
+    setPopupTarget(targetId);
+    setNewElementType(type);
+    setShowPopup(true);
+  };
+
+  const handleAddElement = () => {
+    if (!newElementName.trim()) return alert("Inserisci un nome valido");
+
+    setSelectedItems((prev) => {
+      const target = prev.find((i) => i.id === popupTarget);
+      if (!target) return prev;
+
+      const newItem = {
+        id: `custom-${Date.now()}`,
+        code: "",
+        name: newElementName,
+        level: newElementType === "child" ? target.level + 1 : target.level,
+        isCustom: true, // 👈 FLAG che indica elemento creato a mano
+      };
+
+      const index = prev.findIndex((i) => i.id === popupTarget);
+      const updated = [...prev];
+      updated.splice(index + 1, 0, newItem);
+      return updated;
+    });
+
+    setShowPopup(false);
+    setNewElementName("");
+    setPopupTarget(null);
+  };
+
+  const handleDeleteElement = (targetId) => {
+    setSelectedItems((prev) => {
+      const index = prev.findIndex((i) => i.id === targetId);
+      if (index === -1) return prev;
+
+      const target = prev[index];
+      if (!target.isCustom) {
+        alert("⚠️ Non puoi eliminare un elemento ufficiale ESWBS.");
+        return prev;
+      }
+
+      const targetLevel = target.level;
+      let endIndex = index + 1;
+
+      // Elimina eventuali figli "custom"
+      while (
+        endIndex < prev.length &&
+        prev[endIndex].level > targetLevel &&
+        prev[endIndex].isCustom
+      ) {
+        endIndex++;
+      }
+
+      const updated = [...prev];
+      updated.splice(index, endIndex - index);
+      return updated;
+    });
+  };
 
   if (loading)
     return (
@@ -224,25 +286,51 @@ export default function ProjectESWBSTab({ projectId }) {
                 <div
                   key={item.id || `selected-${index}`}
                   style={{ paddingLeft: `${item.level * 20}px` }}
-                  className={`flex items-center justify-between group ${
+                  className={`flex flex-col gap-1 mb-1 ${
                     item.hasMaintenance
                       ? "bg-green-50 border-l-4 border-green-500"
                       : ""
-                  }`}
+                  } rounded-md p-1`}
                 >
-                  <SortableItem
-                    key={`sortable-${item.id || index}`}
-                    id={item.id}
-                    name={`${item.code} - ${item.name}`}
-                    dragging={activeId === item.id}
-                  />
+                  <div className="flex items-center justify-between group">
+                    <SortableItem
+                      id={item.id}
+                      name={`${item.code} - ${item.name}`}
+                      dragging={activeId === item.id}
+                    />
+                    <div className="flex items-center gap-2 ml-2 text-sm">
+                      <button
+                        onClick={() => handleFilterByElement(item.id)}
+                        title="Vedi manutenzioni"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" fill="black" width="18px" height="18px" viewBox="0 0 640 640"><path d="M541.4 162.6C549 155 561.7 156.9 565.5 166.9C572.3 184.6 576 203.9 576 224C576 312.4 504.4 384 416 384C398.5 384 381.6 381.2 365.8 376L178.9 562.9C150.8 591 105.2 591 77.1 562.9C49 534.8 49 489.2 77.1 461.1L264 274.2C258.8 258.4 256 241.6 256 224C256 135.6 327.6 64 416 64C436.1 64 455.4 67.7 473.1 74.5C483.1 78.3 484.9 91 477.4 98.6L388.7 187.3C385.7 190.3 384 194.4 384 198.6L384 240C384 248.8 391.2 256 400 256L441.4 256C445.6 256 449.7 254.3 452.7 251.3L541.4 162.6z"/></svg>
+                      </button>
+                      <button
+                        onClick={() => openPopup(item.id, "sibling")}
+                        title="Aggiungi fratello"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" fill="black" width="18px" height="18px" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
 
+                      </button>
+                      {item.isCustom && (
+                        <button
+                          onClick={() => handleDeleteElement(item.id)}
+                          title="Elimina elemento"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" fill="black" width="18px" height="18px" viewBox="0 0 640 640"><path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/></svg>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bottone per aggiungere figlio */}
+                  <div className="ml-8">
                     <button
-                      onClick={() => handleFilterByElement(item.id)}
-                      className="ml-2 text-sm text-[#1e40af] hover:underline cursor-pointer"
+                      onClick={() => openPopup(item.id, "child")}
+                      className="text-xs text-gray-500 hover:text-gray-700"
                     >
-                      Vedi manutenzioni
-                    </button>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" fill="black" width="18px" height="18px" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>                    </button>
+                  </div>
                 </div>
               ))}
             </SortableContext>
@@ -278,6 +366,40 @@ export default function ProjectESWBSTab({ projectId }) {
             </SortableContext>
           </div>
         </div>
+
+        {/* MINI POPUP */}
+        {showPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 w-[40vw]">
+              <h4 className="font-semibold mb-3 text-gray-700">
+                {newElementType === "child"
+                  ? "Aggiungi elemento figlio"
+                  : "Aggiungi elemento fratello"}
+              </h4>
+              <input
+                type="text"
+                value={newElementName}
+                onChange={(e) => setNewElementName(e.target.value)}
+                placeholder="Nome nuovo elemento"
+                className="border border-gray-300 rounded-lg w-full px-3 py-2 text-sm focus:ring-2 focus:ring-blue-200 mb-4 text-gray-700"
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowPopup(false)} 
+                  className="cursor-pointer px-3 py-2 text-sm rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+                >
+                  Annulla
+                </button>
+                <button
+                  onClick={handleAddElement}
+                  className="cursor-pointer px-3 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Aggiungi
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <DragOverlay>
           {activeId ? (

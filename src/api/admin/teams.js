@@ -12,12 +12,80 @@ export async function getTeams() {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || "Errore login");
+      throw new Error(data.error || "Errore nel recupero squadre");
     }
 
-    return data; // contiene token e eventuali info dell'admin
+    return data;
   } catch (error) {
-    console.error("Errore nel login admin:", error.message);
+    console.error("Errore nel fetch squadre:", error.message);
+    throw error;
+  }
+}
+
+export async function updateTeam(teamId, updateData) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/teams/updateTeam/${teamId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Errore aggiornamento team");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Errore aggiornamento team:", error.message);
+    throw error;
+  }
+}
+
+export async function getTeamMembers(teamId) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/teams/getTeamMembers/${teamId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Errore nel recupero membri team");
+    }
+
+    return data; 
+  } catch (error) {
+    console.error("Errore nel recupero membri team:", error.message);
+    throw error;
+  }
+}
+
+export async function updateTeamMembers(teamId, memberIds) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/teams/updateTeamMembers/${teamId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ members: memberIds }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Errore aggiornamento membri del team");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Errore aggiornamento membri team:", error.message);
     throw error;
   }
 }

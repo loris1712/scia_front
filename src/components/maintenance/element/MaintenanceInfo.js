@@ -132,7 +132,7 @@ const MaintenanceInfo = ({ details }) => {
 
         <div className="flex items-center gap-4 cursor-pointer">
 
-        <p>{details[0]?.recurrencyType.to_days} gg</p>
+        <p>{details[0]?.recurrency_type.to_days} gg</p>
   
         </div>
 

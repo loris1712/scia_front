@@ -1,49 +1,45 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
-export default function ProjectsTable({ projects }) {
-  const router = useRouter();
+export default function ProjectsTable({ projects, onRowClick }) {
+    const displayedProjects = projects.slice(0, 5);
 
   return (
     <div className="overflow-x-auto bg-gray-50 shadow-xl rounded-xl relative">
       <table className="min-w-full rounded-xl divide-y divide-gray-200">
         <thead className="bg-gray-100 text-gray-600 uppercase text-sm font-semibold tracking-wide">
           <tr>
-            <th className="px-6 py-4 text-left">ID</th>
-            <th className="px-6 py-4 text-left">Nome Commesa</th>
+            <th className="px-6 py-4 text-left">Nome Commesse</th>
             <th className="px-6 py-4 text-left">Responsabile</th>
-            <th className="px-6 py-4 text-left">Stato</th>
+            <th className="px-6 py-4 text-left">Data Inizio</th>
+            <th className="px-6 py-4 text-left rounded-tr-lg">Stato</th>
           </tr>
         </thead>
         <tbody className="text-gray-700 text-sm">
-          {projects.length === 0 ? (
+          {displayedProjects?.length === 0 ? (
             <tr>
-              <td colSpan="4" className="text-center py-6 text-gray-400">
+              <td colSpan="6" className="text-center py-6 text-gray-400">
                 Nessuna commessa trovata
               </td>
             </tr>
           ) : (
-            projects.map((proj, idx) => (
+            displayedProjects?.map((c, idx) => (
               <tr
-                key={proj.id}
-                onClick={() => router.push(`/admin/projects/${proj.id}`)}
+                key={c.id}
+                onClick={() => onRowClick?.(c)}
                 className={`transition-all duration-300 transform hover:scale-[1.01] hover:shadow-lg cursor-pointer ${
                   idx % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-4">{proj.id}</td>
-                <td className="px-6 py-4 font-medium text-gray-900">{proj.name}</td>
-                <td className="px-6 py-4">{proj.manager || "-"}</td>
+                <td className="px-6 py-4">{c.name}</td>
+                <td className="px-6 py-4">{c.manager}</td>
+                <td className="px-6 py-4">{c.startDate}</td>
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
-                      proj.active
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                      c.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {proj.active ? "Attiva" : "Disattiva"}
+                    {c.active ? "Attiva" : "Inattiva"}
                   </span>
                 </td>
               </tr>

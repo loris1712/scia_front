@@ -20,11 +20,8 @@ export default function TeamsTable({ teams, onTeamUpdated }) {
       <table className="min-w-full rounded-xl divide-y divide-gray-200">
         <thead className="bg-gray-100 text-gray-600 uppercase text-sm font-semibold tracking-wide">
           <tr>
-            <th className="px-6 py-4 text-left rounded-tl-xl">ID</th>
             <th className="px-6 py-4 text-left">Nome Squadra</th>
-            <th className="px-6 py-4 text-left">Ruolo</th>
             <th className="px-6 py-4 text-left">Responsabile</th>
-            <th className="px-6 py-4 text-left">Email</th>
             <th className="px-6 py-4 text-left rounded-tr-xl">Stato</th>
           </tr>
         </thead>
@@ -40,17 +37,14 @@ export default function TeamsTable({ teams, onTeamUpdated }) {
               <tr
                 key={team.id}
                 onClick={() => handleRowClick(team)}
-                className={`transition-all duration-300 hover:bg-blue-50 cursor-pointer ${
+                className={`transition-all duration-300 hover:scale-[1.01] cursor-pointer ${
                   idx % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-4">{team.id}</td>
                 <td className="px-6 py-4 font-medium text-gray-900">
                   {team.name}
                 </td>
-                <td className="px-6 py-4">{team.role}</td>
                 <td className="px-6 py-4">{team.manager}</td>
-                <td className="px-6 py-4">{team.email}</td>
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${

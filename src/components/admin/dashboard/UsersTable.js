@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import EditUserModal from "@/components/admin/users/EditUserModal"; // 👈 nuovo componente modale
+import EditUserModal from "@/components/admin/users/EditUserModal"; 
 
 export default function UsersTable({ users, onUserUpdated }) {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -15,39 +15,38 @@ export default function UsersTable({ users, onUserUpdated }) {
     if (onUserUpdated) onUserUpdated(updatedUser);
   };
 
+  // 🔹 Mostra solo i primi 5 utenti
+  const displayedUsers = users.slice(0, 5);
+
   return (
     <div className="overflow-x-auto bg-gray-50 shadow-xl rounded-xl relative">
       <table className="min-w-full rounded-xl divide-y divide-gray-200">
         <thead className="bg-gray-100 text-gray-600 uppercase text-sm font-semibold tracking-wide">
           <tr>
-            <th className="px-6 py-4 text-left rounded-tl-lg">ID</th>
             <th className="px-6 py-4 text-left">Nome</th>
             <th className="px-6 py-4 text-left">Cognome</th>
-            <th className="px-6 py-4 text-left">Email</th>
             <th className="px-6 py-4 text-left">Ruolo</th>
             <th className="px-6 py-4 text-left rounded-tr-lg">Stato</th>
           </tr>
         </thead>
         <tbody className="text-gray-700 text-sm">
-          {users.length === 0 ? (
+          {displayedUsers.length === 0 ? (
             <tr>
               <td colSpan="6" className="text-center py-6 text-gray-400">
                 Nessun utente trovato
               </td>
             </tr>
           ) : (
-            users.map((user, idx) => (
+            displayedUsers.map((user, idx) => (
               <tr
                 key={user.id}
-                onClick={() => handleRowClick(user)} // 👈 clic su riga
+                onClick={() => handleRowClick(user)}
                 className={`transition-all duration-300 transform hover:scale-[1.01] hover:shadow-lg cursor-pointer ${
                   idx % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="px-6 py-4">{user.id}</td>
                 <td className="px-6 py-4">{user.first_name}</td>
                 <td className="px-6 py-4">{user.last_name}</td>
-                <td className="px-6 py-4">{user.email}</td>
                 <td className="px-6 py-4">{user.role || "-"}</td>
                 <td className="px-6 py-4">
                   <span
@@ -71,6 +70,13 @@ export default function UsersTable({ users, onUserUpdated }) {
           onCancel={() => setSelectedUser(null)}
           onSave={handleSave}
         />
+      )}
+
+      {/* 🔹 Mostra un messaggio se ci sono altri utenti */}
+      {users.length > 5 && (
+        <div className="text-center py-3 text-gray-500 text-sm italic">
+          Mostrati solo i primi 5 utenti
+        </div>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export async function getFailures(filters = {}, ship_id, userId) {
     const query = {
       ...filters,
       ...(ship_id && { ship_id }),
-      ...(userId && { userId })
+      ...(userId && { userId }),
     };
 
     const queryParams = new URLSearchParams(query).toString();
@@ -38,23 +38,26 @@ export async function getFailures(filters = {}, ship_id, userId) {
       {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
 
     if (!res.ok) {
-      throw new Error(`Errore HTTP ${res.status}: Impossibile recuperare le avarie`);
+      throw new Error(
+        `Errore HTTP ${res.status}: impossibile recuperare le avarie`
+      );
     }
 
     const data = await res.json();
-    return data;
+
+    // ✅ Ritorna solo l'array di failures (non anche le task)
+    return Array.isArray(data.failures) ? data.failures : [];
   } catch (error) {
     console.error("Errore nel recupero delle avarie:", error.message);
-    throw error;
+    return []; // evita crash in frontend
   }
 }
-
 
 export async function addPhotographicNote(formData) {
 

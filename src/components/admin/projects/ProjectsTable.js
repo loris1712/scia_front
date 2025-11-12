@@ -12,7 +12,7 @@ export default function ProjectsTable({ projects }) {
           <tr>
             <th className="px-6 py-4 text-left">ID</th>
             <th className="px-6 py-4 text-left">Nome Commesa</th>
-            <th className="px-6 py-4 text-left">Responsabile</th>
+            <th className="px-6 py-4 text-left">Descrizione</th>
             <th className="px-6 py-4 text-left">Stato</th>
           </tr>
         </thead>
@@ -34,7 +34,7 @@ export default function ProjectsTable({ projects }) {
               >
                 <td className="px-6 py-4">{proj.id}</td>
                 <td className="px-6 py-4 font-medium text-gray-900">{proj.name}</td>
-                <td className="px-6 py-4">{proj.manager || "-"}</td>
+                <td className="px-6 py-4">{proj.description || "-"}</td>
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${

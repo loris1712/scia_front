@@ -22,10 +22,8 @@ export default function TeamsTable({ teams, onTeamUpdated }) {
           <tr>
             <th className="px-6 py-4 text-left rounded-tl-xl">ID</th>
             <th className="px-6 py-4 text-left">Nome Squadra</th>
-            <th className="px-6 py-4 text-left">Ruolo</th>
-            <th className="px-6 py-4 text-left">Responsabile</th>
-            <th className="px-6 py-4 text-left">Email</th>
-            <th className="px-6 py-4 text-left rounded-tr-xl">Stato</th>
+            <th className="px-6 py-4 text-left">Leader</th>
+            <th className="px-6 py-4 text-left">Email Leader</th>
           </tr>
         </thead>
         <tbody className="text-gray-700 text-sm">
@@ -48,20 +46,8 @@ export default function TeamsTable({ teams, onTeamUpdated }) {
                 <td className="px-6 py-4 font-medium text-gray-900">
                   {team.name}
                 </td>
-                <td className="px-6 py-4">{team.role}</td>
-                <td className="px-6 py-4">{team.manager}</td>
-                <td className="px-6 py-4">{team.email}</td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
-                      team.active
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {team.active ? "Attiva" : "Disattiva"}
-                  </span>
-                </td>
+                <td className="px-6 py-4">{team.leader.first_name} {team.leader.last_name}</td>
+                <td className="px-6 py-4">{team.leader.login.email}</td>
               </tr>
             ))
           )}

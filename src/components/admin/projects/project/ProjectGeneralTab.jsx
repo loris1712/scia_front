@@ -1,53 +1,121 @@
+"use client";
+
 export default function ProjectGeneralTab({ project }) {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+    <div className="space-y-6">
+      {/* 🔹 Titolo */}
+      <h1 className="text-2xl font-semibold text-gray-800">
         Dati Generali del Progetto
       </h1>
 
-      <table className="min-w-full border border-gray-200 rounded-lg text-sm">
-        <tbody>
-          <tr className="border-b border-gray-200">
-            <td className="p-3 font-medium text-gray-700 w-1/3">ID Progetto</td>
-            <td className="p-3 text-gray-600">{project.id}</td>
-          </tr>
-          <tr className="border-b border-gray-200">
-            <td className="p-3 font-medium text-gray-700">Nome Progetto</td>
-            <td className="p-3 text-gray-600">{project.name || "—"}</td>
-          </tr>
-          <tr className="border-b border-gray-200">
-            <td className="p-3 font-medium text-gray-700">Cliente / Owner</td>
-            <td className="p-3 text-gray-600">{project.owner?.name || "—"}</td>
-          </tr>
-          <tr>
-            <td className="p-3 font-medium text-gray-700">Stato</td>
-            <td className="p-3">
+      {/* 🧩 Sezione dati principali */}
+      <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* ID */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              ID Progetto
+            </label>
+            <p className="mt-1 px-4 py-2 bg-gray-50 rounded-md text-gray-900 border border-gray-200">
+              {project.id || "—"}
+            </p>
+          </div>
+
+          {/* Stato */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Stato
+            </label>
+            <p className="mt-1">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   project.status === "active"
                     ? "bg-green-100 text-green-700"
                     : project.status === "pending"
                     ? "bg-yellow-100 text-yellow-700"
-                    : "bg-gray-200 text-gray-700"
+                    : "bg-gray-100 text-gray-600"
                 }`}
               >
                 {project.status || "Sconosciuto"}
               </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </p>
+          </div>
+
+          {/* Nome progetto */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Nome Commessa
+            </label>
+            <p className="mt-1 px-4 py-2 bg-gray-50 rounded-md text-gray-900 border border-gray-200">
+              {project.name || "—"}
+            </p>
+          </div>
+
+          {/* Cliente / Owner */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Cliente / Owner
+            </label>
+            <p className="mt-1 px-4 py-2 bg-gray-50 rounded-md text-gray-900 border border-gray-200">
+              {project.owner?.companyName || project.owner?.name || "—"}
+            </p>
+          </div>
+
+          {/* Cantiere costruttore */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Cantiere Costruttore
+            </label>
+            <p className="mt-1 px-4 py-2 bg-gray-50 rounded-md text-gray-900 border border-gray-200">
+              {project.shipyard?.companyName || "—"}
+            </p>
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Data Ordine
+            </label>
+            <p className="mt-1 px-4 py-2 bg-gray-50 rounded-md text-gray-900 border border-gray-200">
+              {project.date_order
+                ? new Date(project.date_order).toLocaleDateString("it-IT")
+                : "—"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Data Consegna
+            </label>
+            <p className="mt-1 px-4 py-2 bg-gray-50 rounded-md text-gray-900 border border-gray-200">
+              {project.date_delivery
+                ? new Date(project.date_delivery).toLocaleDateString("it-IT")
+                : "—"}
+            </p>
+          </div>
+        </div>
+
+        {/* Descrizione */}
+        <div className="mt-6">
+          <label className="block text-sm font-medium text-gray-700">
+            Descrizione
+          </label>
+          <p className="mt-1 px-4 py-3 bg-gray-50 rounded-md text-gray-900 border border-gray-200 whitespace-pre-wrap">
+            {project.description || "—"}
+          </p>
+        </div>
+      </div>
 
       {/* 🔹 Navi collegate */}
       {project.ships?.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+        <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Navi Associate
           </h2>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50 text-gray-600 uppercase text-xs tracking-wide">
+            <table className="min-w-full text-sm divide-y divide-gray-200">
+              <thead className="bg-gray-50 text-gray-600 uppercase text-xs font-medium">
                 <tr>
                   <th className="px-6 py-3 text-left">Unit Name</th>
                   <th className="px-6 py-3 text-left">Unit Code</th>
@@ -59,19 +127,28 @@ export default function ProjectGeneralTab({ project }) {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {project.ships.map((ship) => (
-                  <tr key={ship.id} className="hover:bg-gray-50 transition">
+                  <tr
+                    key={ship.id}
+                    className="hover:bg-gray-50 transition duration-150"
+                  >
                     <td className="px-6 py-3 font-medium text-gray-800">
                       {ship.unit_name}
                     </td>
-                    <td className="px-6 py-3">{ship.unit_code || "—"}</td>
-                    <td className="px-6 py-3">{ship.model_code || "—"}</td>
-                    <td className="px-6 py-3">{ship.Side_ship_number || "—"}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-3 text-gray-700">
+                      {ship.unit_code || "—"}
+                    </td>
+                    <td className="px-6 py-3 text-gray-700">
+                      {ship.model_code || "—"}
+                    </td>
+                    <td className="px-6 py-3 text-gray-700">
+                      {ship.Side_ship_number || "—"}
+                    </td>
+                    <td className="px-6 py-3 text-gray-700">
                       {ship.launch_date
                         ? new Date(ship.launch_date).toLocaleDateString("it-IT")
                         : "—"}
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-3 text-gray-700">
                       {ship.delivery_date
                         ? new Date(ship.delivery_date).toLocaleDateString("it-IT")
                         : "—"}

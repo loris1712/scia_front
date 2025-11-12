@@ -15,47 +15,41 @@ export default function TeamsTable({ teams, onTeamUpdated }) {
     if (onTeamUpdated) onTeamUpdated(updated);
   };
 
+  const displayedTeams = teams.slice(0, 5);
+
   return (
     <div className="overflow-x-auto bg-gray-50 shadow-xl rounded-xl relative">
       <table className="min-w-full rounded-xl divide-y divide-gray-200">
         <thead className="bg-gray-100 text-gray-600 uppercase text-sm font-semibold tracking-wide">
           <tr>
+            <th className="px-6 py-4 text-left rounded-tl-xl">ID</th>
             <th className="px-6 py-4 text-left">Nome Squadra</th>
-            <th className="px-6 py-4 text-left">Responsabile</th>
-            <th className="px-6 py-4 text-left rounded-tr-xl">Stato</th>
+            <th className="px-6 py-4 text-left">Leader</th>
+            <th className="px-6 py-4 text-left">Email Leader</th>
           </tr>
         </thead>
         <tbody className="text-gray-700 text-sm">
-          {teams.length === 0 ? (
+          {displayedTeams.length === 0 ? (
             <tr>
               <td colSpan="6" className="text-center py-6 text-gray-400">
                 Nessuna squadra trovata
               </td>
             </tr>
           ) : (
-            teams.map((team, idx) => (
+            displayedTeams.map((team, idx) => (
               <tr
                 key={team.id}
                 onClick={() => handleRowClick(team)}
-                className={`transition-all duration-300 hover:scale-[1.01] cursor-pointer ${
+                className={`transition-all duration-300 hover:bg-blue-50 cursor-pointer ${
                   idx % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
+                <td className="px-6 py-4">{team.id}</td>
                 <td className="px-6 py-4 font-medium text-gray-900">
                   {team.name}
                 </td>
-                <td className="px-6 py-4">{team.manager}</td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
-                      team.active
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {team.active ? "Attiva" : "Disattiva"}
-                  </span>
-                </td>
+                <td className="px-6 py-4">{team.leader.first_name} {team.leader.last_name}</td>
+                <td className="px-6 py-4">{team.leader.login.email}</td>
               </tr>
             ))
           )}
@@ -68,6 +62,14 @@ export default function TeamsTable({ teams, onTeamUpdated }) {
           onCancel={() => setSelectedTeam(null)}
           onSave={handleSave}
         />
+      )}
+
+
+      {/* 🔹 Mostra un messaggio se ci sono altri utenti */}
+      {teams.length > 5 && (
+        <div className="text-center py-3 text-gray-500 text-sm italic">
+          Mostrati solo i primi 5 team
+        </div>
       )}
     </div>
   );

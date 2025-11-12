@@ -1,8 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Save, Users, Settings } from "lucide-react";
-import { updateTeam, getTeamMembers, updateTeamMembers } from "@/api/admin/teams";
+import { X, Users, Settings, Shield } from "lucide-react";
+import {
+  updateTeam,
+  getTeamMembers,
+  updateTeamMembers,
+} from "@/api/admin/teams";
 import { getUsers } from "@/api/admin/users";
 
 export default function EditTeamModal({ team, onSave, onCancel }) {
@@ -11,8 +15,8 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(null); // per gestire multiselect aperto
 
-  // 🔹 Carica utenti e membri del team
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,8 +24,16 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
           getUsers(),
           getTeamMembers(team.id),
         ]);
+
         setUsers(allUsers);
-        setSelectedMembers(teamMembers.map((m) => m.user_id));
+        setSelectedMembers(
+          teamMembers.map((m) => ({
+            user_id: m.id,
+            is_leader: m.is_leader || false,
+            role_name: m.role_name || "",
+            elements: m.elements || "",
+          }))
+        );
       } catch (err) {
         console.error("Errore caricamento dati team:", err);
       }
@@ -29,10 +41,68 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
     fetchData();
   }, [team.id]);
 
-  const handleChange = (field, value) => {
-    setEditData({ ...editData, [field]: value });
+  /* 🔹 Gestione cambi input (anche nested) */
+  const handleChange = (field, value, nested = null) => {
+    if (nested) {
+      const keys = nested.split(".");
+      setEditData((prev) => {
+        let updated = { ...prev };
+        let ref = updated;
+        for (let i = 0; i < keys.length - 1; i++) {
+          const key = keys[i];
+          ref[key] = { ...ref[key] };
+          ref = ref[key];
+        }
+        ref[keys[keys.length - 1]] = {
+          ...ref[keys[keys.length - 1]],
+          [field]: value,
+        };
+        return updated;
+      });
+    } else {
+      setEditData({ ...editData, [field]: value });
+    }
   };
 
+  /* 🔹 Toggle membro selezionato */
+  const toggleMember = (userId) => {
+    setSelectedMembers((prev) => {
+      const exists = prev.find((m) => m.user_id === userId);
+      if (exists) {
+        return prev.filter((m) => m.user_id !== userId);
+      } else {
+        return [
+          ...prev,
+          { user_id: userId, is_leader: false, role_name: "", elements: "" },
+        ];
+      }
+    });
+  };
+
+  /* 🔹 Toggle leader */
+  const toggleLeader = (userId) => {
+    setSelectedMembers((prev) =>
+      prev.map((m) =>
+        m.user_id === userId ? { ...m, is_leader: !m.is_leader } : m
+      )
+    );
+  };
+
+  /* 🔹 Gestione dropdown multiselect elements */
+  const toggleElement = (userId, value) => {
+    setSelectedMembers((prev) =>
+      prev.map((m) => {
+        if (m.user_id !== userId) return m;
+        const current = m.elements ? m.elements.split(",") : [];
+        const newElements = current.includes(value)
+          ? current.filter((v) => v !== value)
+          : [...current, value];
+        return { ...m, elements: newElements.join(",") };
+      })
+    );
+  };
+
+  /* 🔹 Salvataggio info generali */
   const handleSaveInfo = async () => {
     try {
       setLoading(true);
@@ -47,14 +117,7 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
     }
   };
 
-  const toggleMember = (userId) => {
-    setSelectedMembers((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
-    );
-  };
-
+  /* 🔹 Salvataggio membri e ruoli */
   const handleSaveMembers = async () => {
     try {
       setLoading(true);
@@ -70,6 +133,7 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
     }
   };
 
+  /* 🔹 Tab Button */
   const tabButton = (id, label, Icon) => (
     <button
       onClick={() => setActiveTab(id)}
@@ -84,9 +148,12 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
     </button>
   );
 
+  /* 🔹 Lista elementi disponibili (mock) */
+  const availableElements = ["551", "441", "221", "111", "661", "771", "881", "991"];
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 relative text-gray-900">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl p-6 relative text-gray-900">
         {/* ❌ Close */}
         <button
           onClick={onCancel}
@@ -103,10 +170,11 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
         <div className="flex gap-3 mb-6 border-b border-gray-200 pb-2">
           {tabButton("info", "Info Generali", Settings)}
           {tabButton("members", "Membri", Users)}
+          {tabButton("roles", "Ruoli & Permessi", Shield)}
         </div>
 
-        {/* 📄 Tab contenuto */}
-        {activeTab === "info" ? (
+        {/* TAB 1: Info */}
+        {activeTab === "info" && (
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -116,43 +184,50 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
                 type="text"
                 value={editData.name || ""}
                 onChange={(e) => handleChange("name", e.target.value)}
-                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none"
               />
+            </div>
+
+            <div className="flex items-center w-full gap-4">
+              <div className="w-1/2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Nome Leader
+                </label>
+                <input
+                  type="text"
+                  value={editData.leader?.first_name || ""}
+                  onChange={(e) =>
+                    handleChange("first_name", e.target.value, "leader")
+                  }
+                  className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none"
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Cognome Leader
+                </label>
+                <input
+                  type="text"
+                  value={editData.leader?.last_name || ""}
+                  onChange={(e) =>
+                    handleChange("last_name", e.target.value, "leader")
+                  }
+                  className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none"
+                />
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Ruolo
+                Email Leader
               </label>
               <input
                 type="text"
-                value={editData.role || ""}
-                onChange={(e) => handleChange("role", e.target.value)}
-                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Responsabile
-              </label>
-              <input
-                type="text"
-                value={editData.manager || ""}
-                onChange={(e) => handleChange("manager", e.target.value)}
-                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="text"
-                value={editData.email || ""}
-                onChange={(e) => handleChange("email", e.target.value)}
-                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                value={editData.leader?.login?.email || ""}
+                onChange={(e) =>
+                  handleChange("email", e.target.value, "leader.login")
+                }
+                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none"
               />
             </div>
 
@@ -170,47 +245,164 @@ export default function EditTeamModal({ team, onSave, onCancel }) {
               </button>
             </div>
           </div>
-        ) : (
+        )}
+
+        {/* TAB 2: Membri */}
+        {activeTab === "members" && (
           <div>
             <p className="text-sm text-gray-600 mb-3">
               Seleziona gli utenti che fanno parte di questa squadra:
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[45vh] overflow-y-auto border rounded-lg p-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[45vh] overflow-y-auto rounded-lg">
               {users.map((u) => (
                 <label
                   key={u.id}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition ${
-                    selectedMembers.includes(u.id)
-                      ? "bg-blue-100 border-blue-400"
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 cursor-pointer transition ${
+                    selectedMembers.some((m) => m.user_id === u.id)
+                      ? "bg-blue-100 border-blue-400 shadow-sm"
                       : "hover:bg-gray-100"
                   }`}
                 >
                   <input
                     type="checkbox"
-                    checked={selectedMembers.includes(u.id)}
+                    checked={selectedMembers.some((m) => m.user_id === u.id)}
                     onChange={() => toggleMember(u.id)}
                     className="accent-blue-500"
                   />
-                  <span className="text-sm text-gray-800">
+                  <span className="text-sm text-gray-800 truncate">
                     {u.first_name} {u.last_name}
                   </span>
                 </label>
               ))}
             </div>
+          </div>
+        )}
 
-            <div className="flex justify-end mt-6">
-              <button
-                onClick={handleSaveMembers}
-                disabled={loading}
-                className={`px-5 py-2 rounded-lg text-white transition ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
-              >
-                {loading ? "Aggiornamento..." : "Salva Membri"}
-              </button>
-            </div>
+        {/* TAB 3: Ruoli e Permessi */}
+        {activeTab === "roles" && (
+          <div>
+            <p className="text-sm text-gray-600 mb-3">
+              Configura ruoli e visibilità per i membri del team:
+            </p>
+
+            {selectedMembers.length === 0 ? (
+              <p className="text-gray-500 text-sm italic">
+                Nessun membro selezionato. Vai alla scheda “Membri”.
+              </p>
+            ) : (
+              <div className="overflow-y-auto max-h-[55vh] rounded-xl shadow-inner bg-gray-50 p-2">
+                <table className="min-w-full text-sm text-gray-800">
+                  <thead className="bg-gray-100 sticky top-0 z-10">
+                    <tr>
+                      <th className="px-4 py-2 text-left rounded-tl-lg">Nome</th>
+                      <th className="px-4 py-2 text-left">Leader</th>
+                      <th className="px-4 py-2 text-left">Ruolo</th>
+                      <th className="px-4 py-2 text-left rounded-tr-lg">
+                        Elements
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedMembers.map((m) => {
+                      const user = users.find((u) => u.id === m.user_id);
+                      const userElements = m.elements
+                        ? m.elements.split(",")
+                        : [];
+                      return (
+                        <tr
+                          key={m.user_id}
+                          className="border-b border-gray-200 hover:bg-gray-100 transition"
+                        >
+                          <td className="px-4 py-2 font-medium">
+                            {user?.first_name} {user?.last_name}
+                          </td>
+                          <td className="px-4 py-2">
+                            <input
+                              type="checkbox"
+                              checked={m.is_leader}
+                              onChange={() => toggleLeader(m.user_id)}
+                              className="accent-green-600"
+                            />
+                          </td>
+                          <td className="px-4 py-2">
+                            <input
+                              type="text"
+                              placeholder="Ruolo"
+                              value={m.role_name || ""}
+                              onChange={(e) =>
+                                setSelectedMembers((prev) =>
+                                  prev.map((p) =>
+                                    p.user_id === m.user_id
+                                      ? { ...p, role_name: e.target.value }
+                                      : p
+                                  )
+                                )
+                              }
+                              className="border border-gray-300 rounded-lg px-2 py-1 text-sm w-full"
+                            />
+                          </td>
+                          <td className="px-4 py-2 relative">
+                            <div
+                              className="border border-gray-300 bg-white rounded-lg px-2 py-1 text-sm cursor-pointer flex justify-between items-center"
+                              onClick={() =>
+                                setDropdownOpen(
+                                  dropdownOpen === m.user_id ? null : m.user_id
+                                )
+                              }
+                            >
+                              <span className="truncate text-gray-700">
+                                {userElements.length > 0
+                                  ? userElements.join(", ")
+                                  : "Seleziona elementi"}
+                              </span>
+                              <span className="text-gray-400 text-xs">
+                                ▼
+                              </span>
+                            </div>
+                            {dropdownOpen === m.user_id && (
+                              <div className="absolute mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-40 overflow-y-auto w-40 z-20">
+                                {availableElements.map((el) => (
+                                  <label
+                                    key={el}
+                                    className="flex items-center gap-2 px-3 py-1 hover:bg-gray-100 cursor-pointer text-sm"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={userElements.includes(el)}
+                                      onChange={() =>
+                                        toggleElement(m.user_id, el)
+                                      }
+                                      className="accent-blue-600"
+                                    />
+                                    {el}
+                                  </label>
+                                ))}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {selectedMembers.length > 0 && (
+              <div className="flex justify-end mt-6">
+                <button
+                  onClick={handleSaveMembers}
+                  disabled={loading}
+                  className={`px-5 py-2 rounded-lg text-white transition ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  {loading ? "Salvataggio..." : "Salva Ruoli & Permessi"}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

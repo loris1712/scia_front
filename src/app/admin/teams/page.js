@@ -10,13 +10,18 @@ import AddTeamsModal from "@/components/admin/teams/AddTeamsModal";
 export default function TeamsPage() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ name: "", email: "", role: "", status: "" });
+  const [filters, setFilters] = useState({
+    search: "",
+    role: "",
+    status: "",
+  });
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
         const data = await getTeams();
+        console.log(data)
         setTeams(data);
       } catch (err) {
         console.error("Errore nel fetch squadre:", err);
@@ -27,11 +32,27 @@ export default function TeamsPage() {
     fetchTeams();
   }, []);
 
-  const filteredTeams = teams.filter((team) =>
-    team.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-    (filters.role === "" || team.role === filters.role) &&
-    (filters.status === "" || (filters.status === "attivo" ? team.active : !team.active))
-  );
+const filteredTeams = teams.filter((team) => {
+  const search = filters.search.toLowerCase();
+
+  const matchSearch =
+    !search ||
+    team.name.toLowerCase().includes(search) ||
+    team.leader?.first_name?.toLowerCase().includes(search) ||
+    team.leader?.last_name?.toLowerCase().includes(search) ||
+    team.leader?.login?.email?.toLowerCase().includes(search);
+
+  const matchRole =
+    !filters.role ||
+    (team.role && team.role.toLowerCase() === filters.role.toLowerCase());
+
+  const matchStatus =
+    !filters.status ||
+    (filters.status === "attivo" ? team.active : !team.active);
+
+  return matchSearch && matchRole && matchStatus;
+});
+
 
   return (
     <div>

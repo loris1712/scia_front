@@ -53,7 +53,7 @@ export default function SitesTable({ sites, onUpdate }) {
                 </td>
               </tr>
             ) : (
-              filteredSites.map((s, idx) => (
+              filteredSites.slice(0, 5).map((s, idx) => (
                 <tr
                   key={s.ID}
                   onClick={() => handleRowClick(s)}

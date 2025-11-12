@@ -67,14 +67,14 @@ export async function getTeamMembers(teamId) {
   }
 }
 
-export async function updateTeamMembers(teamId, memberIds) {
+export async function updateTeamMembers(teamId, members) {
   try {
     const res = await fetch(`${BASE_URL}/api/admin/teams/updateTeamMembers/${teamId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ members: memberIds }),
+      body: JSON.stringify({ members }), // ✅ ora il nome combacia con backend
     });
 
     const data = await res.json();
@@ -89,3 +89,4 @@ export async function updateTeamMembers(teamId, memberIds) {
     throw error;
   }
 }
+

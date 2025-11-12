@@ -2,14 +2,14 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-export default function SortableItem({ id, name, dragging }) {
+export default function SortableItem({ id, name, dragging, bgColor = "#1E40AF" }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     userSelect: "none",
-    backgroundColor: dragging ? "#FBBF24" : "#1E40AF",
+    backgroundColor: dragging ? "#FBBF24" : bgColor,
     color: "#fff",
     padding: "0.75rem 1rem",
     marginBottom: "0.5rem",

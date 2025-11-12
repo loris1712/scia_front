@@ -15,8 +15,6 @@ export default function ProjectGeneralTab({
   const [shipyards, setShipyards] = useState([]);
   const [owners, setOwners] = useState([]);
 
-  console.log(editableProject)
-
   useEffect(() => {
     const fetchData = async () => {
       try {

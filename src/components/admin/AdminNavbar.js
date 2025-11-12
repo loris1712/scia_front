@@ -218,35 +218,35 @@ export default function AdminNavbar() {
             {configOpen && (
               <div className="absolute left-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50 py-2">
                 <Link
-                  href="/admin/users"
+                  href="/admin/maintenance_groups"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >
                   Gruppo Manutenzioni
                 </Link>
                 <Link
-                  href="/admin/teams"
+                  href="/admin/recurrency_type"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >
                   Tipi di frequenze
                 </Link>
                 <Link
-                  href="/admin/users"
+                  href="/admin/maintenanceLevel"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >
                   Livelli manutenzioni
                 </Link>
                 <Link
-                  href="/admin/teams"
+                  href="/admin/ranks"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >
                   Ranghi
                 </Link>
                 <Link
-                  href="/admin/teams"
+                  href="/admin/thresholds"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition"
                   onClick={() => setUsersOpen(false)}
                 >

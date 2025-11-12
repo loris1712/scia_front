@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProjects } from "@/api/admin/projects";
+import { getProjects, createProject } from "@/api/admin/projects";
 import ProjectsTable from "@/components/admin/projects/ProjectsTable";
 import ProjectsFilters from "@/components/admin/projects/ProjectsFilters";
 import AddProjectsButton from "@/components/admin/projects/AddProjectsButton";
 import AddProjectsModal from "@/components/admin/projects/AddProjectsModal";
 import SelectShipModal from "@/components/admin/projects/SelectShipModal";
-import { createProject } from "@/api/admin/projects";
 import ESWBSModal from "@/components/admin/projects/ESWBSModal";
 import ProjectDetailsModal from "@/components/admin/projects/ProjectDetailsModal";
 
@@ -18,13 +17,11 @@ export default function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectShipModalOpen, setSelectShipModalOpen] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
-
-  const [isSelectShipModalOpen, setIsSelectShipModalOpen] = useState(false);
   const [eswbsModal, setESWBSModal] = useState(false);
   const [assignedShipId, setAssignedShipId] = useState(null);
-
   const [detailsModalProject, setDetailsModalProject] = useState(null);
 
+  // Fetch progetti
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -39,49 +36,58 @@ export default function ProjectsPage() {
     fetchProjects();
   }, []);
 
-  const filteredProjects = projects.filter((p) =>
-    p.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-    (filters.manager === "" || p.manager === filters.manager) &&
-    (filters.status === "" || (filters.status === "active" ? p.active : !p.active))
-  );
+  // 🔍 Filtri applicati
+  const filteredProjects = projects.filter((p) => {
+    const nameMatch = p.name?.toLowerCase().includes(filters.name.toLowerCase());
+    const managerMatch =
+      !filters.manager ||
+      p.manager?.toLowerCase().includes(filters.manager.toLowerCase());
+    const statusMatch =
+      !filters.status ||
+      (filters.status === "active" ? p.active : !p.active);
 
-const handleAddProjectSave = async (projectsData) => {
+    return nameMatch && managerMatch && statusMatch;
+  });
+
+  // 🔹 Salvataggio nuove commesse
+  const handleAddProjectSave = async (projectsData) => {
     try {
-      // Salva i progetti sul backend
       const savedProjects = [];
       for (const p of projectsData) {
         const saved = await createProject(p);
         savedProjects.push(saved);
       }
 
-      // Aggiorna lista progetti
       setProjects((prev) => [...prev, ...savedProjects]);
-
-      // Chiudi AddProjectsModal
       setModalOpen(false);
-
-      // Apri SelectShipModal sul primo progetto appena creato
       setCurrentProject(savedProjects[0]);
       setSelectShipModalOpen(true);
-
     } catch (err) {
       console.error("Errore salvando commesse:", err);
-      alert("Errore salvando commesse");
+      alert("Errore durante il salvataggio delle commesse");
     }
   };
 
   return (
     <div>
-      <h2 className="text-3xl font-semibold mb-6 text-gray-900">Commesse</h2>
+      <h2 className="text-3xl font-semibold mb-6 text-gray-900">
+        Gestione Commesse
+      </h2>
 
+      {/* 🔍 Filtri */}
       <ProjectsFilters filters={filters} setFilters={setFilters} />
 
+      {/* 🧱 Tabella */}
       {loading ? (
         <p className="text-gray-500">Caricamento commesse...</p>
       ) : (
-        <ProjectsTable projects={filteredProjects} onRowClick={(project) => setDetailsModalProject(project)}/>
+        <ProjectsTable
+          projects={filteredProjects}
+          onRowClick={(project) => setDetailsModalProject(project)}
+        />
       )}
 
+      {/* ➕ Aggiungi Commesse */}
       <AddProjectsButton onClick={() => setModalOpen(true)} />
 
       {modalOpen && (
@@ -97,7 +103,7 @@ const handleAddProjectSave = async (projectsData) => {
           onClose={() => setSelectShipModalOpen(false)}
           onShipAssigned={(shipId) => {
             setAssignedShipId(shipId);
-            setIsSelectShipModalOpen(false);
+            setSelectShipModalOpen(false);
             setESWBSModal(true);
           }}
         />

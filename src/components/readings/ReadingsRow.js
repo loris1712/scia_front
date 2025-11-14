@@ -101,7 +101,7 @@ const ReadingsRow = ({ data }) => {
           </div>
           </div>
           <p className="text-white/60 text-[16px] text-sm truncate">
-            <ElementIcon elementId={data.element.progressive_code} /> {data.element.name}
+            <ElementIcon elementId={data?.element?.progressive_code} /> {data?.element?.name}
           </p>
         </div>
         <div onClick={handleRowClick} className="border border-[#001c38] p-3 text-center text-white justify-center flex flex-col items-center gap-2" style={{ height: "-webkit-fill-available" }}>
@@ -156,7 +156,7 @@ const ReadingsRow = ({ data }) => {
             <p className="text-white text-[18px] font-semibold truncate">{data.task_name}</p>
           </div>
           <p className="text-white/60 text-[16px] truncate">
-            <ElementIcon elementId={data.element.progressive_code} /> {data.element.name}
+            <ElementIcon elementId={data?.element?.progressive_code} /> {data?.element?.name}
           </p>
         </div>
 

@@ -9,7 +9,7 @@ export default function ProjectGeneralTab({ project }) {
       </h1>
 
       {/* 🧩 Sezione dati principali */}
-      <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+      <div className="">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* ID */}
           <div>

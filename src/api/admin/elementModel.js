@@ -30,3 +30,25 @@ export async function getElementModels(projectId) {
     throw error;
   }
 }
+
+export async function getElements(projectId) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/eswbs/getElements?ship=${projectId}`);
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+  } catch (error) {
+    console.error("❌ Errore in getElementModels:", error);
+    throw error;
+  }
+}
+
+export async function saveElements(projectId) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/eswbs/getElements?ship=${projectId}`);
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+  } catch (error) {
+    console.error("❌ Errore in getElementModels:", error);
+    throw error;
+  }
+}

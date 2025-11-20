@@ -165,11 +165,12 @@ export default function InfoCard({ data }) {
   <div className="flex flex-col">
     <label className="text-[#789FD6] text-sm mb-2">{t("email")}</label>
     <input
-      type="text"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      className="px-4 py-2 bg-[#ffffff10] text-white focus:outline-none rounded-md"
-    />
+  type="text"
+  value={email}
+  disabled
+  className="px-4 py-2 bg-[#ffffff10] text-white opacity-50 cursor-not-allowed rounded-md"
+/>
+
   </div>
 
   <div className="flex flex-col">

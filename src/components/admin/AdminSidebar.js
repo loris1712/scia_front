@@ -11,7 +11,7 @@ import {
   LogOut,
   Settings as SettingsIcon,
 } from "lucide-react";
-import { getShipModels } from "@/api/admin/projects";
+import { getShipModels, createShipModel, createShip } from "@/api/admin/projects";
 import { getShipsByModel } from "@/api/admin/ships";
 import { useUser } from "@/context/UserContext";
 
@@ -20,10 +20,20 @@ export default function AdminSidebar({ activeModelId = null }) {
   const [loadingModels, setLoadingModels] = useState(false);
   const [errorModels, setErrorModels] = useState(null);
 
+  const [showAddModel, setShowAddModel] = useState(false);
+  const [newModelName, setNewModelName] = useState("");
+  const [creatingModel, setCreatingModel] = useState(false);
+
   const [openModelId, setOpenModelId] = useState(null);
   const [shipsByModel, setShipsByModel] = useState({});
   const [loadingShips, setLoadingShips] = useState({});
   const [errorShips, setErrorShips] = useState({});
+
+  const [showAddShip, setShowAddShip] = useState(false);
+  const [newShipName, setNewShipName] = useState("");
+  const [selectedModelId, setSelectedModelId] = useState(null);
+  const [creatingShip, setCreatingShip] = useState(false);
+
 
   const pathname = usePathname();
   const router = useRouter();
@@ -31,11 +41,9 @@ export default function AdminSidebar({ activeModelId = null }) {
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
-  // 🔹 Estrai projectId dall’URL
   const match = pathname.match(/\/admin\/projects\/(\d+)/);
   const projectId = match ? match[1] : null;
 
-  // 🔹 Carica tutti i modelli nave
   useEffect(() => {
     if (!projectId) return;
 
@@ -56,7 +64,6 @@ export default function AdminSidebar({ activeModelId = null }) {
     fetchModels();
   }, [projectId]);
 
-  // 🔹 Se arriva un activeModelId → aprilo automaticamente
   useEffect(() => {
     if (activeModelId && !openModelId) {
       setOpenModelId(activeModelId);
@@ -64,7 +71,6 @@ export default function AdminSidebar({ activeModelId = null }) {
     }
   }, [activeModelId]);
 
-  // 🔹 Funzione per caricare le navi di un modello
   const loadShips = async (modelId) => {
     setLoadingShips((prev) => ({ ...prev, [modelId]: true }));
     setErrorShips((prev) => ({ ...prev, [modelId]: null }));
@@ -86,20 +92,16 @@ export default function AdminSidebar({ activeModelId = null }) {
     }
   };
 
-  // 🔹 Gestione apertura/chiusura accordion
   const toggleModel = async (modelId) => {
-    if (openModelId === modelId) {
-      setOpenModelId(null);
-      return;
-    }
+    router.push(`/admin/projects/${projectId}/model/${modelId}`);
 
     setOpenModelId(modelId);
+
     if (!shipsByModel[modelId]) {
       await loadShips(modelId);
     }
   };
 
-  // 🔹 Logout
   const handleLogout = async () => {
     try {
       await fetch(`${BASE_URL}/api/auth/logout`, {
@@ -119,13 +121,66 @@ export default function AdminSidebar({ activeModelId = null }) {
     }
   };
 
-  // 🔹 Stili base
   const menuItemStyle = (active = false) =>
     `relative flex items-center justify-between gap-3 p-3 rounded-lg transition-all duration-200 cursor-pointer select-none ${
       active
         ? "bg-gradient-to-r from-blue-800/30 to-transparent font-semibold text-blue-300"
         : "hover:bg-gray-800 text-gray-300"
-    }`;
+  }`;
+
+  const handleCreateModel = async () => {
+    if (!newModelName.trim()) return;
+
+    try {
+      setCreatingModel(true);
+      const response = await createShipModel(projectId, newModelName);
+
+      const updatedModels = await getShipModels(projectId);
+      setShipModels(updatedModels);
+
+      setNewModelName("");
+      setShowAddModel(false);
+    } catch (err) {
+      console.error("Errore creazione modello nave:", err);
+    } finally {
+      setCreatingModel(false);
+    }
+  };
+
+  const handleCreateShip = (modelId) => {
+    setSelectedModelId(modelId);
+    setShowAddShip(true);
+  };
+
+
+  const submitCreateShip = async () => {
+    if (!newShipName.trim()) return;
+
+    try {
+      setCreatingShip(true);
+
+      await createShip(selectedModelId, newShipName, user?.teamInfo.teamId);
+
+      const updatedShips = await getShipsByModel(user?.id, selectedModelId);
+
+      setShipsByModel((prev) => ({
+        ...prev,
+        [selectedModelId]: updatedShips.ships,
+      }));
+
+      setNewShipName("");
+      setShowAddShip(false);
+
+      if (openModelId !== selectedModelId) {
+        setOpenModelId(selectedModelId);
+      }
+
+    } catch (err) {
+      console.error("Errore creazione nave:", err);
+    } finally {
+      setCreatingShip(false);
+    }
+  };
 
   return (
     <div className="flex h-screen">
@@ -140,7 +195,7 @@ export default function AdminSidebar({ activeModelId = null }) {
                   <Ship size={16} /> Modelli Nave
                 </h3>
 
-                <div className="cursor-pointer ml-auto">
+                <div className="cursor-pointer ml-auto" onClick={() => setShowAddModel(true)}>
                   <svg xmlns="http://www.w3.org/2000/svg" height={"18px"} width={"18px"} fill="white" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
                 </div>
               </div>
@@ -230,7 +285,7 @@ export default function AdminSidebar({ activeModelId = null }) {
                             </p>
                           ))}
 
-                          <div className="cursor-pointer ml-auto flex items-center gap-2">
+                          <div className="cursor-pointer ml-auto flex items-center gap-2" onClick={() => handleCreateShip(model.id)}>
                             <p className="text-[14px] text-white">Aggiungi nave</p>
                             <svg xmlns="http://www.w3.org/2000/svg" height={"16px"} width={"16px"} fill="white" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
                           </div>
@@ -265,6 +320,76 @@ export default function AdminSidebar({ activeModelId = null }) {
           </div>
         </div>
       </aside>
+
+      {showAddModel && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-2xl p-6 relative w-80">
+            <h3 className="text-gray-700 text-lg mb-4">Aggiungi Modello Nave</h3>
+
+            <input
+              type="text"
+              placeholder="Nome modello"
+              className="w-full border border-gray-700 p-2 rounded text-gray-700"
+              value={newModelName}
+              onChange={(e) => setNewModelName(e.target.value)}
+            />
+
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                className="px-3 py-2 bg-gray-600 cursor-pointer rounded hover:bg-gray-500"
+                onClick={() => setShowAddModel(false)}
+              >
+                Annulla
+              </button>
+              <button
+                onClick={handleCreateModel}
+                className="px-3 py-2 bg-blue-600 cursor-pointer rounded hover:bg-blue-500 disabled:opacity-50"
+                disabled={creatingModel}
+              >
+                {creatingModel ? "Salvataggio..." : "Aggiungi"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddShip && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-2xl p-6 relative w-80">
+            <h3 className="text-gray-700 text-lg mb-4">Aggiungi Nave</h3>
+
+            <input
+              type="text"
+              placeholder="Nome nave"
+              className="w-full border border-gray-700 p-2 rounded text-gray-700"
+              value={newShipName}
+              onChange={(e) => setNewShipName(e.target.value)}
+            />
+
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                className="px-3 py-2 bg-gray-600 cursor-pointer rounded hover:bg-gray-500"
+                onClick={() => {
+                  setShowAddShip(false);
+                  setNewShipName("");
+                }}
+              >
+                Annulla
+              </button>
+
+              <button
+                onClick={submitCreateShip}
+                className="px-3 py-2 bg-blue-600 cursor-pointer rounded hover:bg-blue-500 disabled:opacity-50"
+                disabled={creatingShip}
+              >
+                {creatingShip ? "Salvataggio..." : "Aggiungi"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }

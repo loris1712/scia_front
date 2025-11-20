@@ -48,9 +48,9 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
 
-          <label className="text-[#789fd6] block mb-2">Nuova Password</label>
+          <label className="text-[#789fd6] block mb-2">Email</label>
             <input
-              type="password"
+              type="text"
               value={newPassword}
               placeholder="Email"
               onChange={(e) => setNewPassword(e.target.value)}

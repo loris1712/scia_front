@@ -22,7 +22,7 @@ const SpareTable = () => {
   const [selectedCode, setSelectedCode] = useState(null);
 
   const { user } = useUser();
-  const shipId = user?.ships[0].id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   const [filters, setFilters] = useState({
           task: {

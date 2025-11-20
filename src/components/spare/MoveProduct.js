@@ -20,7 +20,7 @@ export default function MoveProduct({ isOpen, onClose, data }) {
   const [scanning, setScanning] = useState(false);
 
   const { user } = useUser();
-const shipId = user?.ships[0].id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   useEffect(() => {
     if (scanning) {

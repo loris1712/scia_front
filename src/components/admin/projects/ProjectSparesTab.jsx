@@ -1,136 +1,100 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import MaintenanceModal from "./MaintenanceModal";
-import { getMaintenancesModel } from "@/api/admin/maintenances";
-import MaintenanceList from "./MaintenanceList";
+import SparesModal from "./SparesModal";
+import { getSpares } from "@/api/admin/spares";
+import SparesList from "./SparesList";
 
-export default function ProjectSparesTab({ projectId, elementModelId }) {
-  const [maintenances, setMaintenances] = useState([]);
-  const [selectedMaintenance, setSelectedMaintenance] = useState(null);
+export default function ProjectSparesTab({ projectId }) {
+  const [spares, setSpares] = useState([]);
+  const [filteredSpares, setFilteredSpares] = useState([]);
+
+  const [selectedSpare, setSelectedSpare] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [filteredMaintenances, setFilteredMaintenances] = useState([]);
-  const [filterElementId, setFilterElementId] = useState(null);
+  const [search, setSearch] = useState("");
 
-  // 🔹 Ascolta il filtro proveniente dal tab ESWBS
+  // 🔹 Caricamento ricambi dal backend
   useEffect(() => {
-    const handleFilter = (e) => {
-      const elementId = e.detail;
-      setFilterElementId(elementId);
-
-      if (elementId) {
-        const filtered = maintenances.filter(
-          (m) => m.System_ElementModel_ID === parseInt(elementId)
-        );
-        setFilteredMaintenances(filtered);
-      } else {
-        setFilteredMaintenances(maintenances);
-      }
-    };
-
-    window.addEventListener("filterMaintenanceByElement", handleFilter);
-    return () => window.removeEventListener("filterMaintenanceByElement", handleFilter);
-  }, [maintenances]);
-
-  // 🔹 Carica manutenzioni già presenti
-  useEffect(() => {
-    const fetchMaintenances = async () => {
+    const fetchSpares = async () => {
       try {
-        const data = await getMaintenancesModel(projectId);
-        setMaintenances(data);
-        setFilteredMaintenances(data);
+        const data = await getSpares(projectId);
+        setSpares(data);
+        setFilteredSpares(data);
       } catch (err) {
-        console.error("Errore nel caricamento manutenzioni:", err);
+        console.error("Errore nel caricamento ricambi:", err);
       }
     };
-    fetchMaintenances();
+    fetchSpares();
   }, [projectId]);
 
+  // 🔍 Ricerca live
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredSpares(spares);
+      return;
+    }
+
+    const lower = search.toLowerCase();
+    setFilteredSpares(
+      spares.filter((s) =>
+        `${s.Spare_Name} ${s.Part_Number} ${s.Description}`
+          .toLowerCase()
+          .includes(lower)
+      )
+    );
+  }, [search, spares]);
+
   const handleAdd = () => {
-    setSelectedMaintenance(null); // nuovo
+    setSelectedSpare(null);
     setModalOpen(true);
   };
 
-  const handleEdit = (maintenance) => {
-    setSelectedMaintenance(maintenance); // esistente
+  const handleEdit = (spare) => {
+    setSelectedSpare(spare);
     setModalOpen(true);
   };
 
-  const handleSave = (updated) => {
-    setMaintenances((prev) => {
-      const exists = prev.find((m) => m.id === updated.id);
-      if (exists) {
-        return prev.map((m) => (m.id === updated.id ? updated : m));
-      }
-      return [...prev, updated];
-    });
-    setFilteredMaintenances((prev) => {
-      const exists = prev.find((m) => m.id === updated.id);
-      if (exists) {
-        return prev.map((m) => (m.id === updated.id ? updated : m));
-      }
-      return [...prev, updated];
-    });
+  const handleSave = async () => {
+    // 🟢 ricarichiamo dal backend per avere dati corretti
+    const fresh = await getSpares(projectId);
+    setSpares(fresh);
+    setFilteredSpares(fresh);
     setModalOpen(false);
   };
-
-  const handleClearFilter = () => {
-    setFilterElementId(null);
-    setFilteredMaintenances(maintenances);
-  };
-
-  useEffect(() => {
-    if (elementModelId) {
-      setFilterElementId(elementModelId);
-
-      const filtered = maintenances.filter(
-        (m) => m.System_ElementModel_ID === parseInt(elementModelId)
-      );
-
-      setFilteredMaintenances(filtered);
-    }
-  }, [elementModelId, maintenances]);
 
   return (
     <div className="p-4 text-gray-600 text-sm">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">Manutenzioni</h2>
+        <h2 className="text-lg font-semibold text-gray-800">Ricambi</h2>
 
-        <div className="flex items-center gap-3">
-          {filterElementId && (
-            <button
-              onClick={handleClearFilter}
-              className="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200"
-            >
-              🔄 Mostra tutte
-            </button>
-          )}
-
-          <button
-            onClick={handleAdd}
-            className="cursor-pointer px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700"
-          >
-            + Aggiungi manutenzione
-          </button>
-        </div>
+        <button
+          onClick={handleAdd}
+          className="cursor-pointer px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700"
+        >
+          + Aggiungi ricambio
+        </button>
       </div>
 
-      {filterElementId && (
-        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg">
-          Filtrate per elemento <b>ESWBS ID {filterElementId}</b> — Mostrate solo le manutenzioni collegate a questo elemento.
-        </div>
-      )}
+      {/* 🔎 Barra di ricerca */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Cerca per nome, part number..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-2 border rounded text-gray-700"
+        />
+      </div>
 
-      <MaintenanceList
-        items={filteredMaintenances}
-        onEdit={handleEdit}
-      />
+      {/* 📄 Lista ricambi */}
+      <SparesList items={filteredSpares} onEdit={handleEdit} />
 
+      {/* 🛠️ Modale */}
       {modalOpen && (
-        <MaintenanceModal
+        <SparesModal
           projectId={projectId}
-          maintenance={selectedMaintenance}
+          spare={selectedSpare}
           onClose={() => setModalOpen(false)}
           onSave={handleSave}
         />
@@ -138,4 +102,3 @@ export default function ProjectSparesTab({ projectId, elementModelId }) {
     </div>
   );
 }
-

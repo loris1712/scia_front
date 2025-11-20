@@ -63,8 +63,6 @@ export default function DashboardPage() {
         />
         <span className="hidden sm:inline">{t("logout")}</span>
       </button>
- 
-
     </div>
 
       <div className="flex-1">

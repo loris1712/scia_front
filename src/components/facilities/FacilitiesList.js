@@ -25,7 +25,7 @@ export default function ImpiantiList({ search, modal, eswbsCode }) {
   const { user } = useUser();
   const router = useRouter();
 
-  const ship_id = user?.ships[0].id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,19 +1,20 @@
+"use client";
+
 import { useState } from "react";
-import { saveMaintenance } from "@/api/admin/maintenances";
+import { saveMaintenance, deleteMaintenance } from "@/api/admin/maintenances";
 
 export default function MaintenanceModal({ maintenance, projectId, onClose, onSave }) {
   const [activeTab, setActiveTab] = useState("general");
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const [formData, setFormData] = useState(
     maintenance || {
-      title: "",
+      name: "",
       description: "",
       frequency: "",
-      spareParts: [],
-      tools: [],
-      consumables: [],
     }
   );
-  const [saving, setSaving] = useState(false);
 
   const handleChange = (key, value) =>
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -21,14 +22,37 @@ export default function MaintenanceModal({ maintenance, projectId, onClose, onSa
   const handleSubmit = async () => {
     try {
       setSaving(true);
-      const payload = { ...formData, projectId };
+
+      const payload = {
+        ...formData,
+        id_ship: projectId,
+      };
+
       const saved = await saveMaintenance(payload);
       onSave(saved);
+
     } catch (err) {
-      console.error("Errore salvataggio manutenzione:", err);
+      console.error("❌ Errore salvataggio manutenzione:", err);
       alert("Errore durante il salvataggio");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Vuoi eliminare definitivamente questa manutenzione?")) return;
+
+    try {
+      setDeleting(true);
+      await deleteMaintenance(maintenance.id);
+      onSave(null, "deleted");
+      onClose();
+
+    } catch (err) {
+      console.error("❌ Errore eliminazione manutenzione:", err);
+      alert("Errore durante eliminazione");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -41,120 +65,106 @@ export default function MaintenanceModal({ maintenance, projectId, onClose, onSa
 
   return (
     <>
-      {/* Overlay semi-trasparente */}
-      <div
-        className="fixed inset-0 bg-black/30 z-40"
-        onClick={onClose}
-      ></div>
+      {/* Overlay */}
+      <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
-      {/* Contenitore principale del modal */}
+      {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="bg-white rounded-xl w-[90vw] h-[90vh] shadow-2xl p-6 relative">
-          {/* Pulsante chiusura */}
-          <div
+
+          {/* Close */}
+          <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer text-lg"
+            className="absolute top-3 right-3 text-gray-400 hover:text-black text-xl"
           >
             ✕
-          </div>
+          </button>
 
           <h3 className="text-lg font-semibold mb-4">
             {maintenance ? "Modifica Manutenzione" : "Nuova Manutenzione"}
           </h3>
 
-          {/* Tabs nativi */}
-          <div className="border-b border-gray-200 mb-6 flex gap-4">
+          {/* Tabs */}
+          <div className="border-b flex gap-4 mb-6">
             <div onClick={() => setActiveTab("general")} className={`${tabClass("general")} cursor-pointer`}>
-              General
+              Generale
             </div>
             <div onClick={() => setActiveTab("spare")} className={`${tabClass("spare")} cursor-pointer`}>
-              Spare
+              Ricambi
             </div>
             <div onClick={() => setActiveTab("tools")} className={`${tabClass("tools")} cursor-pointer`}>
-              Tools
+              Strumenti
             </div>
             <div onClick={() => setActiveTab("consumables")} className={`${tabClass("consumables")} cursor-pointer`}>
-              Consumables
+              Consumabili
             </div>
           </div>
 
-          {/* Contenuto tab */}
-          <div className="min-h-[220px]">
-            {activeTab === "general" && (
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Titolo</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleChange("title", e.target.value)}
-                    className="w-full border rounded-md p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Descrizione</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => handleChange("description", e.target.value)}
-                    className="w-full border rounded-md p-2"
-                    rows={3}
-                  ></textarea>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Frequenza</label>
-                  <input
-                    type="text"
-                    value={formData?.recurrency_type?.name}
-                    onChange={(e) => handleChange("frequency", e.target.value)}
-                    className="w-full border rounded-md p-2"
-                  />
-                </div>
-              </div>
-            )}
-
-            {activeTab === "spare" && (
+          {/* Content */}
+          {activeTab === "general" && (
+            <div className="space-y-3">
               <div>
-                <p className="text-gray-500 mb-3">
-                  Gestisci qui le parti di ricambio.
-                </p>
-                {/* TODO: gestione spareParts */}
+                <label className="text-sm font-medium">Nome</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  className="w-full border rounded-md p-2"
+                />
               </div>
-            )}
 
-            {activeTab === "tools" && (
               <div>
-                <p className="text-gray-500 mb-3">
-                  Gestisci qui gli strumenti necessari.
-                </p>
-                {/* TODO: gestione tools */}
+                <label className="text-sm font-medium">Descrizione</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => handleChange("description", e.target.value)}
+                  className="w-full border rounded-md p-2"
+                  rows={3}
+                />
               </div>
-            )}
 
-            {activeTab === "consumables" && (
               <div>
-                <p className="text-gray-500 mb-3">
-                  Gestisci qui i materiali di consumo.
-                </p>
-                {/* TODO: gestione consumables */}
+                <label className="text-sm font-medium">Frequenza</label>
+                <input
+                  type="text"
+                  value={formData.frequency}
+                  onChange={(e) => handleChange("frequency", e.target.value)}
+                  className="w-full border rounded-md p-2"
+                />
               </div>
-            )}
-          </div>
-
-          {/* Footer con pulsanti */}
-          <div className="flex justify-end mt-6 gap-3">
-            <div
-              onClick={onClose}
-              className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
-            >
-              Annulla
             </div>
-            <div
-              onClick={handleSubmit}
-              className={`px-4 py-2 rounded-md text-white cursor-pointer ${
-                saving ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-              }`}
-            >
-              {saving ? "Salvataggio..." : "Salva"}
+          )}
+
+          {/* Footer */}
+          <div className="flex justify-between mt-6">
+
+            {/* DELETE BUTTON ONLY IF EDITING */}
+            {maintenance && (
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                disabled={deleting}
+              >
+                {deleting ? "Eliminazione..." : "Elimina"}
+              </button>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                className="px-4 py-2 border rounded-md hover:bg-gray-100"
+                onClick={onClose}
+              >
+                Annulla
+              </button>
+              <button
+                onClick={handleSubmit}
+                className={`px-4 py-2 text-white rounded-md ${
+                  saving ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+                }`}
+                disabled={saving}
+              >
+                {saving ? "Salvataggio..." : "Salva"}
+              </button>
             </div>
           </div>
         </div>

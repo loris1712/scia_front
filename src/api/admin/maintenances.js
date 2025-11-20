@@ -45,13 +45,25 @@ export async function getMaintenancesModel(projectId) {
 }
 
 export async function saveMaintenance(data) {
-  const res = await fetch("/api/admin/maintenance", {
-    method: data.id ? "PUT" : "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Errore salvataggio manutenzione");
-  return await res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/maintenance`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorResponse = await res.json();
+      throw new Error(errorResponse.error || "Errore salvataggio");
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Errore saveMaintenance:", error.message);
+    throw error;
+  }
 }
 
 export async function createProject(projectData) {
@@ -64,4 +76,14 @@ export async function createProject(projectData) {
   if (!res.ok) throw new Error("Errore creando la commessa");
   return res.json();
 };
+
+export async function deleteMaintenance(id) {
+  const res = await fetch(`${BASE_URL}/api/admin/maintenance/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) throw new Error("Errore eliminazione ricambio");
+
+  return res.json();
+}
 

@@ -19,7 +19,7 @@ const MaintenanceTable = () => {
   const [filters, setFilters] = useState(null);
 
   const { user } = useUser();
-  const shipId = user?.ships[0].id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   const handleSelectType = (type) => {
     setSelectedType(type);

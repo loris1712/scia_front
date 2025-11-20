@@ -13,7 +13,6 @@ export default function ProjectMaintenanceTab({ projectId, elementModelId }) {
   const [filteredMaintenances, setFilteredMaintenances] = useState([]);
   const [filterElementId, setFilterElementId] = useState(null);
 
-  // 🔹 Ascolta il filtro proveniente dal tab ESWBS
   useEffect(() => {
     const handleFilter = (e) => {
       const elementId = e.detail;
@@ -57,22 +56,28 @@ export default function ProjectMaintenanceTab({ projectId, elementModelId }) {
     setModalOpen(true);
   };
 
-  const handleSave = (updated) => {
-    setMaintenances((prev) => {
-      const exists = prev.find((m) => m.id === updated.id);
-      if (exists) {
-        return prev.map((m) => (m.id === updated.id ? updated : m));
+  const handleSave = async (savedMaintenance) => {
+    try {
+      // 🔄 Ricarica i dati dal backend una volta salvato
+      const updatedList = await getMaintenancesModel(projectId);
+
+      setMaintenances(updatedList);
+
+      // Se era filtrato, aggiorniamo la vista filtrata
+      if (filterElementId) {
+        setFilteredMaintenances(
+          updatedList.filter(
+            (m) => m.System_ElementModel_ID === parseInt(filterElementId)
+          )
+        );
+      } else {
+        setFilteredMaintenances(updatedList);
       }
-      return [...prev, updated];
-    });
-    setFilteredMaintenances((prev) => {
-      const exists = prev.find((m) => m.id === updated.id);
-      if (exists) {
-        return prev.map((m) => (m.id === updated.id ? updated : m));
-      }
-      return [...prev, updated];
-    });
-    setModalOpen(false);
+
+      setModalOpen(false);
+    } catch (err) {
+      console.error("Errore aggiornamento dopo salvataggio:", err);
+    }
   };
 
   const handleClearFilter = () => {

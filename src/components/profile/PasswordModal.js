@@ -68,13 +68,27 @@ export default function PasswordModal({ userId, onClose }) {
     }
   }
 
+  function handleTogglePin() {
+    if (!useQuickPin) {
+      // sta tentando di attivarlo
+      setShowConfirmPinPopup(true);
+    } else {
+      // sta disattivando, quindi ok subito
+      setUseQuickPin(false);
+      setPin("");
+      setConfirmPin("");
+    }
+  }
+
+
   async function handleConfirmPin() {
     if (!passwordForPin) {
-      alert("Inserisci la password per confermare il PIN!");
+      alert("Inserisci la password per confermare!");
       return;
     }
 
-    await saveSettings();
+    // se arriva qui → password valida 
+    setUseQuickPin(true);
     setShowConfirmPinPopup(false);
   }
 
@@ -114,7 +128,7 @@ export default function PasswordModal({ userId, onClose }) {
 
         <div className="flex items-center space-x-4 mb-4 mt-4 w-full">
           <label className="flex items-center w-1/2">
-            <input type="checkbox" checked={useQuickPin} onChange={() => setUseQuickPin(!useQuickPin)} className="mr-2 cursor-pointer w-[16px] h-[16px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 
+            <input type="checkbox" checked={useQuickPin} onChange={handleTogglePin} className="mr-2 cursor-pointer w-[16px] h-[16px] appearance-none border-2 border-[#ffffff20] bg-transparent rounded-sm transition-all duration-200 
             checked:bg-[#789fd6] checked:border-[#789fd6] hover:opacity-80 focus:outline-none rounded-md" />
             {t("use_pin")}
           </label>
@@ -142,24 +156,31 @@ export default function PasswordModal({ userId, onClose }) {
       </div>
 
       {showConfirmPinPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] bg-opacity-50 z-10">
+        <div className="fixed inset-0 flex items-center justify-center bg-[#000000ab] z-10">
           <div className="bg-[#022a52] p-5 rounded-md shadow-lg text-white w-[90%] sm:w-[40%]">
-            <h3 className="text-lg font-semibold mb-3">{t("confirm_pin")}</h3>
-            <p className="text-sm mb-3">{t("enter_PIN_to_confirm")}</p>
+            <h3 className="text-lg font-semibold mb-3">{t("confirm_enable_pin")}</h3>
+            <p className="text-sm mb-3">{t("enter_password_to_enable_pin")}</p>
+
             <input
               type="password"
               placeholder="Password"
               value={passwordForPin}
               onChange={(e) => setPasswordForPin(e.target.value)}
-              className="w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none mt-2"
+              className="w-full px-4 py-2 bg-[#ffffff10] text-white focus:outline-none mt-2 rounded-md"
             />
+
             <div className="flex justify-end space-x-2 mt-4">
-              <button className="bg-gray-500 px-4 py-2 rounded" onClick={() => setShowConfirmPinPopup(false)}>{t("cancel")}</button>
-              <button className="bg-[#789fd6] px-4 py-2 rounded" onClick={handleConfirmPin}>{t("confirm_pin")}</button>
+              <button className="bg-gray-500 px-4 py-2 rounded" onClick={() => setShowConfirmPinPopup(false)}>
+                {t("cancel")}
+              </button>
+              <button className="bg-[#789fd6] px-4 py-2 rounded" onClick={handleConfirmPin}>
+                {t("confirm")}
+              </button>
             </div>
           </div>
         </div>
       )}
+
     </div>
 
   );

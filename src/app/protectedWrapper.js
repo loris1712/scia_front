@@ -6,8 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 const publicRoutes = [
   "/login-pin",
   "/login-pin",
-  "/forgot-password",
-  "/reset-password",
   "/adminLogin",
 ];
 

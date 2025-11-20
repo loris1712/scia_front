@@ -11,7 +11,7 @@ const CartTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { user } = useUser();
-  const shipId = user?.ships[0].id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   const { t, i18n } = useTranslation("cart");
   const [mounted, setMounted] = useState(false);

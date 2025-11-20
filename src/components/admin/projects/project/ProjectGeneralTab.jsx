@@ -3,15 +3,12 @@
 export default function ProjectGeneralTab({ project }) {
   return (
     <div className="space-y-6">
-      {/* 🔹 Titolo */}
       <h1 className="text-2xl font-semibold text-gray-800">
         Dati Generali del Progetto
       </h1>
 
-      {/* 🧩 Sezione dati principali */}
       <div className="">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* ID */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               ID Progetto
@@ -21,7 +18,6 @@ export default function ProjectGeneralTab({ project }) {
             </p>
           </div>
 
-          {/* Stato */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Stato
@@ -41,7 +37,6 @@ export default function ProjectGeneralTab({ project }) {
             </p>
           </div>
 
-          {/* Nome progetto */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Nome Commessa
@@ -51,7 +46,6 @@ export default function ProjectGeneralTab({ project }) {
             </p>
           </div>
 
-          {/* Cliente / Owner */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Cliente / Owner
@@ -61,7 +55,6 @@ export default function ProjectGeneralTab({ project }) {
             </p>
           </div>
 
-          {/* Cantiere costruttore */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Cantiere Costruttore
@@ -71,7 +64,6 @@ export default function ProjectGeneralTab({ project }) {
             </p>
           </div>
 
-          {/* Date */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Data Ordine
@@ -95,7 +87,6 @@ export default function ProjectGeneralTab({ project }) {
           </div>
         </div>
 
-        {/* Descrizione */}
         <div className="mt-6">
           <label className="block text-sm font-medium text-gray-700">
             Descrizione
@@ -106,7 +97,6 @@ export default function ProjectGeneralTab({ project }) {
         </div>
       </div>
 
-      {/* 🔹 Navi collegate */}
       {project.ships?.length > 0 && (
         <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">

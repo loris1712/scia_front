@@ -20,6 +20,12 @@ export default function ProjectDetailsPage() {
   const match = pathname.match(/\/admin\/projects\/(\d+)/);
   const projectId = match ? match[1] : null;
 
+  const matchShipId = pathname.match(/(\d+)(?!.*\d)/);
+  const shipId = matchShipId ? matchShipId[0] : null;
+
+  const matchShipModelId = pathname.match(/\/ship\/(\d+)/)?.[1] || null;
+  const shipModelId = matchShipModelId ? matchShipModelId[0] : null;
+
   useEffect(() => {
     if (!projectId) return;
 
@@ -79,7 +85,7 @@ export default function ProjectDetailsPage() {
       {/* TAB CONTENUTO */}
       {activeTab === "generali" && <ProjectGeneralTab project={project} />}
       {activeTab === "elements" && <ProjectElementsTab project={project} />}
-      {activeTab === "runtime" && <ProjectRuntimeTab project={project} />}
+      {activeTab === "runtime" && <ProjectRuntimeTab project={project} shipId={shipId} shipModelId={shipModelId} />}
       {activeTab === "report" && <ProjectReportTab project={project} />}
     </div>
   );

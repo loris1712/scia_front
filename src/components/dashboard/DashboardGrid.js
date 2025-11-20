@@ -57,7 +57,7 @@ export default function DashboardGrid() {
   if (!user) return null;
   if (!i18n?.isInitialized) return null;
 
-  const shipId = user.ships?.[0]?.id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full pb-8">

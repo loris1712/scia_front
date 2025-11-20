@@ -30,7 +30,7 @@ export default function AddProduct({ onClose }) {
   const [facilitiesOpen, setFacilitiesOpen] = useState(false);
 
   const { user } = useUser();
-const shipId = user?.ships[0].id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   const { t, i18n } = useTranslation("maintenance");
   const [mounted, setMounted] = useState(false);

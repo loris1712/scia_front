@@ -18,10 +18,8 @@ export default function ProjectDetailsPage() {
   const [activeTab, setActiveTab] = useState("generali");
   const [selectedElementId, setSelectedElementId] = useState(null);
 
-  const match = pathname.match(/\/admin\/projects\/(\d+)/);
+  const match = pathname.match(/\/admin\/projects\/\d+\/model\/(\d+)/);
   const projectId = match ? match[1] : null;
-
-  console.log(projectId)
 
   useEffect(() => {
     if (!projectId) return;
@@ -67,12 +65,24 @@ export default function ProjectDetailsPage() {
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-        Dettagli Commessa
+        Dettagli Modello Nave
       </h1>
 
       <div className="border-b border-gray-200 mb-6 flex gap-4">
         <button onClick={() => handleTabChange("generali")} className={tabClass("generali")}>
           Generali
+        </button>
+        <button onClick={() => handleTabChange("eswbs")} className={tabClass("eswbs")}>
+          ESWBS
+        </button>
+        <button onClick={() => handleTabChange("manutenzioni")} className={tabClass("manutenzioni")}>
+          Manutenzioni
+        </button>
+        <button onClick={() => handleTabChange("spares")} className={tabClass("spares")}>
+          Ricambi
+        </button>
+        <button onClick={() => handleTabChange("files")} className={tabClass("files")}>
+          Files
         </button>
       </div>
 
@@ -83,6 +93,25 @@ export default function ProjectDetailsPage() {
           setEditableProject={setEditableProject}
           project={project}
           setProject={setProject}
+        />
+      )}
+
+      {activeTab === "eswbs" && <ProjectESWBSTab projectId={projectId} />}
+      {activeTab === "manutenzioni" && (
+        <ProjectMaintenanceTab
+          projectId={projectId}
+          elementModelId={selectedElementId}
+        />
+      )}
+      {activeTab === "spares" && (
+        <ProjectSparesTab
+          projectId={projectId}
+          elementModelId={selectedElementId}
+        />
+      )}
+      {activeTab === "files" && (
+        <ProjectFilesTab
+          shipModelId={projectId}
         />
       )}
     </div>

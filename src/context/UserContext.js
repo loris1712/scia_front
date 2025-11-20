@@ -49,7 +49,9 @@ export function UserProvider({ children }) {
     const isAuthPage =
       pathname.startsWith("/login") ||
       pathname.startsWith("/login-pin") ||
-      pathname.startsWith("/adminLogin");
+      pathname.startsWith("/adminLogin") ||
+      pathname.startsWith("/reset-password") ||
+      pathname.startsWith("/forgot-password");
 
     if (isAuthPage && token) {
       try {

@@ -67,4 +67,28 @@ export async function updateProjectById(id, payload) {
   return await response.json();
 }
 
+export async function createShipModel(projectId, model_name) {
+  const res = await fetch(`${BASE_URL}/api/admin/projects/${projectId}/ship-models`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ model_name }),
+  });
+
+  if (!res.ok) throw new Error("Errore creando la commessa");
+  return res.json();
+};
+
+export async function createShip(modelId, unit_name, teamId) {
+  const res = await fetch(`${BASE_URL}/api/admin/projects/ships/${modelId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ unit_name, team_id: teamId }),
+  });
+
+  if (!res.ok) throw new Error("Errore creando nave");
+  return res.json();
+}
+
+
+
 

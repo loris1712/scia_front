@@ -41,6 +41,8 @@
   "ordinary_marshal": "Ordinary Marshal",
   "marshal": "Marshal",
   "sergeant_major": "Sergeant Major",
-  "sergeant": "Sergeant"
+  "sergeant": "Sergeant",
+  "confirm_enable_pin": "Confirm PIN activation",
+  "enter_password_to_enable_pin": "Enter your password to enable PIN"
 }
   

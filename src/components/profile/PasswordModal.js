@@ -15,6 +15,7 @@ export default function PasswordModal({ userId, onClose }) {
   const [confirmPin, setConfirmPin] = useState("");
   const [showConfirmPinPopup, setShowConfirmPinPopup] = useState(false);
   const [passwordForPin, setPasswordForPin] = useState("");
+  const [pinJustEnabled, setPinJustEnabled] = useState(false);
 
   const { t, i18n } = useTranslation("profile");
   const [mounted, setMounted] = useState(false);
@@ -32,17 +33,14 @@ export default function PasswordModal({ userId, onClose }) {
   }, []);
 
   async function handleSave() {
+
     if (newPassword !== confirmPassword) {
       alert("Le password non coincidono!");
       return;
     }
-    if (pin && pin !== confirmPin) {
-      alert("Il PIN non coincide!");
-      return;
-    }
 
-    if (useQuickPin && !pin) {
-      setShowConfirmPinPopup(true);
+    if (pinJustEnabled && (!pin || pin !== confirmPin)) {
+      alert("Il PIN non coincide!");
       return;
     }
 
@@ -70,16 +68,15 @@ export default function PasswordModal({ userId, onClose }) {
 
   function handleTogglePin() {
     if (!useQuickPin) {
-      // sta tentando di attivarlo
       setShowConfirmPinPopup(true);
+      setPinJustEnabled(true);
     } else {
-      // sta disattivando, quindi ok subito
       setUseQuickPin(false);
+      setPinJustEnabled(false);
       setPin("");
       setConfirmPin("");
     }
   }
-
 
   async function handleConfirmPin() {
     if (!passwordForPin) {

@@ -35,6 +35,7 @@ const UploadProfileImage = ({ onImageUploadSuccess }) => {
       if (response?.url) {
         onImageUploadSuccess(response.url);
         alert("Immagine caricata con successo!");
+        window.location.reload();
       } else {
         setError("Errore nel caricamento dell'immagine.");
       }

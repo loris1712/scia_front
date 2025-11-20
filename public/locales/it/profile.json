@@ -41,7 +41,9 @@
   "ordinary_marshal": "Maresciallo ordinario",
   "marshal": "Maresciallo",
   "sergeant_major": "Sergente maggiore",
-  "sergeant": "Sergente"
+  "sergeant": "Sergente",
+  "confirm_enable_pin": "Conferma PIN",
+  "enter_password_to_enable_pin": "Inserisci la password per abilitare il PIN"
   }
   
 

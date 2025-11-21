@@ -50,7 +50,7 @@ const ReadingsTable = () => {
     };
 
   const { user } = useUser();
-  const shipId = user?.assignedShip?.id;
+  const shipId = user?.teamInfo?.assignedShip?.id;
 
   const loadTasks = async () => {
     try {

@@ -8,7 +8,7 @@
   "close_button": "Close",
   "items": {
     "time_deadline": "Time-based deadline",
-    "flight_hours_deadline": "Flight hours deadline",
+    "flight_hours_deadline": "Running hours deadline",
     "blocking_job": "Blocking job",
     "planned_stop": "Planned stop",
     "last_failed_outcome": "Last failed outcome",

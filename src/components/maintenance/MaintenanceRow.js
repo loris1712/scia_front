@@ -115,11 +115,10 @@ export default function MaintenanceRow({ data }) {
   useEffect(() => setMounted(true), []);
   if (!mounted || !i18n.isInitialized) return null;
 
-  // 1) calcolo expiry in base a execution_date + recurrency
-  const recurrency = data.recurrencyType || data.job?.recurrencyType; // robusto
+  const recurrency = data.maintenance_list?.recurrency_type?.name; 
   const expiryDate = computeExpiryDate({
-    executionDate: data.execution_date,       // ultima esecuzione
-    endingDate: data.ending_date,             // fallback se serve
+    executionDate: data.execution_date,       
+    endingDate: data.ending_date,             
     recurrency,
     maintenanceList: data.job?.maintenance_list,
   });
@@ -138,11 +137,11 @@ export default function MaintenanceRow({ data }) {
         className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center border-b border-[#001c38] bg-[#022a52] cursor-pointer"
         style={{ borderLeft: `8px solid ${barColor}` }}
       >
-        <TitleCell jobName={data.maintenance_list?.name} elementName={data.Element?.name} onClick={handleRowClick} />
+        <TitleCell jobName={data.maintenance_list?.name} elementName={data.Element?.element_model?.ESWBS_code + " " +data.Element?.name} onClick={handleRowClick} />
 
         <RecurrencyCell
-          recurrencyLabel={recurrency?.name || t("unknown")}
-          levelMMI={data.job?.maintenance_list?.maintenance_level?.Level_MMI}
+          recurrencyLabel={recurrency || t("unknown")}
+          levelMMI={data.maintenance_list?.maintenance_level?.Level_MMI}
           onClick={handleRowClick}
         />
 

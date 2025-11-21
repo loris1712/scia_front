@@ -73,6 +73,17 @@ export default function ProjectGeneralTab({
         />
       </div>
 
+      <div>
+        <label className="text-gray-700 block mb-2 text-sm font-medium">N. medio Ore di moto</label>
+        <textarea
+          rows="3"
+          value={editableProject.houseofride || ""}
+          placeholder="Numero medo Ore di moto"
+          onChange={(e) => handleChange("description", e.target.value)}
+          className="w-full px-4 py-3 bg-white text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md text-base"
+        />
+      </div>
+
       {/* Date */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
